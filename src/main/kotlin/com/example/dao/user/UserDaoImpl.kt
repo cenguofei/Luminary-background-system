@@ -4,14 +4,16 @@ import com.example.util.dbTransaction
 import com.example.models.Role
 import com.example.models.Sex
 import com.example.models.User
-import com.example.models.Users
+import com.example.models.UserStatus
+import com.example.models.tables.Users
 import com.example.util.empty
 import com.example.util.encrypt
+import com.example.util.logd
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
-const val ID_OFFSET = 10000
+//const val ID_OFFSET = 10000
 
 class UserDaoImpl(
     database: Database = com.example.plugins.database.database
@@ -21,31 +23,42 @@ class UserDaoImpl(
         transaction(database) { SchemaUtils.create(Users) }
     }
 
-    override suspend fun create(user: User): Long = dbTransaction {
+    override suspend fun create(data: User): Long = dbTransaction {
         Users.insert {
-            it[username] = user.username
-            it[age] = user.age
-            it[sex] = user.sex.toString()
-            it[headUrl] = user.headUrl
-            it[password] = encrypt(user.password)
-            it[role] = user.role.toString()
+            it[username] = data.username
+            it[age] = data.age
+            it[sex] = data.sex.toString()
+            it[headUrl] = data.headUrl
+            it[password] = encrypt(data.password)
+            it[role] = data.role.toString()
+            it[status] = data.status.toString()
         }[Users.id]
     }
 
-    override suspend fun readById(id: Long): User? = read { Users.id eq id - ID_OFFSET }
+    override suspend fun read(id: Long): User? = read { Users.id eq id }
 
     override suspend fun readByUsername(username: String, pwdNeeded: Boolean): User? =
         read(pwdNeeded = pwdNeeded) { Users.username eq username }
 
-    override suspend fun updateById(id: Long, user: User) =
-        update(selector = { Users.id eq id - ID_OFFSET }, user)
+    override suspend fun update(id: Long, data: User) =
+        update(selector = { Users.id eq id }, data)
+
+    override suspend fun updateViaRead(id: Long, update: (old: User) -> User) {
+        dbTransaction {
+            val readUser = read(id)
+            "readUser=$readUser, update=${readUser?.let { update(it) }}".logd("delete_user")
+            readUser?.let {
+                update(id, update(it))
+            }
+        }
+    }
 
     override suspend fun updateByUsername(username: String, user: User) =
         update(selector = { Users.username eq username }, user)
 
     override suspend fun delete(id: Long) {
         dbTransaction {
-            Users.deleteWhere { Users.id.eq(id - ID_OFFSET) }
+            Users.deleteWhere { Users.id eq id }
         }
     }
 
@@ -62,6 +75,7 @@ class UserDaoImpl(
                         it[password] = encrypt(user.password)
                     }
                     it[role] = user.role.toString()
+                    it[status] = user.status.toString()
                 }
             )
         }
@@ -71,14 +85,15 @@ class UserDaoImpl(
         pwdNeeded: Boolean = false,
         selector: () -> Op<Boolean>
     ): User? = dbTransaction {
-        Users.select { selector() }.map {
+        Users.selectAll().where { selector() }.limit(1).map {
             User(
                 username = it[Users.username],
                 age = it[Users.age],
                 sex = Sex.valueOf(it[Users.sex]),
-                id = it[Users.id] + ID_OFFSET,
+                id = it[Users.id],
                 headUrl = it[Users.headUrl],
                 role = Role.valueOf(it[Users.role]),
+                status = UserStatus.valueOf(it[Users.status]),
                 password = if (pwdNeeded) it[Users.password] else empty
             )
         }.singleOrNull()

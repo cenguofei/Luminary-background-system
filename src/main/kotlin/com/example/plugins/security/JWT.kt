@@ -26,7 +26,6 @@ fun Application.configureJWT() {
      *       }
      *   }
      */
-
     val userDao: UserDao = UserDaoFacadeImpl()
 
     install(Authentication) {
@@ -40,7 +39,7 @@ fun Application.configureJWT() {
             realm = "luminary.blog"
             validate {
                 it.payload.getClaim("id").asLong()?.let { id ->
-                    userDao.readById(id)
+                    userDao.read(id)
                 }
             }
         }

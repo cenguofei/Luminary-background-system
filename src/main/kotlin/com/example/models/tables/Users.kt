@@ -1,18 +1,22 @@
-package com.example.models
+package com.example.models.tables
 
 import org.jetbrains.exposed.sql.Table
 
 object Users : Table() {
     val id = long("id").autoIncrement()
     val username = varchar("username", length = 50)
+        .uniqueIndex()
     val age = integer("age")
     val sex = varchar("sex", length = 6)
     val headUrl = text("head_url")
     val password = varchar("password", length = 50)
     val role = varchar("role", length = 8)
 
+    val status = varchar("status", length = 8)
+
     override val primaryKey = PrimaryKey(id)
 }
+
 
 
 /*

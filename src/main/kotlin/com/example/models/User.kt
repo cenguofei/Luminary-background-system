@@ -8,14 +8,15 @@ import java.nio.ByteBuffer
 
 @Serializable
 data class User(
+    val id: Long = 0,
     val username: String,
     val age: Int = 0,
-    val id: Long = 0,
     val sex: Sex = Sex.Sealed,
     @SerialName("head_url")
     val headUrl: String = "123.png",
     val password: String = "",
-    val role: Role = Role.User
+    val role: Role = Role.User,
+    val status: UserStatus = UserStatus.Normal
 ) : Principal, java.io.Serializable
 
 enum class Sex {
@@ -27,4 +28,9 @@ enum class Sex {
 enum class Role {
     User,  //普通用户
     Manager //管理员
+}
+
+enum class UserStatus {
+    Normal,
+    Deleted
 }

@@ -17,17 +17,12 @@ data class ArticleResponse(
     /**
      * 总页数
      */
-    val pageSize: Int = 0,
-
-    /**
-     * 每一页有多少数据
-     */
-    val pageCount: Int = PAGE_COUNT,
+    val pageSize: Long = 0,
 
     /**
      * 数据库中文章的数量
      */
-    val totalArticle: Int = 0,
+    val totalArticle: Long = 0,
 
     val data: List<Article> = emptyList()
 )

@@ -22,7 +22,7 @@ fun Route.register(userDao: UserDao) {
             call.respond(
                 status = HttpStatusCode.Conflict,
                 message = UserResponse(
-                    message =  "Username or password cannot be empty.".withLogi(),
+                    msg =  "Username or password cannot be empty.".withLogi(),
                     success = false
                 )
             )
@@ -34,7 +34,7 @@ fun Route.register(userDao: UserDao) {
             call.respond(
                 status = HttpStatusCode.Conflict,
                 message = UserResponse(
-                    message =  "The username already exists. Please register a different username.".withLogi(),
+                    msg =  "The username already exists. Please register a different username.".withLogi(),
                     success = false
                 )
             )
@@ -47,7 +47,7 @@ fun Route.register(userDao: UserDao) {
         call.respond(
             status = HttpStatusCode.OK,
             message = UserResponse(
-                message = "Register success.",
+                msg = "Register success.",
                 success = true,
                 data = newUser.copy(password = empty)
             )

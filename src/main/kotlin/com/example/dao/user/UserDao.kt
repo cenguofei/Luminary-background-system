@@ -1,17 +1,20 @@
 package com.example.dao.user
 
+import com.example.dao.LuminaryDao
 import com.example.models.User
 
-interface UserDao {
-    suspend fun create(user: User): Long
+interface UserDao : LuminaryDao<User> {
+    override suspend fun create(data: User): Long
 
-    suspend fun readById(id: Long): User?
+    override suspend fun read(id: Long): User?
 
     suspend fun readByUsername(username: String, pwdNeeded: Boolean = false): User?
 
-    suspend fun updateById(id: Long, user: User)
+    override suspend fun update(id: Long, data: User)
+
+    override suspend fun updateViaRead(id: Long, update: (old: User) -> User) { }
 
     suspend fun updateByUsername(username: String, user: User)
 
-    suspend fun delete(id: Long)
+    override suspend fun delete(id: Long)
 }

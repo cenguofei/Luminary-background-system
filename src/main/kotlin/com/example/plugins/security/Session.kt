@@ -41,7 +41,7 @@ suspend fun ApplicationCall.noSession() : Boolean {
     if (noSession) {
         respond(
             status = HttpStatusCode.Conflict,
-            DataResponse<Unit>(message = noSessionMsg, success = false)
+            DataResponse<Unit>(msg = noSessionMsg, success = false)
         )
         return true
     }

@@ -35,17 +35,17 @@ data class Article(
 
     val tags: Array<String> = emptyArray(),
 
-    val likes: Array<Like> = emptyArray(),
+    val likes: Int = Int.Default,
 
-    val collections: Array<Collect> = emptyArray(),
+    val collections: Int = Int.Default,
 
-    val comments: Array<Comment> = emptyArray(),
+    val comments: Int = Int.Default,
 
     /**
      * 浏览数量
      */
     val viewsNum: Int = Int.Default
-) {
+)  : java.io.Serializable {
     /**
      * 文章发布了多少天
      */
@@ -59,6 +59,7 @@ data class Article(
 
         other as Article
 
+        if (id != other.id) return false
         if (userId != other.userId) return false
         if (username != other.username) return false
         if (author != other.author) return false
@@ -68,16 +69,17 @@ data class Article(
         if (niceDate != other.niceDate) return false
         if (visibleMode != other.visibleMode) return false
         if (!tags.contentEquals(other.tags)) return false
-        if (!likes.contentEquals(other.likes)) return false
-        if (!collections.contentEquals(other.collections)) return false
-        if (!comments.contentEquals(other.comments)) return false
+        if (likes != other.likes) return false
+        if (collections != other.collections) return false
+        if (comments != other.comments) return false
         if (viewsNum != other.viewsNum) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = userId.hashCode()
+        var result = id.hashCode()
+        result = 31 * result + userId.hashCode()
         result = 31 * result + username.hashCode()
         result = 31 * result + author.hashCode()
         result = 31 * result + title.hashCode()
@@ -86,9 +88,9 @@ data class Article(
         result = 31 * result + niceDate.hashCode()
         result = 31 * result + visibleMode.hashCode()
         result = 31 * result + tags.contentHashCode()
-        result = 31 * result + likes.contentHashCode()
-        result = 31 * result + collections.contentHashCode()
-        result = 31 * result + comments.contentHashCode()
+        result = 31 * result + likes
+        result = 31 * result + collections
+        result = 31 * result + comments
         result = 31 * result + viewsNum
         return result
     }
@@ -110,8 +112,9 @@ val testArticle = Article(
     niceDate = "2019-11-15",
     visibleMode = VisibleMode.PUBLIC,
     tags = arrayOf("Kotlin", "Compose", "Android", "Ktor"),
-    collections = arrayOf(Collect(10004), Collect(10008)),
-    comments = arrayOf(Comment(comment = "You old six"), Comment("Zhang Wansen, it's snowing")),
+    collections = 99,
+    comments = 99,
+    likes = 99,
     viewsNum = 99
 )
 

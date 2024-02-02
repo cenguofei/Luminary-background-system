@@ -49,7 +49,7 @@ fun Route.login(userDao: UserDao) {
         if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
             call.respond(
                 message = UserResponse(
-                    message = "Username or password cannot be empty.".withLogi(),
+                    msg = "Username or password cannot be empty.".withLogi(),
                     success = false
                 ),
                 status = HttpStatusCode.Conflict
@@ -62,7 +62,7 @@ fun Route.login(userDao: UserDao) {
         if (queryUser == null) {
             call.respond(
                 message = UserResponse(
-                    message = "There is no such user, please register first.".withLogi(),
+                    msg = "There is no such user, please register first.".withLogi(),
                     success = false
                 ),
                 status = HttpStatusCode.Conflict
@@ -81,7 +81,7 @@ fun Route.login(userDao: UserDao) {
             call.respond(
                 status = HttpStatusCode.OK,
                 message = UserResponse(
-                    message = "Login success.",
+                    msg = "Login success.",
                     data = sendUser,
                     success = true
                 )
@@ -90,7 +90,7 @@ fun Route.login(userDao: UserDao) {
         } else {
             call.respond(
                 message = UserResponse(
-                    message = "Password error.".withLogi(),
+                    msg = "Password error.".withLogi(),
                     success = false
                 ),
                 status = HttpStatusCode.Conflict
