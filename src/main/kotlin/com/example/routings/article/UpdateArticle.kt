@@ -27,10 +27,7 @@ fun Route.updateArticle(articleDao: ArticleDao) {
                 articleDao.update(newArticle.id, newArticle)
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>(
-                        msg = "Update success.",
-                        success = true
-                    )
+                    message = DataResponse<Unit>().copy(msg = "Update success.")
                 )
             }
         }

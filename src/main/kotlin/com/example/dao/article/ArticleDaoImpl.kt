@@ -1,8 +1,8 @@
 package com.example.dao.article
 
 import com.example.models.Article
-import com.example.models.tables.Articles
 import com.example.models.VisibleMode
+import com.example.models.tables.Articles
 import com.example.plugins.database.database
 import com.example.util.dbTransaction
 import org.jetbrains.exposed.sql.*
@@ -19,16 +19,11 @@ class ArticleDaoImpl : ArticleDao {
         transaction(database) { SchemaUtils.create(Articles) }
     }
 
-    override suspend fun pages(pageStart: Int, perPageCount: Int): List<Article> {
-        val offset = (pageStart * perPageCount).toLong()
-        return dbTransaction {
-            Articles.selectAll()
-                .limit(n = perPageCount, offset = offset)
-                .mapToArticle()
-        }
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<Article> = dbTransaction {
+        Articles.getPageQuery(pageStart, perPageCount).mapToArticle()
     }
 
-    override suspend fun updateViaRead(id: Long, update:(old: Article) -> Article) {
+    override suspend fun updateViaRead(id: Long, update: (old: Article) -> Article) {
         dbTransaction {
             read(id)?.let { update(id, update(it)) }
         }
@@ -61,6 +56,16 @@ class ArticleDaoImpl : ArticleDao {
         }
     }
 
+    override suspend fun insertBatch(articles: List<Article>): List<Long> {
+        return dbTransaction {
+            Articles.batchInsert(articles) { article ->
+                (this as UpdateBuilder<Int>).setKeyValue(article)
+            }.map {
+                it[Articles.id]
+            }
+        }
+    }
+
     private fun UpdateBuilder<Int>.setKeyValue(article: Article) {
         this[Articles.userId] = article.userId
         this[Articles.username] = article.username
@@ -68,13 +73,14 @@ class ArticleDaoImpl : ArticleDao {
         this[Articles.title] = article.title
         this[Articles.link] = article.link
         this[Articles.body] = article.body
-        this[Articles.niceDate] = dateTimeLiteral(LocalDateTime.parse(article.niceDate, formatter))
+        this[Articles.niceDate] = dateTimeLiteral(LocalDateTime.parse(article.niceDate, formatterToSeconds))
         this[Articles.visibleMode] = article.visibleMode.name
         this[Articles.tags] = article.tags
         this[Articles.likes] = article.likes
         this[Articles.collections] = article.collections
         this[Articles.comments] = article.comments
         this[Articles.viewsNum] = article.viewsNum
+        this[Articles.pictures] = article.pictures
     }
 
     private fun Iterable<ResultRow>.mapToArticle(): List<Article> {
@@ -87,16 +93,17 @@ class ArticleDaoImpl : ArticleDao {
                 title = it[Articles.title],
                 link = it[Articles.link],
                 body = it[Articles.body],
-                niceDate = it[Articles.niceDate].format(formatter),
+                niceDate = it[Articles.niceDate].format(formatterToSeconds),
                 tags = it[Articles.tags],
                 visibleMode = VisibleMode.valueOf(it[Articles.visibleMode]),
                 likes = it[Articles.likes],
                 collections = it[Articles.collections],
                 comments = it[Articles.comments],
-                viewsNum = it[Articles.viewsNum]
+                viewsNum = it[Articles.viewsNum],
+                pictures = it[Articles.pictures]
             )
         }
     }
 }
 
-val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss")
+val formatterToSeconds: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss")

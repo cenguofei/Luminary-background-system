@@ -1,6 +1,7 @@
 package com.example.dao.article
 
 import com.example.models.Comment
+import com.example.models.tables.Articles
 import com.example.models.tables.Comments
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.plugins.database.database
@@ -51,6 +52,9 @@ class CommentDaoImpl : CommentDao {
             Comments.articleId eq articleId
         }.mapToComment()
     }
+
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<Comment> =
+        Comments.getPageQuery(pageStart, perPageCount).mapToComment()
 
     private fun Iterable<ResultRow>.mapToComment(): List<Comment> {
         return map {

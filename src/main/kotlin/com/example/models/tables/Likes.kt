@@ -23,3 +23,5 @@ object Likes : Table() {
 
     override val primaryKey = PrimaryKey(id)
 }
+
+const val DEFAULT_LIKES_PAGE_COUNT = 24

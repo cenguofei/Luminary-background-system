@@ -3,6 +3,7 @@ package com.example.routings.user
 import com.example.dao.user.UserDao
 import com.example.models.User
 import com.example.models.UserStatus
+import com.example.models.responses.UserData
 import com.example.models.responses.UserResponse
 import com.example.plugins.receive
 import com.example.plugins.security.jwtUser
@@ -25,7 +26,7 @@ fun Route.crud(userDao: UserDao) {
          * 用户根据id获取“自己”的信息
          * 注意：需要session
          */
-        get("/{id}") {
+        get(getUserPath) {
             val id = call.parameters["id"]?.toLong()
             if (call.checkSessionAndId(id, userDao)) {
                 return@get
@@ -34,12 +35,12 @@ fun Route.crud(userDao: UserDao) {
             if (user != null) {
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = UserResponse(msg = empty, success = true, data = user)
+                    message = UserResponse().copy(msg = empty, data = UserData(user = user))
                 )
             } else {
                 call.respond(
                     status = HttpStatusCode.Conflict,
-                    message = UserResponse(msg = "No user match id: $id")
+                    message = UserResponse().copy(msg = "No user match id: $id")
                 )
             }
         }
@@ -47,21 +48,21 @@ fun Route.crud(userDao: UserDao) {
 
     authenticate {
         // Update user
-        put("/{id}") {
+        put(updateUserPath) {
             val id = call.parameters["id"]?.toLong()
             if (call.checkSessionAndId(id, userDao)) {
                 return@put
             }
 
             call.receive<User>(
-                errorMessage = UserResponse(msg = HttpStatusCode.BadRequest.description, success = false)
+                errorMessage = UserResponse().copy(msg = HttpStatusCode.BadRequest.description)
             ) { user ->
                 if (user.username != call.sessionUser?.username) {
                     val existingUser = userDao.readByUsername(user.username)
                     if (existingUser != null) {
                         call.respond(
                             status = HttpStatusCode.Conflict,
-                            message = UserResponse(msg = "This username is already in use.", success = false)
+                            message = UserResponse().copy(msg = "This username is already in use.")
                         )
                         return@put
                     } else {
@@ -74,7 +75,7 @@ fun Route.crud(userDao: UserDao) {
                 "Hello, ${call.jwtUser}!".logi("credentials")
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = UserResponse(msg = empty, success = true)
+                    message = UserResponse().copy(msg = empty)
                 )
             }
         }
@@ -82,7 +83,7 @@ fun Route.crud(userDao: UserDao) {
 
     authenticate {
         // Delete user
-        delete("/{id}") {
+        delete(deleteUserPath) {
             val id = call.parameters["id"]?.toLong()
             if (call.checkSessionAndId(id, userDao)) {
                 return@delete
@@ -93,12 +94,11 @@ fun Route.crud(userDao: UserDao) {
             "Hello, ${call.jwtUser}!".logi("credentials")
             call.respond(
                 status = HttpStatusCode.OK,
-                message = UserResponse(
+                message = UserResponse().copy(
                     msg = "Your account has been cancelled, " +
                             "and the relevant data will be cleared in 15 days. " +
                             "Please do not log in to your account during this period, " +
                             "otherwise the cancellation will be cancelled.",
-                    success = true
                 )
             )
         }
@@ -116,10 +116,7 @@ fun Route.crud(userDao: UserDao) {
             "Hello, ${call.jwtUser}!".logi("credentials")
             call.respond(
                 status = HttpStatusCode.OK,
-                message = UserResponse(
-                    msg = "Delete success.",
-                    success = true
-                )
+                message = UserResponse().copy(msg = "Delete success.")
             )
         }
     }
@@ -134,7 +131,10 @@ private suspend fun ApplicationCall.checkSessionAndId(
     if (noSession) {
         respond(
             status = HttpStatusCode.Conflict,
-            message = UserResponse(msg = noSessionMsg, shouldLogin = true)
+            message = UserResponse().copy(
+                msg = noSessionMsg,
+                data = UserData(shouldLogin = true)
+            )
         )
         flag = true
     }
@@ -142,7 +142,7 @@ private suspend fun ApplicationCall.checkSessionAndId(
     if (id == null) {
         respond(
             status = HttpStatusCode.Conflict,
-            message = UserResponse(msg = invalidId)
+            message = UserResponse().copy(msg = invalidId)
         )
         flag = true
     }
@@ -154,7 +154,7 @@ private suspend fun ApplicationCall.checkSessionAndId(
         if (sessionUser?.username != queryUser?.username) {
             respond(
                 status = HttpStatusCode.Conflict,
-                message = UserResponse(
+                message = UserResponse().copy(
                     msg = "You can only get or modify your own information."
                 )
             )

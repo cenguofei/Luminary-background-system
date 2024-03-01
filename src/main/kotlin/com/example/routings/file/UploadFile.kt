@@ -72,7 +72,7 @@ fun Route.upload(userDao: UserDao) {
                 call.respond(
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        DataResponse<Unit>(msg = faild.second, success = false)
+                        DataResponse<Unit>().copy(msg = faild.second)
                     )
                 )
                 deleteCreatedFiles(filenames)
@@ -84,20 +84,15 @@ fun Route.upload(userDao: UserDao) {
                 userDao.updateByUsername(sessionUser.username, queryUser)
             } else {
                 call.respond(
-                    DataResponse<Unit>(
-                        msg = unknownErrorMsg,
-                        success = false
-                    )
+                    DataResponse<Unit>().copy(msg = unknownErrorMsg)
                 )
                 return@post
             }
 
             call.respond(
                 status = HttpStatusCode.OK,
-                message = DataResponse(
-                    msg = "Successfully uploaded image, the new filename is $directory",
-                    success = true,
-                    data = directory
+                message = DataResponse<String>().copy(
+                    msg = "Successfully uploaded image, the new filename is $directory", data = directory
                 )
             )
         }

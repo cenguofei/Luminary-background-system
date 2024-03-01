@@ -3,6 +3,7 @@ package com.example.plugins.database
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.DatabaseConfig
 
 private fun createHikariDataSource() = HikariDataSource(
     HikariConfig().apply {
@@ -17,5 +18,10 @@ private fun createHikariDataSource() = HikariDataSource(
     }
 )
 
-val database = Database.connect(createHikariDataSource())
+val database = Database.connect(
+    createHikariDataSource(),
+    databaseConfig = DatabaseConfig().apply {
+
+    }
+)
 

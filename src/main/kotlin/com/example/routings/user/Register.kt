@@ -3,8 +3,10 @@ package com.example.routings.user
 import com.example.dao.user.UserDao
 import com.example.util.encrypt
 import com.example.models.User
+import com.example.models.responses.UserData
 import com.example.models.responses.UserResponse
 import com.example.util.empty
+import com.example.util.registerPath
 import com.example.util.withLogi
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -13,7 +15,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.register(userDao: UserDao) {
-    post("/register") {
+    post(registerPath) {
         val parameters = call.receiveParameters()
         val username = parameters["username"]
         val password = parameters["password"]
@@ -21,9 +23,8 @@ fun Route.register(userDao: UserDao) {
         if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
             call.respond(
                 status = HttpStatusCode.Conflict,
-                message = UserResponse(
-                    msg =  "Username or password cannot be empty.".withLogi(),
-                    success = false
+                message = UserResponse().copy(
+                    msg =  "Username or password cannot be empty.".withLogi()
                 )
             )
             return@post
@@ -33,9 +34,8 @@ fun Route.register(userDao: UserDao) {
         if (queryUser != null) {
             call.respond(
                 status = HttpStatusCode.Conflict,
-                message = UserResponse(
+                message = UserResponse().copy(
                     msg =  "The username already exists. Please register a different username.".withLogi(),
-                    success = false
                 )
             )
             return@post
@@ -46,10 +46,9 @@ fun Route.register(userDao: UserDao) {
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = UserResponse(
+            message = UserResponse().copy(
                 msg = "Register success.",
-                success = true,
-                data = newUser.copy(password = empty)
+                data = UserData(user = newUser.copy(password = empty))
             )
         )
     }

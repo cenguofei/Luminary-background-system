@@ -4,6 +4,7 @@ import com.example.dao.article.CollectDao
 import com.example.dao.article.CollectDaoImpl
 import com.example.models.Collect
 import com.example.models.responses.DataResponse
+import com.example.models.responses.pagesData
 import com.example.plugins.receive
 import com.example.plugins.security.jwtUser
 import com.example.plugins.security.noSession
@@ -22,8 +23,16 @@ fun Application.configureCollectRouting() {
             deleteCollect(collectDao)
             getAllCollectsOfArticle(collectDao)
             getAllCollectsOfUser(collectDao)
+            pageCollects(collectDao)
         }
     }
+}
+
+private fun Route.pageCollects(collectDao: CollectDao) {
+    pagesData(
+        dao = collectDao,
+        requestPath = pageCollectsPath
+    )
 }
 
 private fun Route.createCollect(collectDao: CollectDao) {
@@ -36,14 +45,14 @@ private fun Route.createCollect(collectDao: CollectDao) {
                 if (it.collectUserId != call.jwtUser?.id) {
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        message = DataResponse<Unit>(msg = internalErrorMsg)
+                        message = DataResponse<Unit>().copy(msg = internalErrorMsg)
                     )
                     return@post
                 }
                 collectDao.create(it)
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>(success = true)
+                    message = DataResponse<Unit>()
                 )
             }
         }
@@ -62,10 +71,7 @@ private fun Route.deleteCollect(collectDao: CollectDao) {
             collectDao.delete(call.id)
             call.respond(
                 status = HttpStatusCode.OK,
-                message = DataResponse<Unit>(
-                    success = true,
-                    msg = deleteSuccess
-                )
+                message = DataResponse<Unit>().copy(msg = deleteSuccess)
             )
         }
     }
@@ -84,10 +90,7 @@ private fun Route.getAllCollectsOfArticle(collectDao: CollectDao) {
         val likes = collectDao.getAllCollectsOfArticle(call.id)
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse(
-                success = true,
-                data = likes
-            )
+            message = DataResponse<List<Collect>>().copy(data = likes)
         )
     }
 }
@@ -104,10 +107,7 @@ private fun Route.getAllCollectsOfUser(collectDao: CollectDao) {
         val likes = collectDao.getAllCollectsOfUser(call.id)
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse(
-                success = true,
-                data = likes
-            )
+            message = DataResponse<List<Collect>>().copy(data = likes)
         )
     }
 }

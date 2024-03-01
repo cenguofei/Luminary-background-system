@@ -4,6 +4,7 @@ import com.example.dao.article.LikeDao
 import com.example.dao.article.LikeDaoImpl
 import com.example.models.Like
 import com.example.models.responses.DataResponse
+import com.example.models.responses.pagesData
 import com.example.plugins.receive
 import com.example.plugins.security.jwtUser
 import com.example.plugins.security.noSession
@@ -22,8 +23,16 @@ fun Application.configureLikeRouting() {
             deleteLike(likeDao)
             getAllLikesOfArticle(likeDao)
             getAllLikesOfUser(likeDao)
+            pageLikes(likeDao)
         }
     }
+}
+
+private fun Route.pageLikes(likeDao: LikeDao) {
+    pagesData(
+        dao = likeDao,
+        requestPath = pageLikesPath
+    )
 }
 
 private fun Route.createLike(likeDao: LikeDao) {
@@ -36,14 +45,14 @@ private fun Route.createLike(likeDao: LikeDao) {
                 if (it.userId != call.jwtUser?.id) {
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        message = DataResponse<Unit>(msg = internalErrorMsg)
+                        message = DataResponse<Unit>().copy(msg = internalErrorMsg)
                     )
                     return@post
                 }
                 likeDao.create(it)
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>(success = true)
+                    message = DataResponse<Unit>()
                 )
             }
         }
@@ -62,10 +71,7 @@ private fun Route.getAllLikesOfArticle(likeDao: LikeDao) {
         val likes = likeDao.getAllLikesOfArticle(call.id)
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse(
-                success = true,
-                data = likes
-            )
+            message = DataResponse<List<Like>>().copy(data = likes)
         )
     }
 }
@@ -82,10 +88,7 @@ private fun Route.getAllLikesOfUser(likeDao: LikeDao) {
         val likes = likeDao.getAllLikesOfUser(call.id)
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse(
-                success = true,
-                data = likes
-            )
+            message = DataResponse<List<Like>>().copy(data = likes)
         )
     }
 }
@@ -102,10 +105,7 @@ private fun Route.deleteLike(likeDao: LikeDao) {
             likeDao.delete(call.id)
             call.respond(
                 status = HttpStatusCode.OK,
-                message = DataResponse<Unit>(
-                    success = true,
-                    msg = deleteSuccess
-                )
+                message = DataResponse<Unit>().copy(msg = deleteSuccess)
             )
         }
     }

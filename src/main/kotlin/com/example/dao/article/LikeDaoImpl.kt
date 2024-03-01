@@ -67,6 +67,9 @@ class LikeDaoImpl : LikeDao {
         }
     }
 
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<Like> =
+        Likes.getPageQuery(pageStart, perPageCount).mapToLike()
+
     private fun Iterable<ResultRow>.mapToLike(): List<Like> {
         return map {
             Like(

@@ -3,14 +3,12 @@ package com.example.dao.article
 import com.example.dao.LuminaryDao
 import com.example.models.Article
 import com.example.models.tables.Articles
-import com.example.util.dbTransaction
-import org.jetbrains.exposed.sql.selectAll
 
-interface ArticleDao : LuminaryDao<Article> {
+interface ArticleDao : LuminaryDao<Article, Articles> {
     /**
      * @param perPageCount 每一页有多少条数据
      */
-    suspend fun pages(pageStart: Int, perPageCount: Int) : List<Article>
+    override suspend fun pages(pageStart: Int, perPageCount: Int) : List<Article>
 
     override suspend fun create(data: Article): Long
 
@@ -22,5 +20,7 @@ interface ArticleDao : LuminaryDao<Article> {
 
     override suspend fun updateViaRead(id: Long, update:(old: Article) -> Article)
 
-    suspend fun count(): Long = dbTransaction { Articles.selectAll().count() }
+    override suspend fun count(): Long = Articles.count()
+
+    suspend fun insertBatch(articles: List<Article>) : List<Long>
 }

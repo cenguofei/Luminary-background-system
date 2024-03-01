@@ -14,7 +14,7 @@ fun Application.configureArticleRouting() {
             getArticleById(articleDao)
             updateArticle(articleDao)
             deleteArticleById(articleDao)
-            pagesArticle(articleDao)
+            pageArticles(articleDao)
         }
     }
 }

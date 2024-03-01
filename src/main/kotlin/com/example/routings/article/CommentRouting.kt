@@ -4,6 +4,7 @@ import com.example.dao.article.CommentDao
 import com.example.dao.article.CommentDaoImpl
 import com.example.models.Comment
 import com.example.models.responses.DataResponse
+import com.example.models.responses.pagesData
 import com.example.plugins.receive
 import com.example.plugins.security.jwtUser
 import com.example.plugins.security.noSession
@@ -22,10 +23,17 @@ fun Application.configureCommentRouting() {
             deleteComment(commentDao)
             getAllCommentsOfArticle(commentDao)
             getAllCommentsOfUser(commentDao)
+            pageComments(commentDao)
         }
     }
 }
 
+private fun Route.pageComments(commentDao: CommentDao) {
+    pagesData(
+        dao = commentDao,
+        requestPath = pageCommentsPath
+    )
+}
 
 private fun Route.createComment(commentDao: CommentDao) {
     authenticate {
@@ -37,14 +45,14 @@ private fun Route.createComment(commentDao: CommentDao) {
                 if (it.userId != call.jwtUser?.id) {
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        message = DataResponse<Unit>(msg = internalErrorMsg)
+                        message = DataResponse<Unit>().copy(msg = internalErrorMsg)
                     )
                     return@post
                 }
                 commentDao.create(it)
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>(success = true)
+                    message = DataResponse<Unit>()
                 )
             }
         }
@@ -63,10 +71,7 @@ private fun Route.deleteComment(commentDao: CommentDao) {
             commentDao.delete(call.id)
             call.respond(
                 status = HttpStatusCode.OK,
-                message = DataResponse<Unit>(
-                    success = true,
-                    msg = deleteSuccess
-                )
+                message = DataResponse<Unit>().copy(msg = deleteSuccess)
             )
         }
     }
@@ -82,13 +87,10 @@ private fun Route.getAllCommentsOfArticle(commentDao: CommentDao) {
         if (call.invalidId()) {
             return@get
         }
-        val likes = commentDao.getAllCommentsOfArticle(call.id)
+        val comments = commentDao.getAllCommentsOfArticle(call.id)
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse(
-                success = true,
-                data = likes
-            )
+            message = DataResponse<List<Comment>>().copy(data = comments)
         )
     }
 }
@@ -105,10 +107,7 @@ private fun Route.getAllCommentsOfUser(commentDao: CommentDao) {
         val comments = commentDao.getAllCommentsOfUser(call.id)
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse(
-                success = true,
-                data = comments
-            )
+            message = DataResponse<List<Comment>>().copy(data = comments)
         )
     }
 }

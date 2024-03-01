@@ -3,6 +3,7 @@ package com.example.dao.user
 import com.example.models.User
 import com.example.plugins.database.userLongCache
 import com.example.plugins.database.userStringCache
+import com.example.util.dbTransaction
 import com.example.util.logd
 
 class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao {
@@ -41,5 +42,13 @@ class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao
 
     override suspend fun updateViaRead(id: Long, update: (old: User) -> User) {
         delegate.updateViaRead(id, update)
+    }
+
+    override suspend fun batchUsers(ids: List<Long>): List<User> {
+        return delegate.batchUsers(ids)
+    }
+
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<User> {
+        return delegate.pages(pageStart, perPageCount)
     }
 }

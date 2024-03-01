@@ -5,7 +5,9 @@ import com.example.models.Role
 import com.example.models.Sex
 import com.example.models.User
 import com.example.models.UserStatus
+import com.example.models.tables.Articles
 import com.example.models.tables.Users
+import com.example.plugins.database.database
 import com.example.util.empty
 import com.example.util.encrypt
 import com.example.util.logd
@@ -13,15 +15,9 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
-//const val ID_OFFSET = 10000
+class UserDaoImpl : UserDao {
 
-class UserDaoImpl(
-    database: Database = com.example.plugins.database.database
-) : UserDao {
-
-    init {
-        transaction(database) { SchemaUtils.create(Users) }
-    }
+    init { transaction(database) { SchemaUtils.create(Users) } }
 
     override suspend fun create(data: User): Long = dbTransaction {
         Users.insert {
@@ -62,6 +58,16 @@ class UserDaoImpl(
         }
     }
 
+    override suspend fun batchUsers(ids: List<Long>): List<User> {
+        return dbTransaction {
+            Users.selectAll().where { Users.id inList ids }
+                .mapToUser()
+        }
+    }
+
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<User> =
+        Users.getPageQuery(pageStart, perPageCount).mapToUser()
+
     private suspend fun update(selector: () -> Op<Boolean>, user: User) {
         dbTransaction {
             Users.update(
@@ -85,7 +91,14 @@ class UserDaoImpl(
         pwdNeeded: Boolean = false,
         selector: () -> Op<Boolean>
     ): User? = dbTransaction {
-        Users.selectAll().where { selector() }.limit(1).map {
+        Users.selectAll().where { selector() }
+            .limit(1)
+            .mapToUser(pwdNeeded)
+            .singleOrNull()
+    }
+
+    private fun Iterable<ResultRow>.mapToUser(pwdNeeded: Boolean = false) : List<User> {
+        return map {
             User(
                 username = it[Users.username],
                 age = it[Users.age],
@@ -96,6 +109,6 @@ class UserDaoImpl(
                 status = UserStatus.valueOf(it[Users.status]),
                 password = if (pwdNeeded) it[Users.password] else empty
             )
-        }.singleOrNull()
+        }
     }
 }

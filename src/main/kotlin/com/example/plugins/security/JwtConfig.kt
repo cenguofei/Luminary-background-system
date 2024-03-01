@@ -11,7 +11,11 @@ import java.util.*
 object JwtConfig {
     private const val secretKey = "Fls78FNBo013nFU72foQP07fFI91dbIOwe45eF8gOpn894PJls49JvqDb6537Bre"
     private const val issuer = "luminary.blog"
-    private const val validityInMillis = 36_000_00 * 1 // 1小时
+//    private const val validityInMillis = 36_000_00 * 12 // 1小时
+//    private const val freshValidityInMillis = 36_000_00 * 12 * 2 // 1小时
+
+    private const val validityInMillis = 1000 * 60 * 3 // 1小时
+    private const val freshValidityInMillis = 1000 * 60 * 4 // 1小时
     private val algorithm = Algorithm.HMAC512(secretKey)
 
     val verifier: JWTVerifier = JWT
@@ -20,20 +24,32 @@ object JwtConfig {
             .build()
 
     /**
-     * 为用户生成token
+     * 为用户生成 AccessToken
      */
-    fun generateToken(user: User): String = JWT.create()
+    fun generateAccessToken(user: User): String = JWT.create()
             .withSubject("Authentication")
             .withIssuer(issuer)
             .withClaim("id", user.id)
             .withClaim("username", user.username)
-            .withExpiresAt(expiration)
+            .withExpiresAt(expiration())
             .sign(algorithm)
+
+    /**
+     * 为用户生成RefreshToken
+     */
+    fun generateRefreshToken(user: User): String = JWT.create()
+        .withSubject("Authentication")
+        .withIssuer(issuer)
+        .withClaim("id", user.id)
+        .withClaim("username", user.username)
+        .withExpiresAt(expiration(false))
+        .sign(algorithm)
 
     /**
      * 计算失效日期
      */
-    private val expiration: Date get() = Date(System.currentTimeMillis() + validityInMillis)
+    private fun expiration(isAccess: Boolean = true): Date =
+        Date(System.currentTimeMillis() + if (isAccess) validityInMillis else freshValidityInMillis)
 }
 
 /**

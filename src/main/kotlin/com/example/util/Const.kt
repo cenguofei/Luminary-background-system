@@ -32,15 +32,29 @@ inline val id: String get() = "id"
 
 inline val deleteSuccess: String get() = "Delete successful."
 
-
+//Users
+inline val userRootPath: String get() = "/users"
+inline val getUserPath: String get() = "/{id}"
+inline val updateUserPath: String get() = "/{id}"
+inline val deleteUserPath: String get() = "/{id}"
+inline val checkIsLoginPath: String get() = "/isLogin"
+inline val loginPath: String get() = "/login"
+inline val logoutPath: String get() = "/logout"
+inline val registerPath: String get() = "/register"
 // Routing
+//Page
+inline val pageRootPath: String get() = "/pages"
+inline val pageArticlesPath: String get() = pageRootPath
+inline val pageUsersPath: String get() = pageRootPath
+inline val pageCollectsPath: String get() = pageRootPath
+inline val pageLikesPath: String get() = pageRootPath
+inline val pageCommentsPath: String get() = pageRootPath
 //Article
 inline val articlesRootPath: String get() = "/articles"
 inline val createArticlePath: String get() = "/create"
 inline val getArticleByIdPath: String get() = "/{id}"
 inline val updateArticleByIdPath: String get() = "/update"
 inline val deleteArticleByIdPath: String get() = "/{id}"
-inline val pagesArticlePath: String get() = "/pages"
 //Like
 inline val likeRootPath: String get() = "/likes"
 inline val createLikePath: String get() = "/create"
@@ -59,3 +73,14 @@ inline val createCommentPath: String get() = "/create"
 inline val getAllCommentsOfUserPath: String get() = "/user/{id}"
 inline val getAllCommentsOfArticlePath: String get() = "/article/{id}"
 inline val deleteCommentPath: String get() = "/{id}"
+//Friend
+inline val friendRootPath: String get() = "/friends"
+inline val followPath: String get() = "/follow"
+inline val unfollowPath: String get() = "/unfollow/{whoId}"
+inline val myFollowingsPath: String get() = "/following/{userId}"
+inline val myFollowersPath: String get() = "/followers/{userId}"
+//Token
+inline val refreshToken: String get() = "/token/refresh"
+//Online Status
+inline val isForegroundStr: String get() = "isForeground"
+inline val onlineStatusPath: String get() = "/online_status/{$isForegroundStr}"

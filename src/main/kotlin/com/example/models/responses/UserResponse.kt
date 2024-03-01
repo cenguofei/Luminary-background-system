@@ -2,11 +2,22 @@ package com.example.models.responses
 
 import com.example.models.User
 import com.example.util.empty
+import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
-data class UserResponse(
-    val msg: String = empty,
-    val success: Boolean = false,
+@Serializable
+class UserResponse: BaseResponse<UserData>() {
+    fun copy(
+        msg: String = empty,
+        data: UserData? = null
+    ) : UserResponse {
+        this.msg = msg
+        this.data = data
+        return this
+    }
+}
+
+@Serializable
+data class UserData(
     val shouldLogin: Boolean = false,
-    val data: User? = null
+    val user: User? = null
 )

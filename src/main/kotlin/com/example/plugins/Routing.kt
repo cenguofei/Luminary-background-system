@@ -6,7 +6,10 @@ import com.example.routings.article.configureCollectRouting
 import com.example.routings.article.configureCommentRouting
 import com.example.routings.article.configureLikeRouting
 import com.example.routings.file.configureFileRouting
+import com.example.routings.friend.configureFriendRouting
+import com.example.routings.token.configureTokenRouting
 import com.example.routings.user.configureUserRouting
+import com.example.routings.user.status.configureReportOnlineStatusRouting
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
@@ -21,6 +24,9 @@ fun Application.configureRouting() {
     configureLikeRouting()
     configureCollectRouting()
     configureCommentRouting()
+    configureFriendRouting()
+    configureTokenRouting()
+    configureReportOnlineStatusRouting()
 }
 
 suspend inline fun <reified T : Any> ApplicationCall.receive(
@@ -37,7 +43,7 @@ suspend inline fun <reified T : Any> ApplicationCall.receive(
         if (processError) {
             respond(
                 status = HttpStatusCode.InternalServerError,
-                message = errorMessage ?: DataResponse<Unit>(
+                message = errorMessage ?: DataResponse<Unit>().copy(
                     msg = HttpStatusCode.InternalServerError.description
                 )
             )

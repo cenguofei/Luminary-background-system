@@ -68,6 +68,9 @@ class CollectDaoImpl : CollectDao {
         }
     }
 
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<Collect> =
+        Collects.getPageQuery(pageStart, perPageCount).mapToCollect()
+
     private fun Iterable<ResultRow>.mapToCollect(): List<Collect> {
         return map {
             Collect(

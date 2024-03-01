@@ -1,9 +1,7 @@
 package com.example.routings.article
 
 import com.example.dao.article.ArticleDao
-import com.example.models.Article
 import com.example.models.responses.DataResponse
-import com.example.plugins.security.noSession
 import com.example.plugins.security.sessionUser
 import com.example.util.*
 import io.ktor.http.*
@@ -32,9 +30,7 @@ fun Route.deleteArticleById(articleDao: ArticleDao) {
             articleDao.delete(id)
             call.respond(
                 status = HttpStatusCode.OK,
-                message = DataResponse<Unit>(
-                    success = true
-                )
+                message = DataResponse<Unit>()
             )
         }
     }

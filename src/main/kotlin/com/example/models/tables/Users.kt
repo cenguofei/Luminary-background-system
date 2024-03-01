@@ -17,6 +17,9 @@ object Users : Table() {
     override val primaryKey = PrimaryKey(id)
 }
 
+const val DEFAULT_USERS_PAGE_COUNT = 24
+
+
 
 
 /*

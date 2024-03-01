@@ -37,7 +37,11 @@ object Articles : Table() {
 
     val viewsNum = integer("views_num")
 
+    val pictures = json<Array<String>>("pictures", Json.Default)
+
     override val primaryKey = PrimaryKey(id)
 }
 
 const val DELETED_ARTICLE_ID = -999L
+
+const val DEFAULT_ARTICLE_PAGE_COUNT = 12

@@ -24,7 +24,7 @@ fun Route.createArticle(articleDao: ArticleDao) {
                 if (call.jwtUser?.id != it.userId) {
                     call.respond(
                         status = HttpStatusCode.BadRequest,
-                        message = DataResponse<Unit>(msg = HttpStatusCode.BadRequest.description)
+                        message = DataResponse<Unit>().copy(msg = HttpStatusCode.BadRequest.description)
                     )
                     return@post
                 }
@@ -32,10 +32,7 @@ fun Route.createArticle(articleDao: ArticleDao) {
                 val id = articleDao.create(it)
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>(
-                        msg = "Successfully created article with id $id",
-                        success = true
-                    )
+                    message = DataResponse<Unit>().copy(msg = "Successfully created article with id $id")
                 )
             }
         }

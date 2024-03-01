@@ -5,7 +5,6 @@ import com.example.models.Article
 import com.example.models.responses.DataResponse
 import com.example.util.getArticleByIdPath
 import com.example.util.invalidId
-import com.example.util.noArticle
 import com.example.util.noSuchArticle
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -24,10 +23,7 @@ fun Route.getArticleById(articleDao: ArticleDao) {
         }
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse(
-                success = true,
-                data = queryArticle
-            )
+            message = DataResponse<Article>().copy(data = queryArticle)
         )
     }
 }

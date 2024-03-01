@@ -12,7 +12,7 @@ suspend fun ApplicationCall.invalidId(idName: String = "id") : Boolean {
     if (id == null || id < 0) {
         respond(
             status = HttpStatusCode.Conflict,
-            message = DataResponse<Unit>(msg = invalidId)
+            message = DataResponse<Unit>().copy(msg = invalidId)
         )
         return true
     }
@@ -33,7 +33,7 @@ suspend fun ApplicationCall.noSuchArticle(article: Article?) : Boolean {
     if (article == null) {
         respond(
             status = HttpStatusCode.Conflict,
-            message = DataResponse<Unit>(msg = noArticle)
+            message = DataResponse<Unit>().copy(msg = noArticle)
         )
         return true
     }
@@ -46,7 +46,7 @@ suspend fun ApplicationCall.badRequest(
     if (predict()) {
         respond(
             status = HttpStatusCode.BadRequest,
-            message = DataResponse<Unit>(msg = HttpStatusCode.BadRequest.description)
+            message = DataResponse<Unit>().copy(msg = HttpStatusCode.BadRequest.description)
         )
         return true
     }

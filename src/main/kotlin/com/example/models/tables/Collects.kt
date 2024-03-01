@@ -23,3 +23,5 @@ object Collects : Table() {
 
     override val primaryKey = PrimaryKey(id)
 }
+
+const val DEFAULT_COLLECTS_PAGE_COUNT = 24

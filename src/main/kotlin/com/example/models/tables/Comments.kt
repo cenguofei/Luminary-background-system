@@ -30,3 +30,5 @@ object Comments : Table() {
 
     override val primaryKey = PrimaryKey(id)
 }
+
+const val DEFAULT_COMMENTS_PAGE_COUNT = 24

@@ -3,6 +3,7 @@ package com.example.plugins.security
 import com.example.dao.user.UserDao
 import com.example.dao.user.UserDaoFacadeImpl
 import com.example.models.User
+import com.example.util.refreshToken
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*

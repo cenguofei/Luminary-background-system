@@ -44,7 +44,9 @@ data class Article(
     /**
      * 浏览数量
      */
-    val viewsNum: Int = Int.Default
+    val viewsNum: Int = Int.Default,
+
+    val pictures: Array<String> = emptyArray()
 )  : java.io.Serializable {
     /**
      * 文章发布了多少天
