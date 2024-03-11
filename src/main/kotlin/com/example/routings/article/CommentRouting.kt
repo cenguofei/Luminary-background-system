@@ -65,7 +65,7 @@ private fun Route.createComment(commentDao: CommentDao) {
 private fun Route.deleteComment(commentDao: CommentDao) {
     authenticate {
         delete(deleteCommentPath) {
-            if (call.invalidId()) {
+            if (call.invalidId<Unit>()) {
                 return@delete
             }
             commentDao.delete(call.id)
@@ -84,7 +84,7 @@ private fun Route.deleteComment(commentDao: CommentDao) {
  */
 private fun Route.getAllCommentsOfArticle(commentDao: CommentDao) {
     get(getAllCommentsOfArticlePath) {
-        if (call.invalidId()) {
+        if (call.invalidId<List<Comment>>()) {
             return@get
         }
         val comments = commentDao.getAllCommentsOfArticle(call.id)
@@ -101,7 +101,7 @@ private fun Route.getAllCommentsOfArticle(commentDao: CommentDao) {
  */
 private fun Route.getAllCommentsOfUser(commentDao: CommentDao) {
     get(getAllCommentsOfUserPath) {
-        if (call.invalidId()) {
+        if (call.invalidId<List<Comment>>()) {
             return@get
         }
         val comments = commentDao.getAllCommentsOfUser(call.id)

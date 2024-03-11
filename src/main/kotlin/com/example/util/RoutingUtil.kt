@@ -7,46 +7,46 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 
-suspend fun ApplicationCall.invalidId(idName: String = "id") : Boolean {
+suspend fun <T> ApplicationCall.invalidId(idName: String = "id") : Boolean {
     val id = parameters[idName]?.toLong()
     if (id == null || id < 0) {
         respond(
             status = HttpStatusCode.Conflict,
-            message = DataResponse<Unit>().copy(msg = invalidId)
+            message = DataResponse<T>().copy(msg = invalidId)
         )
         return true
     }
     return false
 }
 
-suspend fun ApplicationCall.noSessionAndInvalidId() : Boolean {
+suspend fun <T> ApplicationCall.noSessionAndInvalidId() : Boolean {
     if (noSession()) {
         return true
     }
-    if (invalidId()) {
+    if (invalidId<T>()) {
         return true
     }
     return false
 }
 
-suspend fun ApplicationCall.noSuchArticle(article: Article?) : Boolean {
+suspend fun <T> ApplicationCall.noSuchArticle(article: Article?) : Boolean {
     if (article == null) {
         respond(
             status = HttpStatusCode.Conflict,
-            message = DataResponse<Unit>().copy(msg = noArticle)
+            message = DataResponse<T>().copy(msg = noArticle)
         )
         return true
     }
     return false
 }
 
-suspend fun ApplicationCall.badRequest(
+suspend fun <T> ApplicationCall.badRequest(
     predict: () -> Boolean = { true }
 ) : Boolean {
     if (predict()) {
         respond(
             status = HttpStatusCode.BadRequest,
-            message = DataResponse<Unit>().copy(msg = HttpStatusCode.BadRequest.description)
+            message = DataResponse<T>().copy(msg = HttpStatusCode.BadRequest.description)
         )
         return true
     }

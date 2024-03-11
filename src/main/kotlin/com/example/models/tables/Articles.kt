@@ -3,7 +3,6 @@ package com.example.models.tables
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.json.json
 
 object Articles : Table() {
@@ -25,8 +24,6 @@ object Articles : Table() {
     val link = text("link")
     val body = largeText("body")
 
-    val niceDate = datetime("nice_date")
-
     val visibleMode = varchar("visible_mode", 6)
 
     val tags = json<Array<String>>("tags", Json.Default)
@@ -37,7 +34,9 @@ object Articles : Table() {
 
     val viewsNum = integer("views_num")
 
-    val pictures = json<Array<String>>("pictures", Json.Default)
+    val timestamp = long("timestamp")
+
+    val cover = text("cover")
 
     override val primaryKey = PrimaryKey(id)
 }

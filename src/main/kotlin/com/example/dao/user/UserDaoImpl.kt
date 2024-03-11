@@ -5,10 +5,8 @@ import com.example.models.Role
 import com.example.models.Sex
 import com.example.models.User
 import com.example.models.UserStatus
-import com.example.models.tables.Articles
 import com.example.models.tables.Users
 import com.example.plugins.database.database
-import com.example.util.empty
 import com.example.util.encrypt
 import com.example.util.logd
 import org.jetbrains.exposed.sql.*
@@ -25,6 +23,7 @@ class UserDaoImpl : UserDao {
             it[age] = data.age
             it[sex] = data.sex.toString()
             it[headUrl] = data.headUrl
+            it[background] = data.background
             it[password] = encrypt(data.password)
             it[role] = data.role.toString()
             it[status] = data.status.toString()
@@ -68,6 +67,14 @@ class UserDaoImpl : UserDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<User> =
         Users.getPageQuery(pageStart, perPageCount).mapToUser()
 
+    override suspend fun existing(id: Long): Boolean {
+        return dbTransaction {
+            Users.selectAll().where {
+                Users.id eq id
+            }.limit(1).firstOrNull() != null
+        }
+    }
+
     private suspend fun update(selector: () -> Op<Boolean>, user: User) {
         dbTransaction {
             Users.update(
@@ -77,6 +84,7 @@ class UserDaoImpl : UserDao {
                     it[age] = user.age
                     it[sex] = user.sex.toString()
                     it[headUrl] = user.headUrl
+                    it[background] = user.background
                     if (user.password.isNotEmpty()) {
                         it[password] = encrypt(user.password)
                     }
@@ -105,9 +113,10 @@ class UserDaoImpl : UserDao {
                 sex = Sex.valueOf(it[Users.sex]),
                 id = it[Users.id],
                 headUrl = it[Users.headUrl],
+                background = it[Users.background],
                 role = Role.valueOf(it[Users.role]),
                 status = UserStatus.valueOf(it[Users.status]),
-                password = if (pwdNeeded) it[Users.password] else empty
+                password = it[Users.password]
             )
         }
     }

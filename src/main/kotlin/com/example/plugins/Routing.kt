@@ -2,9 +2,10 @@ package com.example.plugins
 
 import com.example.models.responses.DataResponse
 import com.example.routings.article.configureArticleRouting
-import com.example.routings.article.configureCollectRouting
+import com.example.routings.article.collect.configureCollectRouting
 import com.example.routings.article.configureCommentRouting
-import com.example.routings.article.configureLikeRouting
+import com.example.routings.article.like.configureLikeRouting
+import com.example.routings.common.configureCommonRouting
 import com.example.routings.file.configureFileRouting
 import com.example.routings.friend.configureFriendRouting
 import com.example.routings.token.configureTokenRouting
@@ -15,7 +16,13 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.ktor.util.reflect.*
+
+val messages = listOf(
+    "hello, english",
+    "你好，中国",
+)
 
 fun Application.configureRouting() {
     configureUserRouting()
@@ -27,6 +34,15 @@ fun Application.configureRouting() {
     configureFriendRouting()
     configureTokenRouting()
     configureReportOnlineStatusRouting()
+    configureCommonRouting()
+
+    routing {
+        route("/test") {
+            get {
+                call.respond(messages.random())
+            }
+        }
+    }
 }
 
 suspend inline fun <reified T : Any> ApplicationCall.receive(

@@ -13,17 +13,17 @@ import io.ktor.server.routing.*
 fun Route.deleteArticleById(articleDao: ArticleDao) {
     authenticate {
         delete(deleteArticleByIdPath) {
-            if (call.noSessionAndInvalidId()) {
+            if (call.noSessionAndInvalidId<Unit>()) {
                 return@delete
             }
 
             val id = call.parameters["id"]?.toLong()!!
             val queryArticle = articleDao.read(id)
-            if (call.noSuchArticle(queryArticle)) {
+            if (call.noSuchArticle<Unit>(queryArticle)) {
                 return@delete
             }
 
-            if (call.badRequest { queryArticle?.username != call.sessionUser?.username }) {
+            if (call.badRequest<Unit> { queryArticle?.username != call.sessionUser?.username }) {
                 return@delete
             }
 

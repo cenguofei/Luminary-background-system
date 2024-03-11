@@ -37,14 +37,14 @@ private fun <K> CacheManagerBuilder<PersistentCacheManager>.withUserCache(
     return withCache(alias, builder)
 }
 
-val userLongCache: Cache<Long, User>
+val userTypeOfIdCache: Cache<Long, User>
     get() = cacheManager.getCache(
         usersLongCacheAlias,
         Long::class.javaObjectType,
         User::class.java
     )
 
-val userStringCache: Cache<String, User>
+val userTypeOfUsernameCache: Cache<String, User>
     get() = cacheManager.getCache(
         usersStringCacheAlias,
         String::class.javaObjectType,

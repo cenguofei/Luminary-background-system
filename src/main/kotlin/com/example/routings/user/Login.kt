@@ -19,28 +19,6 @@ import io.ktor.util.*
 import org.h2.engine.User
 
 /**
- * client在登录之前先调用此方法检查是否登录
- * 检查是否是登录状态
- */
-fun Route.checkIsLogin() {
-    post(checkIsLoginPath) {
-        val session = call.sessionUser
-        "checkIsLogin session is : ${session.toString()}".logi()
-        if (session == null) {
-            call.respond(
-                HttpStatusCode.OK,
-                DataResponse<Boolean>().copy(msg = "No Login.", data = false)
-            )
-        } else {
-            call.respond(
-                HttpStatusCode.OK,
-                DataResponse<Boolean>().copy(msg = "Already login.", data = true)
-            )
-        }
-    }
-}
-
-/**
  * 登录
  * 登录成功则同时设置session和token
  * 注意：登录之前应该先使用[checkIsLogin]检查登录状态
@@ -80,7 +58,7 @@ fun Route.login(userDao: UserDao) {
             //设置token，用于认证
             val token = JwtConfig.generateAccessToken(sendUser)
             call.response.header("access_token", token)
-            call.response.header("refresh_token", JwtConfig.generateRefreshToken(sendUser))
+            call.response.header("refresh_token", JwtConfig.generateRefreshToken(sendUser.ofNoPassword()))
 
             val status = Status(isForeground = true, username = username)
             StatusManager.addOrUpdateStatus(status)
@@ -89,7 +67,7 @@ fun Route.login(userDao: UserDao) {
                 status = HttpStatusCode.OK,
                 message = UserResponse().copy(
                     msg = "Login success.",
-                    data = UserData(user = sendUser),
+                    data = UserData(user = sendUser.copy(password = empty)),
                 )
             )
             "Login success.".logi()
@@ -100,35 +78,6 @@ fun Route.login(userDao: UserDao) {
                 ),
                 status = HttpStatusCode.Conflict
             )
-        }
-    }
-}
-
-/**
- * 退出登录
- */
-fun Route.logout() {
-    authenticate {
-        post(logoutPath) {
-            try {
-                val username = call.sessionUser?.username ?: run {
-                    "sessionUser == null".logd()
-                    return@post
-                }
-                StatusManager.removeStatus(username)
-
-                call.sessions.clear<UserSession>()
-                call.respond(
-                    status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>().copy(msg = "Logout Success.")
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                call.respond(
-                    status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>().copy(msg = e.message.toString())
-                )
-            }
         }
     }
 }

@@ -13,12 +13,12 @@ import io.ktor.server.routing.*
 
 fun Route.getArticleById(articleDao: ArticleDao) {
     get(getArticleByIdPath) {
-        if (call.invalidId()) {
+        if (call.invalidId<Article>()) {
             return@get
         }
         val id = call.parameters["id"]?.toLong()!!
         val queryArticle = articleDao.read(id)
-        if (call.noSuchArticle(queryArticle)) {
+        if (call.noSuchArticle<Article>(queryArticle)) {
             return@get
         }
         call.respond(

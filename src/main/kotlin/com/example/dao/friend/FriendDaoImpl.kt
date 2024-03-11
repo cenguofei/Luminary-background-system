@@ -1,10 +1,8 @@
 package com.example.dao.friend
 
 import com.example.models.Friend
-import com.example.models.tables.Articles
 import com.example.models.tables.DELETED_USER_ID
 import com.example.models.tables.Friends
-import com.example.models.tables.Users
 import com.example.plugins.database.database
 import com.example.util.dbTransaction
 import com.example.util.isNull

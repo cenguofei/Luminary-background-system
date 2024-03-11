@@ -1,7 +1,6 @@
 package com.example.dao.article
 
 import com.example.models.Comment
-import com.example.models.tables.Articles
 import com.example.models.tables.Comments
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.plugins.database.database

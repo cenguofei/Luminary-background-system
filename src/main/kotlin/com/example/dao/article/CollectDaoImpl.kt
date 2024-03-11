@@ -1,11 +1,8 @@
 package com.example.dao.article
 
 import com.example.models.Collect
-import com.example.models.Like
-import com.example.models.tables.Articles
 import com.example.models.tables.Collects
 import com.example.models.tables.DELETED_ARTICLE_ID
-import com.example.models.tables.Likes
 import com.example.plugins.database.database
 import com.example.util.dbTransaction
 import org.jetbrains.exposed.sql.*
@@ -13,7 +10,9 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class CollectDaoImpl : CollectDao {
-    init { transaction(database) { SchemaUtils.create(Collects) } }
+    init {
+        transaction(database) { SchemaUtils.create(Collects) }
+    }
 
     private val articleDao: ArticleDao = ArticleDaoImpl()
 
@@ -42,7 +41,7 @@ class CollectDaoImpl : CollectDao {
         }
     }
 
-    override suspend fun getAllCollectsOfUser(userId: Long): List<Collect>  = dbTransaction {
+    override suspend fun getAllCollectsOfUser(userId: Long): List<Collect> = dbTransaction {
         Collects.selectAll().where {
             Collects.collectUserId eq userId
         }.map {
@@ -70,6 +69,14 @@ class CollectDaoImpl : CollectDao {
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Collect> =
         Collects.getPageQuery(pageStart, perPageCount).mapToCollect()
+
+    override suspend fun exists(collect: Collect): Boolean {
+        return dbTransaction {
+            Collects.selectAll().where {
+                (Collects.collectUserId eq collect.collectUserId) and (Collects.articleId eq collect.articleId)
+            }.limit(1).firstOrNull() != null
+        }
+    }
 
     private fun Iterable<ResultRow>.mapToCollect(): List<Collect> {
         return map {

@@ -15,7 +15,7 @@ import io.ktor.server.routing.*
  */
 fun Route.myFollowings(friendDao: FriendDao, userDao: UserDao) {
     get(myFollowingsPath) {
-        if (call.invalidId("userId")) {
+        if (call.invalidId<List<User>>("userId")) {
             return@get
         }
         val userId = call.parameters["userId"].notNull.toLong()
@@ -49,7 +49,7 @@ fun Route.myFollowings(friendDao: FriendDao, userDao: UserDao) {
 
 fun Route.myFollowers(friendDao: FriendDao, userDao: UserDao) {
     get(myFollowersPath) {
-        if (call.invalidId("userId")) {
+        if (call.invalidId<List<User>>("userId")) {
             return@get
         }
         val userId = call.parameters["userId"].notNull.toLong()

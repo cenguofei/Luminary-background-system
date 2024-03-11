@@ -24,4 +24,8 @@ interface UserDao : LuminaryDao<User, Users> {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<User>
 
     override suspend fun count(): Long = Users.count()
+
+    companion object {
+        val Default = UserDaoFacadeImpl()
+    }
 }

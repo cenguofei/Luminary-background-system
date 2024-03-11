@@ -48,7 +48,7 @@ fun Route.register(userDao: UserDao) {
             status = HttpStatusCode.OK,
             message = UserResponse().copy(
                 msg = "Register success.",
-                data = UserData(user = newUser.copy(password = empty))
+                data = UserData(user = newUser.ofNoPassword())
             )
         )
     }

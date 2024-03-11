@@ -1,13 +1,10 @@
-package com.example.routings.article
+package com.example.routings.article.like
 
 import com.example.dao.article.LikeDao
 import com.example.dao.article.LikeDaoImpl
 import com.example.models.Like
 import com.example.models.responses.DataResponse
 import com.example.models.responses.pagesData
-import com.example.plugins.receive
-import com.example.plugins.security.jwtUser
-import com.example.plugins.security.noSession
 import com.example.util.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -24,6 +21,7 @@ fun Application.configureLikeRouting() {
             getAllLikesOfArticle(likeDao)
             getAllLikesOfUser(likeDao)
             pageLikes(likeDao)
+            likesNumOfUser(likeDao)
         }
     }
 }
@@ -35,37 +33,13 @@ private fun Route.pageLikes(likeDao: LikeDao) {
     )
 }
 
-private fun Route.createLike(likeDao: LikeDao) {
-    authenticate {
-        post(createLikePath) {
-            if (call.noSession()) {
-                return@post
-            }
-            call.receive<Like> {
-                if (it.userId != call.jwtUser?.id) {
-                    call.respond(
-                        status = HttpStatusCode.Conflict,
-                        message = DataResponse<Unit>().copy(msg = internalErrorMsg)
-                    )
-                    return@post
-                }
-                likeDao.create(it)
-                call.respond(
-                    status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>()
-                )
-            }
-        }
-    }
-}
-
 /**
  * 文章获得的所有点赞
  * 需要传递文章id
  */
 private fun Route.getAllLikesOfArticle(likeDao: LikeDao) {
     get(getAllLikesOfArticlePath) {
-        if (call.invalidId()) {
+        if (call.invalidId<List<Like>>()) {
             return@get
         }
         val likes = likeDao.getAllLikesOfArticle(call.id)
@@ -82,7 +56,7 @@ private fun Route.getAllLikesOfArticle(likeDao: LikeDao) {
  */
 private fun Route.getAllLikesOfUser(likeDao: LikeDao) {
     get(getAllLikesOfUserPath) {
-        if (call.invalidId()) {
+        if (call.invalidId<List<Like>>()) {
             return@get
         }
         val likes = likeDao.getAllLikesOfUser(call.id)
@@ -99,7 +73,7 @@ private fun Route.getAllLikesOfUser(likeDao: LikeDao) {
 private fun Route.deleteLike(likeDao: LikeDao) {
     authenticate {
         delete(deleteLikePath) {
-            if (call.invalidId()) {
+            if (call.invalidId<Unit>()) {
                 return@delete
             }
             likeDao.delete(call.id)

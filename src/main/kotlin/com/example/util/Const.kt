@@ -55,6 +55,13 @@ inline val createArticlePath: String get() = "/create"
 inline val getArticleByIdPath: String get() = "/{id}"
 inline val updateArticleByIdPath: String get() = "/update"
 inline val deleteArticleByIdPath: String get() = "/{id}"
+inline val likesOfUserPath: String get() = "/likes_num/{userId}"
+inline val articlesOfUserPath: String get() = "/user/{userId}"
+inline val privacyArticlesOfUserPath: String get() = "/user/privacy/{userId}"
+inline val publicArticlesOfUserPath: String get() = "/user/public/{userId}"
+inline val getAllArticlesOfUserCollectedPath: String get() = "/user_collected/{userId}"
+inline val getAllArticlesOfUserLikedPath: String get() = "/user_liked/{userId}"
+
 //Like
 inline val likeRootPath: String get() = "/likes"
 inline val createLikePath: String get() = "/create"
@@ -64,7 +71,6 @@ inline val deleteLikePath: String get() = "/{id}"
 //Collect
 inline val collectRootPath: String get() = "/collects"
 inline val createCollectPath: String get() = "/create"
-inline val getAllCollectsOfUserPath: String get() = "/user/{id}"
 inline val getAllCollectsOfArticlePath: String get() = "/article/{id}"
 inline val deleteCollectPath: String get() = "/{id}"
 //Comment

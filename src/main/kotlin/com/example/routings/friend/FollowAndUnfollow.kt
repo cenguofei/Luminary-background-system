@@ -1,6 +1,7 @@
 package com.example.routings.friend
 
 import com.example.dao.friend.FriendDao
+import com.example.dao.user.UserDao
 import com.example.dao.user.UserDaoFacadeImpl
 import com.example.models.Friend
 import com.example.models.responses.DataResponse
@@ -43,7 +44,7 @@ fun Route.follow(friendDao: FriendDao) {
 
 private suspend fun ApplicationCall.checkInvalid(friend: Friend, friendDao: FriendDao): Boolean {
     return jwtUser?.id != friend.userId || friend.userId == friend.whoId
-            || UserDaoFacadeImpl().read(friend.whoId) == null
+            || UserDao.Default.read(friend.whoId) == null
             || friendDao.existing(friend.userId, friend.whoId)
 }
 
@@ -56,7 +57,7 @@ fun Route.unfollow(friendDao: FriendDao) {
             if (call.noSession()) {
                 return@post
             }
-            if (call.invalidId("whoId")) {
+            if (call.invalidId<Unit>("whoId")) {
                 return@post
             }
             val whoId = call.parameters["whoId"].notNull.toLong()

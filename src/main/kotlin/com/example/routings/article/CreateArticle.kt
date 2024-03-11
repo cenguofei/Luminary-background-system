@@ -19,7 +19,6 @@ fun Route.createArticle(articleDao: ArticleDao) {
             if (call.noSession()) {
                 return@post
             }
-
             call.receive<Article> {
                 if (call.jwtUser?.id != it.userId) {
                     call.respond(

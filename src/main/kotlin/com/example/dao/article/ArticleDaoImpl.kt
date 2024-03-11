@@ -7,10 +7,8 @@ import com.example.plugins.database.database
 import com.example.util.dbTransaction
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.javatime.dateTimeLiteral
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class ArticleDaoImpl : ArticleDao {
@@ -66,6 +64,22 @@ class ArticleDaoImpl : ArticleDao {
         }
     }
 
+    override suspend fun getArticlesOfUser(userId: Long): List<Article> {
+        return dbTransaction {
+            Articles.selectAll().where {
+                Articles.userId eq userId
+            }.mapToArticle()
+        }
+    }
+
+    override suspend fun getArticlesByIds(ids: List<Long>): List<Article> {
+        return dbTransaction {
+            Articles.selectAll().where {
+                Articles.id inList ids
+            }.mapToArticle()
+        }
+    }
+
     private fun UpdateBuilder<Int>.setKeyValue(article: Article) {
         this[Articles.userId] = article.userId
         this[Articles.username] = article.username
@@ -73,14 +87,14 @@ class ArticleDaoImpl : ArticleDao {
         this[Articles.title] = article.title
         this[Articles.link] = article.link
         this[Articles.body] = article.body
-        this[Articles.niceDate] = dateTimeLiteral(LocalDateTime.parse(article.niceDate, formatterToSeconds))
         this[Articles.visibleMode] = article.visibleMode.name
         this[Articles.tags] = article.tags
         this[Articles.likes] = article.likes
         this[Articles.collections] = article.collections
         this[Articles.comments] = article.comments
         this[Articles.viewsNum] = article.viewsNum
-        this[Articles.pictures] = article.pictures
+        this[Articles.timestamp] = article.timestamp
+        this[Articles.cover] = article.cover
     }
 
     private fun Iterable<ResultRow>.mapToArticle(): List<Article> {
@@ -93,14 +107,14 @@ class ArticleDaoImpl : ArticleDao {
                 title = it[Articles.title],
                 link = it[Articles.link],
                 body = it[Articles.body],
-                niceDate = it[Articles.niceDate].format(formatterToSeconds),
                 tags = it[Articles.tags],
                 visibleMode = VisibleMode.valueOf(it[Articles.visibleMode]),
                 likes = it[Articles.likes],
                 collections = it[Articles.collections],
                 comments = it[Articles.comments],
                 viewsNum = it[Articles.viewsNum],
-                pictures = it[Articles.pictures]
+                timestamp = it[Articles.timestamp],
+                cover = it[Articles.cover]
             )
         }
     }

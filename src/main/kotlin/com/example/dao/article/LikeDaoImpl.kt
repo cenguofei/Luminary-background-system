@@ -1,7 +1,6 @@
 package com.example.dao.article
 
 import com.example.models.Like
-import com.example.models.tables.Articles
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.models.tables.Likes
 import com.example.plugins.database.database
@@ -69,6 +68,22 @@ class LikeDaoImpl : LikeDao {
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Like> =
         Likes.getPageQuery(pageStart, perPageCount).mapToLike()
+
+    override suspend fun likesNumOfUserArticles(userId: Long, articlesId: List<Long>): Long {
+        return dbTransaction {
+            Likes.selectAll().where {
+                (Likes.articleId inList articlesId) and (Likes.userId neq userId)
+            }.mapToLike().count().toLong()
+        }
+    }
+
+    override suspend fun exists(other: Like): Boolean {
+        return dbTransaction {
+            Likes.selectAll().where {
+                (Likes.userId eq other.userId) and (Likes.articleId eq other.articleId)
+            }.limit(1).firstOrNull() != null
+        }
+    }
 
     private fun Iterable<ResultRow>.mapToLike(): List<Like> {
         return map {

@@ -15,6 +15,10 @@ fun Application.configureArticleRouting() {
             updateArticle(articleDao)
             deleteArticleById(articleDao)
             pageArticles(articleDao)
+            publicArticlesOfUser(articleDao)
+            privacyArticlesOfUser(articleDao)
+            getAllArticlesOfUserCollected()
+            getAllArticlesOfUserLiked()
         }
     }
 }

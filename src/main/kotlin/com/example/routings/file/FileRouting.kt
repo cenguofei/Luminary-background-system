@@ -6,7 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
 fun Application.configureFileRouting() {
-    val userDao: UserDao = UserDaoFacadeImpl()
+    val userDao: UserDao = UserDao.Default
     routing {
         route("/file") {
             download()

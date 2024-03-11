@@ -4,8 +4,6 @@ import com.example.util.Default
 import com.example.util.empty
 import com.example.util.logd
 import com.google.gson.Gson
-import kotlinx.serialization.json.Json
-import java.time.format.DateTimeFormatter
 
 @kotlinx.serialization.Serializable
 data class Article(
@@ -22,11 +20,6 @@ data class Article(
     val link: String = empty, // content
 
     val body: String = empty, // content
-
-    /**
-     * format of publishTime
-     */
-    val niceDate: String = empty,
 
     /**
      * 文章可见范围
@@ -46,7 +39,9 @@ data class Article(
      */
     val viewsNum: Int = Int.Default,
 
-    val pictures: Array<String> = emptyArray()
+    val cover: String = empty,
+
+    val timestamp: Long = System.currentTimeMillis()
 )  : java.io.Serializable {
     /**
      * 文章发布了多少天
@@ -68,13 +63,14 @@ data class Article(
         if (title != other.title) return false
         if (link != other.link) return false
         if (body != other.body) return false
-        if (niceDate != other.niceDate) return false
         if (visibleMode != other.visibleMode) return false
         if (!tags.contentEquals(other.tags)) return false
         if (likes != other.likes) return false
         if (collections != other.collections) return false
         if (comments != other.comments) return false
         if (viewsNum != other.viewsNum) return false
+        if (!cover.contentEquals(other.cover)) return false
+        if (timestamp != other.timestamp) return false
 
         return true
     }
@@ -87,13 +83,14 @@ data class Article(
         result = 31 * result + title.hashCode()
         result = 31 * result + link.hashCode()
         result = 31 * result + body.hashCode()
-        result = 31 * result + niceDate.hashCode()
         result = 31 * result + visibleMode.hashCode()
         result = 31 * result + tags.contentHashCode()
         result = 31 * result + likes
         result = 31 * result + collections
         result = 31 * result + comments
         result = 31 * result + viewsNum
+        result = 31 * result + cover.hashCode()
+        result = 31 * result + timestamp.hashCode()
         return result
     }
 }
@@ -111,7 +108,6 @@ val testArticle = Article(
     author = "Chen Guofei",
     title = "Self study KTor development LuminaryBlog backend",
     body = "Note: Databases that support a path context root will have this value appended to the generated SQL path expression by default, so it is not necessary to include it in the provided argument String. In the above example, if MySQL is being used, the provided path arguments should be .name and .language respectively.",
-    niceDate = "2019-11-15",
     visibleMode = VisibleMode.PUBLIC,
     tags = arrayOf("Kotlin", "Compose", "Android", "Ktor"),
     collections = 99,

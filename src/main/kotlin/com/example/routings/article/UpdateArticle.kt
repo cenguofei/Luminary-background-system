@@ -21,7 +21,7 @@ fun Route.updateArticle(articleDao: ArticleDao) {
                 return@put
             }
             call.receive<Article> { newArticle ->
-                if (call.badRequest { newArticle.username != call.sessionUser?.username }) {
+                if (call.badRequest<Unit> { newArticle.username != call.sessionUser?.username }) {
                     return@put
                 }
                 articleDao.update(newArticle.id, newArticle)

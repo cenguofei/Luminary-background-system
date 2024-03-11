@@ -35,7 +35,7 @@ fun Route.crud(userDao: UserDao) {
             if (user != null) {
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = UserResponse().copy(msg = empty, data = UserData(user = user))
+                    message = UserResponse().copy(msg = empty, data = UserData(user = user.ofNoPassword()))
                 )
             } else {
                 call.respond(

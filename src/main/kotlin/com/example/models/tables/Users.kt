@@ -9,6 +9,7 @@ object Users : Table() {
     val age = integer("age")
     val sex = varchar("sex", length = 6)
     val headUrl = text("head_url")
+    val background = text("background")
     val password = varchar("password", length = 50)
     val role = varchar("role", length = 8)
 

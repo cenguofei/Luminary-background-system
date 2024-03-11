@@ -1,12 +1,11 @@
 package com.example.plugins.security
 
 import com.example.dao.user.UserDao
-import com.example.dao.user.UserDaoFacadeImpl
 import com.example.models.User
-import com.example.util.refreshToken
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.engine.*
 import io.ktor.server.routing.*
 
 fun Application.configureJWT() {
@@ -27,7 +26,7 @@ fun Application.configureJWT() {
      *       }
      *   }
      */
-    val userDao: UserDao = UserDaoFacadeImpl()
+    val userDao: UserDao = UserDao.Default
 
     install(Authentication) {
         /**

@@ -22,5 +22,13 @@ interface ArticleDao : LuminaryDao<Article, Articles> {
 
     override suspend fun count(): Long = Articles.count()
 
-    suspend fun insertBatch(articles: List<Article>) : List<Long>
+    suspend fun insertBatch(articles: List<Article>): List<Long>
+
+    suspend fun getArticlesOfUser(userId: Long): List<Article>
+
+    suspend fun getArticlesByIds(ids: List<Long>): List<Article>
+
+    companion object {
+        val Default = ArticleDaoImpl()
+    }
 }
