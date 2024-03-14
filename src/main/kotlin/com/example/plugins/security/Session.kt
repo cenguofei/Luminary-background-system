@@ -37,11 +37,11 @@ val ApplicationCall.hasSession : Boolean get() = sessionUser != null
 
 val ApplicationCall.noSession : Boolean get() = !hasSession
 
-suspend fun ApplicationCall.noSession() : Boolean {
+suspend fun <T> ApplicationCall.noSession() : Boolean {
     if (noSession) {
         respond(
             status = HttpStatusCode.Conflict,
-            DataResponse<Unit>().copy(msg = noSessionMsg)
+            DataResponse<T>().copy(msg = noSessionMsg)
         )
         return true
     }

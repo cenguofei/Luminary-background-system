@@ -16,7 +16,7 @@ import io.ktor.server.routing.*
 fun Route.createArticle(articleDao: ArticleDao) {
     authenticate {
         post(createArticlePath) {
-            if (call.noSession()) {
+            if (call.noSession<Unit>()) {
                 return@post
             }
             call.receive<Article> {

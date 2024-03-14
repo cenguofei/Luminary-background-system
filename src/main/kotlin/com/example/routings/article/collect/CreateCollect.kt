@@ -17,7 +17,7 @@ import io.ktor.server.routing.*
 fun Route.createCollect(collectDao: CollectDao) {
     authenticate {
         post(createCollectPath) {
-            if (call.noSession()) {
+            if (call.noSession<Unit>()) {
                 return@post
             }
             call.receive<Collect> {

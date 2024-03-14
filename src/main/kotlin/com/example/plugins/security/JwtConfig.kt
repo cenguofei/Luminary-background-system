@@ -14,7 +14,7 @@ object JwtConfig {
 //    private const val validityInMillis = 36_000_00 * 12 // 1Сʱ
 //    private const val freshValidityInMillis = 36_000_00 * 12 * 2 // 1Сʱ
 
-    private const val validityInMillis = 100 * 6000000000000000 * 1 // 1Сʱ
+    private const val validityInMillis = 100 * 60 * 1L // 1Сʱ
     private const val freshValidityInMillis = 200 * 6000000000000000 * 1 // 1Сʱ
     private val algorithm = Algorithm.HMAC512(secretKey)
 

@@ -20,7 +20,7 @@ suspend fun <T> ApplicationCall.invalidId(idName: String = "id") : Boolean {
 }
 
 suspend fun <T> ApplicationCall.noSessionAndInvalidId() : Boolean {
-    if (noSession()) {
+    if (noSession<T>()) {
         return true
     }
     if (invalidId<T>()) {

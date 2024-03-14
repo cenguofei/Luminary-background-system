@@ -15,16 +15,39 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.*
 
 /**
  * 上传图片，如果成功则返回图片地址
  */
 fun Route.upload(userDao: UserDao) {
     authenticate {
-        post("/file/upload") {
-            if (call.noSession()) {
+        post("/upload") {
+            if (call.noSession<UploadData>()) {
                 return@post
             }
+
+            val uploadType = call.request.queryParameters["upload_type"]?.toIntOrNull()
+            if (uploadType == null) {
+                call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    message = DataResponse<UploadData>().copy(
+                        msg = "Please specify the type of file you want to upload."
+                    )
+                )
+                return@post
+            }
+
+            if (uploadType !in uploadTypes) {
+                call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    message = DataResponse<UploadData>().copy(
+                        msg = "Invalid request type."
+                    )
+                )
+                return@post
+            }
+
             val sessionUser = call.sessionUser!!
             var fileDescription = empty
             val directory = "${resRoot}/uploads/${sessionUser.username}/"
@@ -72,34 +95,50 @@ fun Route.upload(userDao: UserDao) {
                 call.respond(
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        DataResponse<Unit>().copy(msg = faild.second)
+                        DataResponse<UploadData>().copy(msg = faild.second)
                     )
                 )
                 deleteCreatedFiles(filenames)
                 return@post
             }
 
-            val queryUser = userDao.readByUsername(sessionUser.username)?.copy(headUrl = directory)
-            if (queryUser != null) {
-                userDao.updateByUsername(sessionUser.username, queryUser)
-            } else {
+            if (filenames.isEmpty()) {
                 call.respond(
-                    DataResponse<Unit>().copy(msg = unknownErrorMsg)
+                    status = HttpStatusCode.Conflict,
+                    message = DataResponse<UploadData>().copy(
+                        msg = "Please ensure that you have uploaded the file."
+                    )
                 )
                 return@post
             }
 
+            when(uploadType) {
+                UPLOAD_TYPE_USER_HEAD -> {
+                    val queryUser = userDao.readByUsername(sessionUser.username)?.copy(headUrl = filenames[0])
+                    if (queryUser != null) {
+                        userDao.updateByUsername(sessionUser.username, queryUser)
+                    } else {
+                        call.respond(
+                            DataResponse<UploadData>().copy(msg = unknownErrorMsg)
+                        )
+                        return@post
+                    }
+                }
+                UPLOAD_TYPE_ARTICLE_COVER -> { }
+                UPLOAD_TYPE_OTHER -> { }
+            }
             call.respond(
                 status = HttpStatusCode.OK,
-                message = DataResponse<String>().copy(
-                    msg = "Successfully uploaded image, the new filename is $directory", data = directory
+                message = DataResponse<UploadData>().copy(
+                    msg = "Successfully uploaded image, the new filename is $directory${filenames.toTypedArray()}",
+                    data = UploadData(filenames = filenames)
                 )
             )
         }
     }
 }
 
-fun getFilename(originName: String) = System.currentTimeMillis().toString() + originName
+fun getFilename(originName: String) = UUID.randomUUID().toString() + "_"+ originName
 
 fun deleteCreatedFiles(filenames: List<String>) {
     filenames.forEach { File(it).delete() }

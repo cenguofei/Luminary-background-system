@@ -17,7 +17,7 @@ import io.ktor.server.routing.*
 fun Route.updateArticle(articleDao: ArticleDao) {
     authenticate {
         put(updateArticleByIdPath) {
-            if (call.noSession()) {
+            if (call.noSession<Unit>()) {
                 return@put
             }
             call.receive<Article> { newArticle ->

@@ -45,3 +45,9 @@ fun Application.configureJWT() {
         }
     }
 }
+
+val validate: suspend ApplicationCall.(JWTCredential) -> Principal? = {
+    it.payload.getClaim("id").asLong()?.let { id ->
+        UserDao.Default.read(id)
+    }
+}

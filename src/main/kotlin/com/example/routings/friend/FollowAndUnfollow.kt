@@ -22,7 +22,7 @@ fun Route.follow(friendDao: FriendDao) {
     authenticate {
         post(followPath) {
             call.receive<Friend> {
-                if (call.noSession()) {
+                if (call.noSession<Unit>()) {
                     return@post
                 }
                 if (call.checkInvalid(it, friendDao)) {
@@ -54,7 +54,7 @@ private suspend fun ApplicationCall.checkInvalid(friend: Friend, friendDao: Frie
 fun Route.unfollow(friendDao: FriendDao) {
     authenticate {
         post(unfollowPath) {
-            if (call.noSession()) {
+            if (call.noSession<Unit>()) {
                 return@post
             }
             if (call.invalidId<Unit>("whoId")) {

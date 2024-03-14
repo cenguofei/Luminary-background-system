@@ -10,7 +10,7 @@ inline val internalErrorMsg: String get() = "Internal Error."
 
 inline val fileUrl: String get() = "file_url"
 
-inline val resRoot: String get() = "res/"
+inline val resRoot: String get() = "res"
 
 inline val serverError: String get() = "Server error occurred."
 

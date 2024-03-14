@@ -20,7 +20,7 @@ fun Application.configureReportOnlineStatusRouting() {
 
 fun Route.reportOnlineStatus() {
     post(onlineStatusPath) {
-        if (call.noSession()) {
+        if (call.noSession<Unit>()) {
             return@post
         }
         val parameters = call.receiveParameters()

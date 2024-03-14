@@ -17,7 +17,7 @@ import io.ktor.server.routing.*
 fun Route.createLike(likeDao: LikeDao) {
     authenticate {
         post(createLikePath) {
-            if (call.noSession()) {
+            if (call.noSession<Unit>()) {
                 return@post
             }
             call.receive<Like> {

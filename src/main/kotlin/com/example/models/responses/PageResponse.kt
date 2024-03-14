@@ -8,6 +8,8 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 
@@ -20,7 +22,7 @@ class PageResponse<T> : BaseResponse<Page<T>>() {
     fun copy(
         msg: String = empty,
         data: Page<T>? = null
-    ) : PageResponse<T> {
+    ): PageResponse<T> {
         this.msg = msg
         this.data = data
         return this
@@ -48,7 +50,7 @@ data class Page<T>(
     val lists: List<T> = emptyList()
 )
 
-fun calculatePageSize(count: Long, perPageCount: Int) : Long {
+fun calculatePageSize(count: Long, perPageCount: Int): Long {
     return if (count % perPageCount != 0L) count / perPageCount + 1 else count / perPageCount
 }
 
@@ -62,7 +64,7 @@ inline fun <reified D, P : Table> Route.pagesData(
     requestPath: String,
     defaultCurPage: Int = Int.Default,
     defaultPageCount: Int = 24,
-    crossinline onCall:(ApplicationCall) -> Boolean = { false }
+    crossinline onCall: (ApplicationCall) -> Boolean = { false }
 ) {
     get(requestPath) {
         if (onCall(call)) {
@@ -73,23 +75,27 @@ inline fun <reified D, P : Table> Route.pagesData(
             return@get
         }
         val queryParameters = call.request.queryParameters
-        val curPage = queryParameters["curPage"]?.toInt() ?: defaultCurPage
+        val wishPage = queryParameters["wishPage"]?.toInt() ?: defaultCurPage
         val perPageCount = queryParameters["perPageCount"]?.toInt() ?: defaultPageCount
 
         val count = dao.count()
-        val lists = dao.pages(curPage, perPageCount = perPageCount)
+        val lists = dao.pages(wishPage, perPageCount = perPageCount)
         "查询到的文章数据：count=$count, $lists".logd("pages_d")
 
-        call.respond(
-            status = HttpStatusCode.OK,
-            message = PageResponse<D>().copy(
-                data = Page(
-                    curPage = curPage,
-                    pageSize = calculatePageSize(count, perPageCount),
-                    totalArticle = count,
-                    lists = lists
+        coroutineScope {
+            delay(500)
+            call.respond(
+                status = HttpStatusCode.OK,
+                message = PageResponse<D>().copy(
+                    data = Page(
+                        curPage = wishPage,
+                        pageSize = calculatePageSize(count, perPageCount),
+                        totalArticle = count,
+                        lists = lists
+                    )
                 )
             )
-        )
+        }
+
     }
 }

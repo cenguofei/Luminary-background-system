@@ -38,7 +38,7 @@ private fun Route.pageComments(commentDao: CommentDao) {
 private fun Route.createComment(commentDao: CommentDao) {
     authenticate {
         post(createCommentPath) {
-            if (call.noSession()) {
+            if (call.noSession<Unit>()) {
                 return@post
             }
             call.receive<Comment> {
