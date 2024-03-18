@@ -34,6 +34,14 @@ class CollectDaoImpl : CollectDao {
         }
     }
 
+    override suspend fun delete(collect: Collect) {
+        dbTransaction {
+            Collects.deleteWhere {
+                (collectUserId eq collect.collectUserId) and (articleId eq collect.articleId)
+            }
+        }
+    }
+
     override suspend fun read(id: Long): Collect? {
         return dbTransaction {
             Collects.selectAll().where { Collects.id eq id }

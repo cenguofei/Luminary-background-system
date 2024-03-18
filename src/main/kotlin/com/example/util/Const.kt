@@ -68,16 +68,21 @@ inline val createLikePath: String get() = "/create"
 inline val getAllLikesOfUserPath: String get() = "/user/{id}"
 inline val getAllLikesOfArticlePath: String get() = "/article/{id}"
 inline val deleteLikePath: String get() = "/{id}"
+inline val cancelLikePath: String get() = "/cancel"
+inline val existsLikePath: String get() = "/exists"
 //Collect
 inline val collectRootPath: String get() = "/collects"
 inline val createCollectPath: String get() = "/create"
 inline val getAllCollectsOfArticlePath: String get() = "/article/{id}"
 inline val deleteCollectPath: String get() = "/{id}"
+inline val existsCollectPath: String get() = "/exists"
+inline val cancelCollectPath: String get() = "/cancel"
+
 //Comment
 inline val commentRootPath: String get() = "/comments"
 inline val createCommentPath: String get() = "/create"
 inline val getAllCommentsOfUserPath: String get() = "/user/{id}"
-inline val getAllCommentsOfArticlePath: String get() = "/article/{id}"
+inline val getAllCommentsOfArticlePath: String get() = "/article/{articleId}"
 inline val deleteCommentPath: String get() = "/{id}"
 //Friend
 inline val friendRootPath: String get() = "/friends"
@@ -85,8 +90,21 @@ inline val followPath: String get() = "/follow"
 inline val unfollowPath: String get() = "/unfollow/{whoId}"
 inline val myFollowingsPath: String get() = "/following/{userId}"
 inline val myFollowersPath: String get() = "/followers/{userId}"
+inline val existingFriendshipPath: String get() = "/existing_friendship"
 //Token
 inline val refreshToken: String get() = "/token/refresh"
 //Online Status
 inline val isForegroundStr: String get() = "isForeground"
 inline val onlineStatusPath: String get() = "/online_status/{$isForegroundStr}"
+
+//WebSocket
+inline val wsRootPath: String get() = "/ws"
+inline val wsCommentPath: String get() = "$wsRootPath/comment"
+inline val wsLikePath: String get() = "$wsRootPath/like"
+inline val wsFollowPath: String get() = "$wsRootPath/follow"
+
+//Message
+inline val messageRootPath: String get() = "/message"
+inline val messageCommentPath: String get() = "/comment"
+inline val messageLikePath: String get() = "/like"
+inline val messageFollowPath: String get() = "/follow"

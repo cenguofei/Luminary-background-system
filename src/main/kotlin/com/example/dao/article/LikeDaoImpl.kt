@@ -32,6 +32,14 @@ class LikeDaoImpl : LikeDao {
         }
     }
 
+    override suspend fun delete(like: Like) {
+        dbTransaction {
+            Likes.deleteWhere {
+                (userId eq like.userId) and (articleId eq like.articleId)
+            }
+        }
+    }
+
     override suspend fun read(id: Long): Like? {
         return dbTransaction {
             Likes.selectAll().where { Likes.id eq id }

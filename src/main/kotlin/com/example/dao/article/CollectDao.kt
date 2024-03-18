@@ -20,6 +20,8 @@ interface CollectDao : LuminaryDao<Collect, Collects> {
 
     override suspend fun delete(id: Long)
 
+    suspend fun delete(collect: Collect)
+
     override suspend fun read(id: Long): Collect?
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Collect>

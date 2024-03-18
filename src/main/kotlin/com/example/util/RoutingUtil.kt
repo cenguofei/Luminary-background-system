@@ -7,7 +7,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 
-suspend fun <T> ApplicationCall.invalidId(idName: String = "id") : Boolean {
+suspend inline fun <reified T> ApplicationCall.invalidId(idName: String = "id") : Boolean {
     val id = parameters[idName]?.toLong()
     if (id == null || id < 0) {
         respond(
@@ -19,7 +19,7 @@ suspend fun <T> ApplicationCall.invalidId(idName: String = "id") : Boolean {
     return false
 }
 
-suspend fun <T> ApplicationCall.noSessionAndInvalidId() : Boolean {
+suspend inline fun <reified T> ApplicationCall.noSessionAndInvalidId() : Boolean {
     if (noSession<T>()) {
         return true
     }

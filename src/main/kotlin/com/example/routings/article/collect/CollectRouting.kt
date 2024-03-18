@@ -22,6 +22,8 @@ fun Application.configureCollectRouting() {
             deleteCollect(collectDao)
             getAllCollectsOfArticle(collectDao)
             pageCollects(collectDao)
+            existsCollect(collectDao)
+            cancelCollect(collectDao)
         }
     }
 }

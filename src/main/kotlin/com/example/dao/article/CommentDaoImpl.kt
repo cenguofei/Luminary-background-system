@@ -40,7 +40,7 @@ class CommentDaoImpl : CommentDao {
         }
     }
 
-    override suspend fun getAllCommentsOfUser(userId: Long): List<Comment> = dbTransaction {
+    override suspend fun getAllCommentsOfUserCommentToArticle(userId: Long): List<Comment> = dbTransaction {
         Comments.selectAll().where {
             Comments.userId eq userId
         }.mapToComment()
@@ -50,6 +50,14 @@ class CommentDaoImpl : CommentDao {
         Comments.selectAll().where {
             Comments.articleId eq articleId
         }.mapToComment()
+    }
+
+    override suspend fun getCommentsByIdsOfArticle(articleIds: List<Long>): List<Comment> {
+        return dbTransaction {
+            Comments.selectAll().where {
+                Comments.articleId inList articleIds
+            }.mapToComment()
+        }
     }
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Comment> =

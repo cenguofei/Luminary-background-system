@@ -147,20 +147,5 @@ private suspend fun ApplicationCall.checkSessionAndId(
         flag = true
     }
 
-    //测试环境下容易弄混用户之间的session，做这个检查防止测试时不知道用错了session
-    if (id != null) {
-        val queryUser = userDao.read(id)
-        val sessionUser = sessionUser
-        if (sessionUser?.username != queryUser?.username) {
-            respond(
-                status = HttpStatusCode.Conflict,
-                message = UserResponse().copy(
-                    msg = "You can only get or modify your own information."
-                )
-            )
-            flag = true
-        }
-    }
-
     return flag
 }

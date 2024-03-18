@@ -1,13 +1,13 @@
-package com.example.routings.article
+package com.example.routings.article.comment
 
 import com.example.dao.article.CommentDao
-import com.example.dao.article.CommentDaoImpl
+import com.example.dao.user.UserDao
 import com.example.models.Comment
+import com.example.models.responses.CombinedCommentMessage
+import com.example.models.responses.CombinedMessage
 import com.example.models.responses.DataResponse
 import com.example.models.responses.pagesData
-import com.example.plugins.receive
-import com.example.plugins.security.jwtUser
-import com.example.plugins.security.noSession
+import com.example.plugins.messages
 import com.example.util.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -16,7 +16,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.configureCommentRouting() {
-    val commentDao: CommentDao = CommentDaoImpl()
+    val commentDao: CommentDao =CommentDao.Default
     routing {
         route(commentRootPath) {
             createComment(commentDao)
@@ -33,30 +33,6 @@ private fun Route.pageComments(commentDao: CommentDao) {
         dao = commentDao,
         requestPath = pageCommentsPath
     )
-}
-
-private fun Route.createComment(commentDao: CommentDao) {
-    authenticate {
-        post(createCommentPath) {
-            if (call.noSession<Unit>()) {
-                return@post
-            }
-            call.receive<Comment> {
-                if (it.userId != call.jwtUser?.id) {
-                    call.respond(
-                        status = HttpStatusCode.Conflict,
-                        message = DataResponse<Unit>().copy(msg = internalErrorMsg)
-                    )
-                    return@post
-                }
-                commentDao.create(it)
-                call.respond(
-                    status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>()
-                )
-            }
-        }
-    }
 }
 
 /**
@@ -79,24 +55,42 @@ private fun Route.deleteComment(commentDao: CommentDao) {
 
 
 /**
- * 文章获得的所有点赞
+ * 文章获得的所有评论
  * 需要传递文章id
  */
 private fun Route.getAllCommentsOfArticle(commentDao: CommentDao) {
     get(getAllCommentsOfArticlePath) {
-        if (call.invalidId<List<Comment>>()) {
+        if (call.invalidId<List<CombinedMessage<Comment>>>("articleId")) {
             return@get
         }
-        val comments = commentDao.getAllCommentsOfArticle(call.id)
+        val comments = commentDao.getAllCommentsOfArticle(call.id("articleId"))
+        if (comments.isEmpty()) {
+            call.respond(
+                status = HttpStatusCode.OK,
+                message = DataResponse<List<CombinedMessage<Comment>>>().copy(
+                    msg = "No comments of this article."
+                )
+            )
+        }
+        val userDao: UserDao = UserDao.Default
+        val users = userDao.batchUsers(comments.map { it.userId })
+        val result = users.map { user ->
+            val userComments = comments.filter { it.userId == user.id }
+                .sortedBy { it.timestamp }
+            CombinedMessage(
+                user = user,
+                messages = userComments
+            )
+        }
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse<List<Comment>>().copy(data = comments)
+            message = DataResponse<List<CombinedMessage<Comment>>>().copy(data = result)
         )
     }
 }
 
 /**
- * 用户的所有点赞
+ * 用户的所有评论
  * 需要传递用户的id
  */
 private fun Route.getAllCommentsOfUser(commentDao: CommentDao) {
@@ -104,7 +98,7 @@ private fun Route.getAllCommentsOfUser(commentDao: CommentDao) {
         if (call.invalidId<List<Comment>>()) {
             return@get
         }
-        val comments = commentDao.getAllCommentsOfUser(call.id)
+        val comments = commentDao.getAllCommentsOfUserCommentToArticle(call.id)
         call.respond(
             status = HttpStatusCode.OK,
             message = DataResponse<List<Comment>>().copy(data = comments)

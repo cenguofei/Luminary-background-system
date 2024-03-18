@@ -3,14 +3,16 @@ package com.example.plugins
 import com.example.models.responses.DataResponse
 import com.example.routings.article.configureArticleRouting
 import com.example.routings.article.collect.configureCollectRouting
-import com.example.routings.article.configureCommentRouting
+import com.example.routings.article.comment.configureCommentRouting
 import com.example.routings.article.like.configureLikeRouting
+import com.example.routings.article.message.configureMessageRouting
 import com.example.routings.common.configureCommonRouting
 import com.example.routings.file.configureFileRouting
 import com.example.routings.friend.configureFriendRouting
 import com.example.routings.token.configureTokenRouting
 import com.example.routings.user.configureUserRouting
 import com.example.routings.user.status.configureReportOnlineStatusRouting
+import com.example.routings.ws.configureWebSocketRouting
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
@@ -35,6 +37,8 @@ fun Application.configureRouting() {
     configureTokenRouting()
     configureReportOnlineStatusRouting()
     configureCommonRouting()
+    configureWebSocketRouting()
+    configureMessageRouting()
 
     routing {
         route("/test") {

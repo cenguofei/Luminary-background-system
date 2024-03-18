@@ -14,6 +14,8 @@ interface LikeDao : LuminaryDao<Like, Likes> {
 
     override suspend fun delete(id: Long)
 
+    suspend fun delete(like: Like)
+
     override suspend fun read(id: Long): Like?
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Like>

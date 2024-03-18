@@ -1,12 +1,12 @@
-package com.example.routings.article.like
+package com.example.routings.article.comment
 
-import com.example.dao.article.LikeDao
-import com.example.models.Like
+import com.example.dao.article.CommentDao
+import com.example.models.Comment
 import com.example.models.responses.DataResponse
 import com.example.plugins.receive
 import com.example.plugins.security.jwtUser
 import com.example.plugins.security.noSession
-import com.example.util.createLikePath
+import com.example.util.createCommentPath
 import com.example.util.internalErrorMsg
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -14,13 +14,13 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.giveALike(likeDao: LikeDao) {
+fun Route.createComment(commentDao: CommentDao) {
     authenticate {
-        post(createLikePath) {
+        post(createCommentPath) {
             if (call.noSession<Unit>()) {
                 return@post
             }
-            call.receive<Like> {
+            call.receive<Comment> {
                 if (it.userId != call.jwtUser?.id) {
                     call.respond(
                         status = HttpStatusCode.Conflict,
@@ -28,14 +28,7 @@ fun Route.giveALike(likeDao: LikeDao) {
                     )
                     return@post
                 }
-                if (likeDao.exists(it)) {
-                    call.respond(
-                        status = HttpStatusCode.InternalServerError,
-                        message = DataResponse<Unit>().copy(msg = "this relation already existing!")
-                    )
-                    return@post
-                }
-                likeDao.create(it)
+                commentDao.create(it)
                 call.respond(
                     status = HttpStatusCode.OK,
                     message = DataResponse<Unit>()
