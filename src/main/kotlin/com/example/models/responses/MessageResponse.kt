@@ -11,9 +11,10 @@ class MessageResponse<L>: BaseResponse<L>() {
     fun copy(
         msg: String = empty,
         data: L? = null
-    ) {
+    ): MessageResponse<L> {
         this.msg = msg
         this.data = data
+        return this
     }
 }
 

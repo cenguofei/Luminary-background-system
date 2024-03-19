@@ -12,7 +12,7 @@ class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao
     override suspend fun create(data: User): Long =
         delegate.create(data)
             .also {
-                idCache.put(data.id, data)
+                idCache.put(it, data)
                 usernameCache.put(data.username, data)
             }
 

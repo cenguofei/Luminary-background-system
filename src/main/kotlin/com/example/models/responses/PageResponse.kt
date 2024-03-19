@@ -80,9 +80,9 @@ inline fun <reified D, P : Table> Route.pagesData(
 
         val count = dao.count()
         val lists = dao.pages(wishPage, perPageCount = perPageCount)
-        "查询到的文章数据：count=$count, $lists".logd("pages_d")
 
         coroutineScope {
+            //TODO
             delay(500)
             call.respond(
                 status = HttpStatusCode.OK,
@@ -96,6 +96,6 @@ inline fun <reified D, P : Table> Route.pagesData(
                 )
             )
         }
-
+        "查询到的数据总量：count=$count, wishPage=$wishPage, perPageCount=$perPageCount".logd("pages_d")
     }
 }

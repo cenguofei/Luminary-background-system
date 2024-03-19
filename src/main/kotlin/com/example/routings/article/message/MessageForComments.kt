@@ -2,21 +2,21 @@ package com.example.routings.article.message
 
 import com.example.dao.article.ArticleDao
 import com.example.dao.article.CommentDao
-import com.example.models.Article
+import com.example.dao.user.UserDao
 import com.example.models.Comment
+import com.example.models.User
 import com.example.models.responses.CombinedCommentMessage
 import com.example.models.responses.CombinedMessage
 import com.example.models.responses.MessageResponse
-import com.example.plugins.messages
 import com.example.plugins.security.jwtUser
 import com.example.plugins.security.noSession
-import com.example.util.empty
 import com.example.util.messageCommentPath
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.async
 
 /**
  * 需要传递参数：
@@ -41,70 +41,16 @@ fun Route.messageForComments() {
             }
             val result = mutableListOf<CombinedMessage<Comment>>()
             //1. 获取该用户评论过的文章
-            val commentDao: CommentDao = CommentDao.Default
-            val articleDao: ArticleDao = ArticleDao.Default
-            println("message_for_comments start query")
-            val userCommented = commentDao.getAllCommentsOfUserCommentToArticle(user.id)
-            println("message_for_comments userCommented=$userCommented")
-            val articlesOfUserCommented = when {
-                userCommented.isEmpty() -> emptyList()
-                else -> {
-                    val articleIds = userCommented.map { it.articleId }.toSet().toList()
-                    articleDao.getArticlesByIds(articleIds)
-                }
-            }
-            println("message_for_comments articlesOfUserCommented=$articlesOfUserCommented")
-            val result1 = when {
-                articlesOfUserCommented.isEmpty() -> emptyList()
-                else -> {
-                    articlesOfUserCommented.map { article ->
-                        CombinedMessage(
-                            user = user,
-                            article = article,
-                            messages = userCommented.filter { it.articleId == article.id }
-                        )
-                    }
-                }
-            }
-            println("message_for_comments result1=$result1")
-            if (result1.isNotEmpty()) {
-                result += result1
-            }
-
+            val deffer1 = async { articlesOfUserCommented(user) }
             //2. 获取评论过该用户文章的信息
-            val articlesOfUser = articleDao.getArticlesOfUser(user.id)
-            println("message_for_comments articlesOfUser=${articlesOfUser.map { it.id }}")
-            val commentsOfUserArticleWhichGetComment = when {
-                articlesOfUser.isEmpty() -> emptyList()
-                else -> {
-                    commentDao.getCommentsByIdsOfArticle(articlesOfUser.map { it.id })
-                }
-            }
-            println("message_for_comments commentsOfUserArticleWhichGetComment=$commentsOfUserArticleWhichGetComment")
-
-            val result2 = when {
-                commentsOfUserArticleWhichGetComment.isEmpty() -> {
-                    emptyList()
-                }
-                else -> {
-                    val ids = commentsOfUserArticleWhichGetComment
-                        .filter { it.userId != user.id } // result1中已经包含
-                        .map { it.articleId }.toSet()
-                    articlesOfUser.filter { it.id in ids }
-                        .map { article ->
-                            CombinedMessage(
-                                user = user,
-                                article = article,
-                                messages = commentsOfUserArticleWhichGetComment.filter { it.articleId == article.id }
-                            )
-                        }
-                }
-            }
-            println("message_for_comments result2=$result2")
-            if (result2.isNotEmpty()) {
-                result += result2
-            }
-            println("message_for_comments result=$result")
+            val deffer2 = async { commentsOfThisArticle(user) }
+            val result1 = deffer1.await()
+            val result2 = deffer2.await()
+            println("message_for_comments result2=${result2.size}")
+            println("message_for_comments result1=${result1.size}")
+            result += result1
+            result += result2
+            println("message_for_comments result=${result.size}")
             if (result.isEmpty()) {
                 call.respond(
                     status = HttpStatusCode.OK,
@@ -114,13 +60,87 @@ fun Route.messageForComments() {
                 )
                 return@get
             }
-            println("message_for_comments end")
             call.respond(
                 status = HttpStatusCode.OK,
                 message = MessageResponse<CombinedCommentMessage>().copy(
-                    data = result
+                    data = result,
+                    msg = "query success with ${result.size} comments."
                 )
             )
+            println("message_for_comments end")
+        }
+    }
+}
+
+private suspend fun articlesOfUserCommented(
+    user: User
+): CombinedCommentMessage {
+    val commentDao: CommentDao = CommentDao.Default
+    val articleDao: ArticleDao = ArticleDao.Default
+    println("message_for_comments start query")
+    val userCommented = commentDao.getAllCommentsOfUserCommentToArticle(user.id)
+    println("message_for_comments userCommented=${userCommented.map { it.id }}")
+    val articlesOfUserCommented = when {
+        userCommented.isEmpty() -> emptyList()
+        else -> {
+            val articleIds = userCommented.map { it.articleId }.toSet().toList()
+            articleDao.getArticlesByIds(articleIds)
+        }
+    }
+    println("message_for_comments articlesOfUserCommented=${articlesOfUserCommented.map { it.id }}")
+    return when {
+        articlesOfUserCommented.isEmpty() -> emptyList()
+        else -> {
+            articlesOfUserCommented.map { article ->
+                CombinedMessage(
+                    user = user,
+                    article = article,
+                    messages = userCommented.filter { it.articleId == article.id }
+                )
+            }
+        }
+    }
+}
+
+private suspend fun commentsOfThisArticle(
+    user: User
+): CombinedCommentMessage {
+    val commentDao: CommentDao = CommentDao.Default
+    val articleDao: ArticleDao = ArticleDao.Default
+    val articlesOfUser = articleDao.getArticlesOfUser(user.id)
+    println("message_for_comments articlesOfUser=${articlesOfUser.map { it.id }}")
+    val commentsOfUserArticleWhichGetComment = when {
+        articlesOfUser.isEmpty() -> emptyList()
+        else -> {
+            commentDao.getCommentsByIdsOfArticle(articlesOfUser.map { it.id })
+        }
+    }
+    println("message_for_comments commentsOfUserArticleWhichGetComment=${commentsOfUserArticleWhichGetComment.map { it.id }}")
+
+    return when {
+        commentsOfUserArticleWhichGetComment.isEmpty() -> {
+            emptyList()
+        }
+        else -> {
+            val needMessages = commentsOfUserArticleWhichGetComment
+                .filter { it.userId != user.id } // result1中已经包含
+
+            val userIds = needMessages.map { it.userId }
+            val userDao: UserDao = UserDao.Default
+            val needUsers = userDao.batchUsers(userIds)
+
+            val needIdsOfArticle = needMessages.map { it.articleId }.toSet()
+            val needArticles = articlesOfUser.filter { it.id in needIdsOfArticle }
+
+            needArticles.map { article ->
+                val userMessages = needMessages.filter { it.articleId == article.id }
+                val oneMessage = userMessages[0]
+                CombinedMessage(
+                    user = needUsers.find { it.id == oneMessage.userId },
+                    article = article,
+                    messages = userMessages
+                )
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ fun Application.module() {
     configureDoubleReceive()
     periodicWork()
     printTestArticle()
-    test()
+//    test()
 }
 
 private fun test() {
