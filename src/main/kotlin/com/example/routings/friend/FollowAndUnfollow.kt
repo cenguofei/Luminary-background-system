@@ -2,7 +2,6 @@ package com.example.routings.friend
 
 import com.example.dao.friend.FriendDao
 import com.example.dao.user.UserDao
-import com.example.dao.user.UserDaoFacadeImpl
 import com.example.models.Friend
 import com.example.models.responses.DataResponse
 import com.example.plugins.receive

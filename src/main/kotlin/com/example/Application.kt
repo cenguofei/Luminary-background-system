@@ -4,9 +4,7 @@ import com.example.models.printTestArticle
 import com.example.plugins.*
 import com.example.plugins.security.configureJWT
 import com.example.plugins.security.configureSession
-import com.example.routings.article.configureArticleRouting
 import com.example.test.insertArticles
-import com.example.util.logd
 import com.example.util.periodicWork
 import io.ktor.server.application.*
 import io.ktor.server.engine.*

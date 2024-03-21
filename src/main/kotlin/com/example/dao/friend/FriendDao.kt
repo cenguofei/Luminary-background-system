@@ -2,7 +2,6 @@ package com.example.dao.friend
 
 import com.example.dao.LuminaryDao
 import com.example.models.Friend
-import com.example.models.User
 import com.example.models.ext.UserFriend
 import com.example.models.tables.Friends
 

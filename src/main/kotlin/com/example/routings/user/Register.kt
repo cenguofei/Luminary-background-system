@@ -1,11 +1,10 @@
 package com.example.routings.user
 
 import com.example.dao.user.UserDao
-import com.example.util.encrypt
 import com.example.models.User
 import com.example.models.responses.UserData
 import com.example.models.responses.UserResponse
-import com.example.util.empty
+import com.example.util.encrypt
 import com.example.util.registerPath
 import com.example.util.withLogi
 import io.ktor.http.*

@@ -1,6 +1,5 @@
 package com.example.dao.friend
 
-import com.example.dao.user.mapToUser
 import com.example.models.*
 import com.example.models.ext.UserFriend
 import com.example.models.tables.DELETED_USER_ID

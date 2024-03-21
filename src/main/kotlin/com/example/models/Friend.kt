@@ -1,6 +1,5 @@
 package com.example.models
 
-import com.example.dao.article.formatterToSeconds
 import com.example.util.Default
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

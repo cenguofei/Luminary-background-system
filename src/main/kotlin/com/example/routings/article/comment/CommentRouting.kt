@@ -3,11 +3,9 @@ package com.example.routings.article.comment
 import com.example.dao.article.CommentDao
 import com.example.dao.user.UserDao
 import com.example.models.Comment
-import com.example.models.responses.CombinedCommentMessage
 import com.example.models.responses.CombinedMessage
 import com.example.models.responses.DataResponse
 import com.example.models.responses.pagesData
-import com.example.plugins.messages
 import com.example.util.*
 import io.ktor.http.*
 import io.ktor.server.application.*

@@ -1,15 +1,10 @@
 package com.example.routings.user
 
-import com.example.dao.article.CollectDao
 import com.example.dao.user.UserDao
-import com.example.dao.user.UserDaoFacadeImpl
 import com.example.models.Role
-import com.example.models.User
 import com.example.models.responses.pagesData
 import com.example.plugins.security.jwtUser
 import com.example.plugins.security.noSession
-import com.example.routings.file.upload
-import com.example.util.pageCollectsPath
 import com.example.util.pageUsersPath
 import com.example.util.userRootPath
 import io.ktor.server.application.*

@@ -3,7 +3,10 @@ package com.example.plugins
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.routing.*
-import kotlinx.html.*
+import kotlinx.html.body
+import kotlinx.html.h1
+import kotlinx.html.li
+import kotlinx.html.ul
 
 fun Application.configureTemplating() {
     routing {

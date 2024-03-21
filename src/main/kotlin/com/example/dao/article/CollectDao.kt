@@ -2,7 +2,6 @@ package com.example.dao.article
 
 import com.example.dao.LuminaryDao
 import com.example.models.Collect
-import com.example.models.Like
 import com.example.models.tables.Collects
 
 interface CollectDao : LuminaryDao<Collect, Collects> {

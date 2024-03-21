@@ -1,7 +1,6 @@
 package com.example.dao.article
 
 import com.example.dao.LuminaryDao
-import com.example.models.Article
 import com.example.models.Like
 import com.example.models.tables.Likes
 

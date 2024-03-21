@@ -1,7 +1,6 @@
 package com.example.routings.friend
 
 import com.example.dao.friend.FriendDao
-import com.example.dao.friend.FriendDaoImpl
 import com.example.dao.user.UserDao
 import com.example.util.friendRootPath
 import io.ktor.server.application.*

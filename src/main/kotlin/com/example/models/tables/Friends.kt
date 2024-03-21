@@ -1,5 +1,7 @@
 package com.example.models.tables
 
+import com.example.models.tables.Friends.userId
+import com.example.models.tables.Friends.whoId
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 

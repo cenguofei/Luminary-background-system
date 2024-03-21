@@ -1,14 +1,11 @@
 package com.example.routings.article.collect
 
 import com.example.dao.article.CollectDao
-import com.example.dao.article.LikeDao
 import com.example.models.Collect
-import com.example.models.Like
 import com.example.models.responses.DataResponse
 import com.example.plugins.receive
 import com.example.plugins.security.noSession
 import com.example.util.cancelCollectPath
-import com.example.util.cancelLikePath
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

@@ -1,22 +1,21 @@
 package com.example.routings.user
 
 import com.example.dao.user.UserDao
-import com.example.models.responses.DataResponse
 import com.example.models.responses.UserData
 import com.example.models.responses.UserResponse
-import com.example.plugins.security.*
+import com.example.plugins.security.JwtConfig
+import com.example.plugins.security.UserSession
+import com.example.plugins.security.jwtUser
 import com.example.routings.user.status.Status
 import com.example.routings.user.status.StatusManager
 import com.example.util.*
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.util.*
-import org.h2.engine.User
 
 /**
  * µÇÂ¼

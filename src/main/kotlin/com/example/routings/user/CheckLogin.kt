@@ -1,8 +1,6 @@
 package com.example.routings.user
 
-import com.auth0.jwt.exceptions.JWTVerificationException
 import com.example.models.responses.DataResponse
-import com.example.plugins.security.JwtConfig
 import com.example.plugins.security.sessionUser
 import com.example.plugins.security.verify
 import com.example.util.checkIsLoginPath

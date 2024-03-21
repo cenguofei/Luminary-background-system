@@ -1,12 +1,8 @@
 package com.example.routings.article.collect
 
 import com.example.dao.article.CollectDao
-import com.example.models.Collect
 import com.example.models.responses.DataResponse
 import com.example.models.responses.pagesData
-import com.example.plugins.receive
-import com.example.plugins.security.jwtUser
-import com.example.plugins.security.noSession
 import com.example.util.*
 import io.ktor.http.*
 import io.ktor.server.application.*

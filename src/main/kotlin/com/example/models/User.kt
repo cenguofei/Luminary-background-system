@@ -4,8 +4,6 @@ import com.example.util.empty
 import io.ktor.server.auth.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.ehcache.spi.serialization.Serializer
-import java.nio.ByteBuffer
 
 @Serializable
 data class User(

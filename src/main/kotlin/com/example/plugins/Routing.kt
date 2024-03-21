@@ -1,9 +1,9 @@
 package com.example.plugins
 
 import com.example.models.responses.DataResponse
-import com.example.routings.article.configureArticleRouting
 import com.example.routings.article.collect.configureCollectRouting
 import com.example.routings.article.comment.configureCommentRouting
+import com.example.routings.article.configureArticleRouting
 import com.example.routings.article.like.configureLikeRouting
 import com.example.routings.article.message.configureMessageRouting
 import com.example.routings.common.configureCommonRouting

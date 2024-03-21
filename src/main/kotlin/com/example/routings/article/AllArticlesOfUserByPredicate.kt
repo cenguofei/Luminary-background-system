@@ -5,9 +5,11 @@ import com.example.dao.article.CollectDao
 import com.example.dao.article.LikeDao
 import com.example.dao.user.UserDao
 import com.example.models.Article
-import com.example.models.Like
 import com.example.models.responses.DataResponse
-import com.example.util.*
+import com.example.util.getAllArticlesOfUserCollectedPath
+import com.example.util.getAllArticlesOfUserLikedPath
+import com.example.util.id
+import com.example.util.invalidId
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*

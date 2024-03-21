@@ -4,7 +4,10 @@ import com.example.dao.user.UserDao
 import com.example.models.TokenInfo
 import com.example.models.User
 import com.example.models.responses.DataResponse
-import com.example.plugins.security.*
+import com.example.plugins.security.JwtConfig
+import com.example.plugins.security.noSession
+import com.example.plugins.security.sessionUser
+import com.example.plugins.security.verify
 import com.example.util.empty
 import com.example.util.logd
 import com.example.util.refreshToken
@@ -14,7 +17,6 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.h2.command.Token
 
 fun Application.configureTokenRouting() {
     routing {

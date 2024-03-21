@@ -1,6 +1,5 @@
 package com.example.models.tables
 
-import com.example.models.tables.Comments.references
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 

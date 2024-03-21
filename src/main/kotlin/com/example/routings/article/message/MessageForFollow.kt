@@ -1,7 +1,6 @@
 package com.example.routings.article.message
 
 import com.example.dao.friend.FriendDao
-import com.example.models.User
 import com.example.models.ext.UserFriend
 import com.example.models.responses.DataResponse
 import com.example.plugins.security.jwtUser
