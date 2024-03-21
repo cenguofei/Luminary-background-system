@@ -1,7 +1,6 @@
 package com.example.routings.article.like
 
 import com.example.dao.article.ArticleDao
-import com.example.dao.article.ArticleDaoImpl
 import com.example.dao.article.LikeDao
 import com.example.models.responses.DataResponse
 import com.example.util.likesOfUserPath
@@ -11,7 +10,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.likesNumOfUser(likeDao: LikeDao) {
-    val articleDao: ArticleDao = ArticleDaoImpl()
+    val articleDao = ArticleDao
     get(likesOfUserPath) {
         val userId = call.parameters["userId"]?.toLongOrNull()
         if (userId == null) {

@@ -44,7 +44,7 @@ fun Route.follow(friendDao: FriendDao) {
 
 private suspend fun ApplicationCall.checkInvalid(friend: Friend, friendDao: FriendDao): Boolean {
     return jwtUser?.id != friend.userId || friend.userId == friend.whoId
-            || UserDao.Default.read(friend.whoId) == null
+            || UserDao.read(friend.whoId) == null
             || friendDao.existing(friend.userId, friend.whoId)
 }
 

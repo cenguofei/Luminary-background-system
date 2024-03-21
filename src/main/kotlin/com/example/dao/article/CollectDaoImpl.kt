@@ -14,7 +14,7 @@ class CollectDaoImpl : CollectDao {
         transaction(database) { SchemaUtils.create(Collects) }
     }
 
-    private val articleDao: ArticleDao = ArticleDaoImpl()
+    private val articleDao = ArticleDao
 
     override suspend fun create(data: Collect): Long = dbTransaction {
         articleDao.updateViaRead(data.articleId) { it.copy(collections = it.collections + 1) }

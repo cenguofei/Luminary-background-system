@@ -30,7 +30,7 @@ interface LikeDao : LuminaryDao<Like, Likes> {
 
     suspend fun exists(other: Like): Boolean
 
-    companion object {
-        val Default = LikeDaoImpl()
-    }
+    suspend fun getLikesInArticleIds(articleIds: List<Long>): List<Like>
+
+    companion object : LikeDao by LikeDaoImpl()
 }

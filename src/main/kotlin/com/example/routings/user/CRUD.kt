@@ -23,11 +23,11 @@ import io.ktor.server.sessions.*
 fun Route.crud(userDao: UserDao) {
     authenticate {
         /**
-         * 用户根据id获取“自己”的信息
+         * 用户根据id获取用户的信息
          * 注意：需要session
          */
         get(getUserPath) {
-            val id = call.parameters["id"]?.toLong()
+            val id = call.parameters["userId"]?.toLong()
             if (call.checkSessionAndId(id, userDao)) {
                 return@get
             }

@@ -75,8 +75,8 @@ fun Route.messageForComments() {
 private suspend fun articlesOfUserCommented(
     user: User
 ): CombinedCommentMessage {
-    val commentDao: CommentDao = CommentDao.Default
-    val articleDao: ArticleDao = ArticleDao.Default
+    val commentDao = CommentDao
+    val articleDao: ArticleDao = ArticleDao
     println("message_for_comments start query")
     val userCommented = commentDao.getAllCommentsOfUserCommentToArticle(user.id)
     println("message_for_comments userCommented=${userCommented.map { it.id }}")
@@ -105,8 +105,8 @@ private suspend fun articlesOfUserCommented(
 private suspend fun commentsOfThisArticle(
     user: User
 ): CombinedCommentMessage {
-    val commentDao: CommentDao = CommentDao.Default
-    val articleDao: ArticleDao = ArticleDao.Default
+    val commentDao = CommentDao
+    val articleDao: ArticleDao = ArticleDao
     val articlesOfUser = articleDao.getArticlesOfUser(user.id)
     println("message_for_comments articlesOfUser=${articlesOfUser.map { it.id }}")
     val commentsOfUserArticleWhichGetComment = when {
@@ -126,7 +126,7 @@ private suspend fun commentsOfThisArticle(
                 .filter { it.userId != user.id } // result1中已经包含
 
             val userIds = needMessages.map { it.userId }
-            val userDao: UserDao = UserDao.Default
+            val userDao = UserDao
             val needUsers = userDao.batchUsers(userIds)
 
             val needIdsOfArticle = needMessages.map { it.articleId }.toSet()

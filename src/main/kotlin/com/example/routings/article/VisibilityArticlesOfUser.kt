@@ -45,7 +45,7 @@ private fun Route.visibilityArticlesOfUser(
             return@get
         }
 
-        val userDao: UserDao = UserDao.Default
+        val userDao = UserDao
         val user = userDao.read(userId)
         if (user == null) {
             call.respond(

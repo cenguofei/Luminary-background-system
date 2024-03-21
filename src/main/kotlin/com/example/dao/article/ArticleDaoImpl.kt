@@ -4,6 +4,7 @@ import com.example.models.Article
 import com.example.models.VisibleMode
 import com.example.models.tables.Articles
 import com.example.plugins.database.database
+import com.example.util.Default
 import com.example.util.dbTransaction
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -93,30 +94,31 @@ class ArticleDaoImpl : ArticleDao {
         this[Articles.collections] = article.collections
         this[Articles.comments] = article.comments
         this[Articles.viewsNum] = article.viewsNum
-        this[Articles.timestamp] = article.timestamp
+        val ts = if (article.timestamp == Long.Default) System.currentTimeMillis() else article.timestamp
+        this[Articles.timestamp] = ts
         this[Articles.cover] = article.cover
     }
+}
 
-    private fun Iterable<ResultRow>.mapToArticle(): List<Article> {
-        return map {
-            Article(
-                id = it[Articles.id],
-                userId = it[Articles.userId],
-                username = it[Articles.username],
-                author = it[Articles.author],
-                title = it[Articles.title],
-                link = it[Articles.link],
-                body = it[Articles.body],
-                tags = it[Articles.tags],
-                visibleMode = VisibleMode.valueOf(it[Articles.visibleMode]),
-                likes = it[Articles.likes],
-                collections = it[Articles.collections],
-                comments = it[Articles.comments],
-                viewsNum = it[Articles.viewsNum],
-                timestamp = it[Articles.timestamp],
-                cover = it[Articles.cover]
-            )
-        }
+fun Iterable<ResultRow>.mapToArticle(): List<Article> {
+    return map {
+        Article(
+            id = it[Articles.id],
+            userId = it[Articles.userId],
+            username = it[Articles.username],
+            author = it[Articles.author],
+            title = it[Articles.title],
+            link = it[Articles.link],
+            body = it[Articles.body],
+            tags = it[Articles.tags],
+            visibleMode = VisibleMode.valueOf(it[Articles.visibleMode]),
+            likes = it[Articles.likes],
+            collections = it[Articles.collections],
+            comments = it[Articles.comments],
+            viewsNum = it[Articles.viewsNum],
+            timestamp = it[Articles.timestamp],
+            cover = it[Articles.cover]
+        )
     }
 }
 

@@ -25,7 +25,5 @@ interface UserDao : LuminaryDao<User, Users> {
 
     override suspend fun count(): Long = Users.count()
 
-    companion object {
-        val Default = UserDaoFacadeImpl()
-    }
+    companion object : UserDao by UserDaoFacadeImpl()
 }

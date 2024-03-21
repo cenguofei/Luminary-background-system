@@ -34,7 +34,7 @@ inline val deleteSuccess: String get() = "Delete successful."
 
 //Users
 inline val userRootPath: String get() = "/users"
-inline val getUserPath: String get() = "/{id}"
+inline val getUserPath: String get() = "/{userId}"
 inline val updateUserPath: String get() = "/{id}"
 inline val deleteUserPath: String get() = "/{id}"
 inline val checkIsLoginPath: String get() = "/isLogin"

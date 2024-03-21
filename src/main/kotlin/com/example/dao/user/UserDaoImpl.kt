@@ -1,12 +1,12 @@
 package com.example.dao.user
 
-import com.example.util.dbTransaction
 import com.example.models.Role
 import com.example.models.Sex
 import com.example.models.User
 import com.example.models.UserStatus
 import com.example.models.tables.Users
 import com.example.plugins.database.database
+import com.example.util.dbTransaction
 import com.example.util.encrypt
 import com.example.util.logd
 import org.jetbrains.exposed.sql.*
@@ -15,7 +15,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserDaoImpl : UserDao {
 
-    init { transaction(database) { SchemaUtils.create(Users) } }
+    init {
+        transaction(database) { SchemaUtils.create(Users) }
+    }
 
     override suspend fun create(data: User): Long = dbTransaction {
         Users.insert {
@@ -104,20 +106,20 @@ class UserDaoImpl : UserDao {
             .mapToUser(pwdNeeded)
             .singleOrNull()
     }
+}
 
-    private fun Iterable<ResultRow>.mapToUser(pwdNeeded: Boolean = false) : List<User> {
-        return map {
-            User(
-                username = it[Users.username],
-                age = it[Users.age],
-                sex = Sex.valueOf(it[Users.sex]),
-                id = it[Users.id],
-                headUrl = it[Users.headUrl],
-                background = it[Users.background],
-                role = Role.valueOf(it[Users.role]),
-                status = UserStatus.valueOf(it[Users.status]),
-                password = it[Users.password]
-            )
-        }
+fun Iterable<ResultRow>.mapToUser(pwdNeeded: Boolean = false): List<User> {
+    return map {
+        User(
+            username = it[Users.username],
+            age = it[Users.age],
+            sex = Sex.valueOf(it[Users.sex]),
+            id = it[Users.id],
+            headUrl = it[Users.headUrl],
+            background = it[Users.background],
+            role = Role.valueOf(it[Users.role]),
+            status = UserStatus.valueOf(it[Users.status]),
+            password = it[Users.password]
+        )
     }
 }

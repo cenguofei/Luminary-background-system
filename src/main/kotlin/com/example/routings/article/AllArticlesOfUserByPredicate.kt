@@ -18,7 +18,7 @@ import io.ktor.server.routing.*
  * 需要传递用户的id
  */
 fun Route.getAllArticlesOfUserLiked() {
-    val likeDao = LikeDao.Default
+    val likeDao = LikeDao
     allArticlesOfUserBy(
         path = getAllArticlesOfUserLikedPath,
         articleIds = { userId ->
@@ -33,7 +33,7 @@ fun Route.getAllArticlesOfUserLiked() {
  * 需要传递用户的id
  */
 fun Route.getAllArticlesOfUserCollected() {
-    val collectDao = CollectDao.Default
+    val collectDao = CollectDao
     allArticlesOfUserBy(
         path = getAllArticlesOfUserCollectedPath,
         articleIds = { userId ->
@@ -48,8 +48,8 @@ private fun Route.allArticlesOfUserBy(
     articleIds: suspend (userId: Long) -> List<Long>,
     type: ArticlesOfUserType
 ) {
-    val articleDao = ArticleDao.Default
-    val userDao = UserDao.Default
+    val articleDao = ArticleDao
+    val userDao = UserDao
     get(path) {
         if (call.invalidId<List<Article>>("userId")) {
             return@get

@@ -30,7 +30,5 @@ interface CollectDao : LuminaryDao<Collect, Collects> {
 
     suspend fun exists(collect: Collect): Boolean
 
-    companion object {
-        val Default = CollectDaoImpl()
-    }
+    companion object : CollectDao by CollectDaoImpl()
 }

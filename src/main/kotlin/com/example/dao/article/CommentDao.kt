@@ -27,7 +27,5 @@ interface CommentDao : LuminaryDao<Comment, Comments> {
 
     override suspend fun count(): Long = Comments.count()
 
-    companion object {
-        val Default = CommentDaoImpl()
-    }
+    companion object : CommentDao by CommentDaoImpl()
 }

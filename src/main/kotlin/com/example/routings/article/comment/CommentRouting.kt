@@ -16,7 +16,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.configureCommentRouting() {
-    val commentDao: CommentDao =CommentDao.Default
+    val commentDao = CommentDao
     routing {
         route(commentRootPath) {
             createComment(commentDao)
@@ -72,7 +72,7 @@ private fun Route.getAllCommentsOfArticle(commentDao: CommentDao) {
                 )
             )
         }
-        val userDao: UserDao = UserDao.Default
+        val userDao = UserDao
         val users = userDao.batchUsers(comments.map { it.userId })
         val result = users.map { user ->
             val userComments = comments.filter { it.userId == user.id }

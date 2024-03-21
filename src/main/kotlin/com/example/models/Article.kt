@@ -41,7 +41,7 @@ data class Article(
 
     val cover: String = empty,
 
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = Long.Default
 )  : java.io.Serializable {
     /**
      * 文章发布了多少天

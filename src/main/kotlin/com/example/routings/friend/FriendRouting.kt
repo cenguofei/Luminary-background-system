@@ -8,8 +8,8 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
 fun Application.configureFriendRouting() {
-    val friendDao: FriendDao = FriendDaoImpl()
-    val userDao: UserDao = UserDao.Default
+    val friendDao: FriendDao = FriendDao
+    val userDao = UserDao
     routing {
         route(friendRootPath) {
             follow(friendDao)

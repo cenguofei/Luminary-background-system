@@ -29,5 +29,4 @@ data class CombinedMessage<T>(
 )
 
 typealias CombinedCommentMessage = List<CombinedMessage<Comment>>
-typealias CombinedLikeMessage = List<CombinedMessage<Like>>
 typealias CombinedFollowMessage = List<CombinedMessage<Friend>>

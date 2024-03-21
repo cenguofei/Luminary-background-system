@@ -64,7 +64,7 @@ fun Route.myFollowers(friendDao: FriendDao, userDao: UserDao) {
             )
             return@get
         }
-        val fansId = friendDao.allFollowMe(userId).map { it.userId }
+        val fansId = friendDao.allFollowMeOnlyFriends(userId).map { it.userId }
         val fans = userDao.batchUsers(fansId)
         if (fans.isEmpty()) {
             call.respond(

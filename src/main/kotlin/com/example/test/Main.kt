@@ -1,6 +1,6 @@
 package com.example.test
 
-import com.example.dao.article.ArticleDaoImpl
+import com.example.dao.article.ArticleDao
 import com.example.models.Article
 import com.example.models.VisibleMode
 import com.example.util.logd
@@ -96,7 +96,7 @@ private suspend fun insertArticles1(json: String) {
     }
     "toInsert=$articles".logd("insert_articles")
     "articles size=${articles.size}".logd("insert_articles")
-    val articleDao = ArticleDaoImpl()
+    val articleDao = ArticleDao
     val insertIds = articleDao.insertBatch(articles)
     "insert success. ids=$insertIds".logd("insert_articles")
 }

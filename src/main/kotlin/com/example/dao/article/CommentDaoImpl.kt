@@ -4,6 +4,7 @@ import com.example.models.Comment
 import com.example.models.tables.Comments
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.plugins.database.database
+import com.example.util.Default
 import com.example.util.dbTransaction
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -12,14 +13,15 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class CommentDaoImpl : CommentDao {
     init { transaction(database) { SchemaUtils.create(Comments) } }
 
-    private val articleDao: ArticleDao = ArticleDaoImpl()
+    private val articleDao = ArticleDao
 
     override suspend fun create(data: Comment): Long = dbTransaction {
         articleDao.updateViaRead(data.articleId) { it.copy(comments = it.comments + 1) }
         Comments.insert { state ->
             state[userId] = data.userId
             state[content] = data.content
-            state[timestamp] = data.timestamp
+            val ts = if (data.timestamp == Long.Default) System.currentTimeMillis() else data.timestamp
+            state[timestamp] = ts
             state[articleId] = data.articleId
         }[Comments.id]
     }
@@ -63,15 +65,17 @@ class CommentDaoImpl : CommentDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Comment> =
         Comments.getPageQuery(pageStart, perPageCount).mapToComment()
 
-    private fun Iterable<ResultRow>.mapToComment(): List<Comment> {
-        return map {
-            Comment(
-                id = it[Comments.id],
-                articleId = it[Comments.articleId] ?: DELETED_ARTICLE_ID,
-                userId = it[Comments.userId],
-                content = it[Comments.content],
-                timestamp = it[Comments.timestamp]
-            )
-        }
+
+}
+
+fun Iterable<ResultRow>.mapToComment(): List<Comment> {
+    return map {
+        Comment(
+            id = it[Comments.id],
+            articleId = it[Comments.articleId] ?: DELETED_ARTICLE_ID,
+            userId = it[Comments.userId],
+            content = it[Comments.content],
+            timestamp = it[Comments.timestamp]
+        )
     }
 }

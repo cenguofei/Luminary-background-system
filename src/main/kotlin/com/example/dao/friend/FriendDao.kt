@@ -2,8 +2,9 @@ package com.example.dao.friend
 
 import com.example.dao.LuminaryDao
 import com.example.models.Friend
+import com.example.models.User
+import com.example.models.ext.UserFriend
 import com.example.models.tables.Friends
-import com.example.models.tables.Likes
 
 interface FriendDao : LuminaryDao<Friend, Friends> {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Friend>
@@ -26,7 +27,9 @@ interface FriendDao : LuminaryDao<Friend, Friends> {
      * 关注我的
      * @param id 我的id
      */
-    suspend fun allFollowMe(id: Long) : List<Friend>
+    suspend fun allFollowMeOnlyFriends(id: Long) : List<Friend>
+
+    suspend fun allFollowMeToUsers(loginUserId: Long) : List<UserFriend>
 
     /**
      * 取关
@@ -47,4 +50,6 @@ interface FriendDao : LuminaryDao<Friend, Friends> {
     suspend fun existingOfWhoId(whoId: Long): Boolean
 
     override suspend fun count(): Long = Friends.count()
+
+    companion object : FriendDao by FriendDaoImpl()
 }

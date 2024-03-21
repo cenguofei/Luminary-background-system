@@ -15,7 +15,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.configureCollectRouting() {
-    val collectDao: CollectDao = CollectDao.Default
+    val collectDao = CollectDao
     routing {
         route(collectRootPath) {
             createCollect(collectDao)

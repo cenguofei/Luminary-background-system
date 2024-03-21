@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 
 fun periodicWork() {
-    val friendDao: FriendDao = FriendDaoImpl()
+    val friendDao: FriendDao = FriendDao
     CoroutineScope(Job()).launch {
         friendDao.deleteBothNull()
     }

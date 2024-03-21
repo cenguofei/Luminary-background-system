@@ -1,7 +1,6 @@
 package com.example.routings.article.like
 
 import com.example.dao.article.LikeDao
-import com.example.dao.article.LikeDaoImpl
 import com.example.models.Like
 import com.example.models.responses.DataResponse
 import com.example.models.responses.pagesData
@@ -13,7 +12,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.configureLikeRouting() {
-    val likeDao: LikeDao = LikeDaoImpl()
+    val likeDao = LikeDao
     routing {
         route(likeRootPath) {
             giveALike(likeDao)

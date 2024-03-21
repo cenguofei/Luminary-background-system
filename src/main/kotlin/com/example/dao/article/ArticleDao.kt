@@ -28,7 +28,5 @@ interface ArticleDao : LuminaryDao<Article, Articles> {
 
     suspend fun getArticlesByIds(ids: List<Long>): List<Article>
 
-    companion object {
-        val Default = ArticleDaoImpl()
-    }
+    companion object : ArticleDao by ArticleDaoImpl()
 }

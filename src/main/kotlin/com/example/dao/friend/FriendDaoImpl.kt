@@ -1,9 +1,13 @@
 package com.example.dao.friend
 
-import com.example.models.Friend
+import com.example.dao.user.mapToUser
+import com.example.models.*
+import com.example.models.ext.UserFriend
 import com.example.models.tables.DELETED_USER_ID
 import com.example.models.tables.Friends
+import com.example.models.tables.Users
 import com.example.plugins.database.database
+import com.example.util.Default
 import com.example.util.dbTransaction
 import com.example.util.isNull
 import org.jetbrains.exposed.sql.*
@@ -18,7 +22,8 @@ class FriendDaoImpl : FriendDao {
         Friends.insert {
             it[userId] = data.userId
             it[whoId] = data.whoId
-            it[timestamp] = data.timestamp
+            val ts = if (data.timestamp == Long.Default) System.currentTimeMillis() else data.timestamp
+            it[timestamp] = ts
         }[Friends.id]
     }
 
@@ -42,10 +47,23 @@ class FriendDaoImpl : FriendDao {
             .mapToFriend()
     }
 
-    override suspend fun allFollowMe(id: Long): List<Friend> = dbTransaction {
+    override suspend fun allFollowMeOnlyFriends(id: Long): List<Friend> = dbTransaction {
         Friends.selectAll().where { Friends.whoId eq id }
             .distinct()
             .mapToFriend()
+    }
+
+    override suspend fun allFollowMeToUsers(loginUserId: Long): List<UserFriend> {
+        return dbTransaction {
+            Users.innerJoin(
+                otherTable = Friends,
+                onColumn = { this.id },
+                otherColumn = { this.userId },
+                additionalConstraint = {
+                    Friends.whoId eq loginUserId
+                }
+            ).selectAll().mapToUserFriend()
+        }
     }
 
     override suspend fun deleteBothNull() {
@@ -97,5 +115,24 @@ class FriendDaoImpl : FriendDao {
                 timestamp = it[Friends.timestamp]
             )
         }.singleOrNull()
+    }
+
+    private fun Iterable<ResultRow>.mapToUserFriend(): List<UserFriend> {
+        return map {
+            UserFriend(
+                user = User(
+                    username = it[Users.username],
+                    age = it[Users.age],
+                    sex = Sex.valueOf(it[Users.sex]),
+                    id = it[Users.id],
+                    headUrl = it[Users.headUrl],
+                    background = it[Users.background],
+                    role = Role.valueOf(it[Users.role]),
+                    status = UserStatus.valueOf(it[Users.status]),
+                    password = it[Users.password]
+                ),
+                beFriendTime = it[Friends.timestamp]
+            )
+        }
     }
 }

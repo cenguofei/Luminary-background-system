@@ -19,7 +19,7 @@ import io.ktor.server.routing.*
 fun Application.configureUserRouting() {
     routing {
         route(userRootPath) {
-            val userDao: UserDao = UserDao.Default
+            val userDao = UserDao
             crud(userDao)
             checkIsLogin()
             login(userDao)

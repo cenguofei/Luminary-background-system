@@ -36,7 +36,7 @@ fun Application.configureTokenRouting() {
                 "refresh noSession".logd("token")
                 return@get
             }
-            val user = UserDao.Default.readByUsername(call.sessionUser!!.username)
+            val user = UserDao.readByUsername(call.sessionUser!!.username)
             if (user == null) {
                 call.respond(
                     status = HttpStatusCode.InternalServerError,

@@ -9,6 +9,7 @@ fun Application.configureMessageRouting() {
         route(messageRootPath) {
             messageForComments()
             messageForLike()
+            messageForFollow()
         }
     }
 }
