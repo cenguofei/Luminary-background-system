@@ -26,7 +26,7 @@ fun Application.configureCollectRouting() {
 
 private fun Route.pageCollects(collectDao: CollectDao) {
     pagesData(
-        dao = collectDao,
+        createDao = { collectDao },
         requestPath = pageCollectsPath
     )
 }

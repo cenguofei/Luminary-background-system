@@ -18,6 +18,7 @@ fun Application.configureArticleRouting() {
             privacyArticlesOfUser(articleDao)
             getAllArticlesOfUserCollected()
             getAllArticlesOfUserLiked()
+            pageFriendsArticles()
         }
     }
 }

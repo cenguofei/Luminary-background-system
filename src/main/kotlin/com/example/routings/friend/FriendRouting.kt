@@ -16,6 +16,7 @@ fun Application.configureFriendRouting() {
             myFollowings(friendDao, userDao)
             myFollowers(friendDao, userDao)
             existingFriendship(friendDao)
+            mutualFollowFriends()
         }
     }
 }

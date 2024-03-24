@@ -8,8 +8,6 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 
@@ -60,10 +58,10 @@ fun calculatePageSize(count: Long, perPageCount: Int): Long {
  * @param onCall 返回值代表是否终止后续步骤
  */
 inline fun <reified D, P : Table> Route.pagesData(
-    dao: LuminaryDao<D, P>,
     requestPath: String,
     defaultCurPage: Int = Int.Default,
     defaultPageCount: Int = 24,
+    crossinline createDao: (ApplicationCall) -> LuminaryDao<D, P>,
     crossinline onCall: (ApplicationCall) -> Boolean = { false }
 ) {
     get(requestPath) {
@@ -77,25 +75,20 @@ inline fun <reified D, P : Table> Route.pagesData(
         val queryParameters = call.request.queryParameters
         val wishPage = queryParameters["wishPage"]?.toInt() ?: defaultCurPage
         val perPageCount = queryParameters["perPageCount"]?.toInt() ?: defaultPageCount
-
+        val dao = createDao(call)
         val count = dao.count()
         val lists = dao.pages(wishPage, perPageCount = perPageCount)
-
-        coroutineScope {
-            //TODO
-            delay(500)
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = PageResponse<D>().copy(
-                    data = Page(
-                        curPage = wishPage,
-                        pageSize = calculatePageSize(count, perPageCount),
-                        totalArticle = count,
-                        lists = lists
-                    )
+        call.respond(
+            status = HttpStatusCode.OK,
+            message = PageResponse<D>().copy(
+                data = Page(
+                    curPage = wishPage,
+                    pageSize = calculatePageSize(count, perPageCount),
+                    totalArticle = count,
+                    lists = lists
                 )
             )
-        }
+        )
         "查询到的数据总量：count=$count, wishPage=$wishPage, perPageCount=$perPageCount".logd("pages_d")
     }
 }

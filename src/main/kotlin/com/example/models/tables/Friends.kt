@@ -6,6 +6,8 @@ import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 
 /**
+ * Friends define:
+ * Mutual attention
  * 当[userId]和[whoId]都为null时，就可以直接清除
  */
 object Friends : Table() {

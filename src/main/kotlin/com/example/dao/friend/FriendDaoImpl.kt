@@ -9,13 +9,16 @@ import com.example.plugins.database.database
 import com.example.util.Default
 import com.example.util.dbTransaction
 import com.example.util.isNull
+import com.example.util.logw
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class FriendDaoImpl : FriendDao {
-    init { transaction(database) { SchemaUtils.create(Friends) } }
+    init {
+        transaction(database) { SchemaUtils.create(Friends) }
+    }
 
     override suspend fun create(data: Friend): Long = dbTransaction {
         Friends.insert {
@@ -40,15 +43,21 @@ class FriendDaoImpl : FriendDao {
 
     override suspend fun read(id: Long): Friend? = read { Friends.id eq id }
 
-    override suspend fun myFollowings(id: Long): List<Friend> = dbTransaction {
-        Friends.selectAll().where { Friends.userId eq id }
-            .distinct()
+    override suspend fun userFollow(ids: List<Long>): List<Friend> {
+        return dbTransaction {
+            Friends.selectAll().where {
+                Friends.userId inList ids
+            }.mapToFriend()
+        }
+    }
+
+    override suspend fun myFollowings(loginUserId: Long): List<Friend> = dbTransaction {
+        Friends.selectAll().where { Friends.userId eq loginUserId }
             .mapToFriend()
     }
 
-    override suspend fun allFollowMeOnlyFriends(id: Long): List<Friend> = dbTransaction {
-        Friends.selectAll().where { Friends.whoId eq id }
-            .distinct()
+    override suspend fun allFollowMeOnlyFriends(loginUserId: Long): List<Friend> = dbTransaction {
+        Friends.selectAll().where { Friends.whoId eq loginUserId }
             .mapToFriend()
     }
 
@@ -61,7 +70,30 @@ class FriendDaoImpl : FriendDao {
                 additionalConstraint = {
                     Friends.whoId eq loginUserId
                 }
-            ).selectAll().mapToUserFriend()
+            ).selectAll().mapToUserFriend().sortedByDescending { it.beFriendTime }
+        }
+    }
+
+    override suspend fun mutualFollowUsers(loginUserId: Long): List<UserFriend> {
+        return dbTransaction {
+            val followMe = FriendDao.allFollowMeOnlyFriends(loginUserId).map { it.userId }
+            "followMe=$followMe".logw("follow_me")
+            Users.innerJoin(
+                otherTable = Friends,
+                onColumn = {
+                    this.id
+                },
+                otherColumn = {
+                    this.whoId
+                },
+                additionalConstraint = {
+                    //我关注了他
+                    (Friends.userId eq loginUserId) and
+                            (Friends.whoId inList followMe) //他也要关注我
+                }
+            ).selectAll()
+                .mapToUserFriend()
+                .sortedByDescending { it.beFriendTime }
         }
     }
 
@@ -94,7 +126,7 @@ class FriendDaoImpl : FriendDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Friend> =
         Friends.getPageQuery(pageStart, perPageCount).mapToFriend()
 
-    private fun Iterable<ResultRow>.mapToFriend() : List<Friend> {
+    private fun Iterable<ResultRow>.mapToFriend(): List<Friend> {
         return map {
             Friend(
                 id = it[Friends.id],
@@ -105,7 +137,7 @@ class FriendDaoImpl : FriendDao {
         }
     }
 
-    private suspend fun read(selector: () -> Op<Boolean>) : Friend? = dbTransaction {
+    private suspend fun read(selector: () -> Op<Boolean>): Friend? = dbTransaction {
         Friends.selectAll().where { selector() }.limit(1).map {
             Friend(
                 id = it[Friends.id],

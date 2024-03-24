@@ -29,7 +29,7 @@ fun Application.configureLikeRouting() {
 
 private fun Route.pageLikes(likeDao: LikeDao) {
     pagesData(
-        dao = likeDao,
+        createDao = { likeDao },
         requestPath = pageLikesPath
     )
 }

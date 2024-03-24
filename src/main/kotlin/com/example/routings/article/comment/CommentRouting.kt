@@ -28,7 +28,7 @@ fun Application.configureCommentRouting() {
 
 private fun Route.pageComments(commentDao: CommentDao) {
     pagesData(
-        dao = commentDao,
+        createDao = { commentDao },
         requestPath = pageCommentsPath
     )
 }

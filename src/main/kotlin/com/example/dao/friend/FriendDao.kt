@@ -17,18 +17,31 @@ interface FriendDao : LuminaryDao<Friend, Friends> {
     override suspend fun read(id: Long): Friend?
 
     /**
-     * 我的关注
-     * @param id 我的id
+     * @param ids 关注的用户的id
      */
-    suspend fun myFollowings(id: Long) : List<Friend>
+    suspend fun userFollow(ids: List<Long>): List<Friend>
+
+    /**
+     * 我的关注
+     * @param loginUserId 我的id
+     */
+    suspend fun myFollowings(loginUserId: Long) : List<Friend>
 
     /**
      * 关注我的
-     * @param id 我的id
+     * @param loginUserId 我的id
      */
-    suspend fun allFollowMeOnlyFriends(id: Long) : List<Friend>
+    suspend fun allFollowMeOnlyFriends(loginUserId: Long) : List<Friend>
 
+    /**
+     * 关注我的用户
+     */
     suspend fun allFollowMeToUsers(loginUserId: Long) : List<UserFriend>
+
+    /**
+     * 获取我的朋友，朋友是相互关注的
+     */
+    suspend fun mutualFollowUsers(loginUserId: Long) : List<UserFriend>
 
     /**
      * 取关

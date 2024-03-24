@@ -49,6 +49,8 @@ inline val pageUsersPath: String get() = pageRootPath
 inline val pageCollectsPath: String get() = pageRootPath
 inline val pageLikesPath: String get() = pageRootPath
 inline val pageCommentsPath: String get() = pageRootPath
+inline val pageFriendsArticlesPath: String get() = "$pageRootPath/friends"
+
 //Article
 inline val articlesRootPath: String get() = "/articles"
 inline val createArticlePath: String get() = "/create"
@@ -91,6 +93,7 @@ inline val unfollowPath: String get() = "/unfollow/{whoId}"
 inline val myFollowingsPath: String get() = "/following/{userId}"
 inline val myFollowersPath: String get() = "/followers/{userId}"
 inline val existingFriendshipPath: String get() = "/existing_friendship"
+inline val mutualFollowFriendsPath: String get() = "/mutual"
 //Token
 inline val refreshToken: String get() = "/token/refresh"
 //Online Status

@@ -28,7 +28,7 @@ fun Application.configureUserRouting() {
 private fun Route.pageUsers(userDao: UserDao) {
     authenticate {
         pagesData(
-            dao = userDao,
+            createDao = { userDao },
             requestPath = pageUsersPath,
             onCall = {
                 it.noSession || it.jwtUser?.role != Role.Manager
