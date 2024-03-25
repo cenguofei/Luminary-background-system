@@ -113,10 +113,13 @@ fun Route.upload(userDao: UserDao) {
             }
 
             when(uploadType) {
-                UPLOAD_TYPE_USER_HEAD -> {
-                    val queryUser = userDao.readByUsername(sessionUser.username)?.copy(headUrl = filenames[0])
+                UPLOAD_TYPE_USER_HEAD, UPLOAD_TYPE_USER_BACKGROUND -> {
+                    val queryUser = userDao.readByUsername(sessionUser.username)
                     if (queryUser != null) {
-                        userDao.updateByUsername(sessionUser.username, queryUser)
+                        val newUser = if (uploadType == UPLOAD_TYPE_USER_HEAD) {
+                            queryUser.copy(headUrl = filenames[0])
+                        } else queryUser.copy(background = filenames[0])
+                        userDao.updateByUsername(sessionUser.username, newUser)
                     } else {
                         call.respond(
                             DataResponse<UploadData>().copy(msg = unknownErrorMsg)
