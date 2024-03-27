@@ -63,6 +63,7 @@ inline val privacyArticlesOfUserPath: String get() = "/user/privacy/{userId}"
 inline val publicArticlesOfUserPath: String get() = "/user/public/{userId}"
 inline val getAllArticlesOfUserCollectedPath: String get() = "/user_collected/{userId}"
 inline val getAllArticlesOfUserLikedPath: String get() = "/user_liked/{userId}"
+inline val whenBrowseArticlePath: String get() = "/when_browse_article/{articleId}"
 
 //Like
 inline val likeRootPath: String get() = "/likes"
@@ -111,3 +112,8 @@ inline val messageRootPath: String get() = "/message"
 inline val messageCommentPath: String get() = "/comment"
 inline val messageLikePath: String get() = "/like"
 inline val messageFollowPath: String get() = "/follow"
+
+//Search
+inline val searchRootPath: String get() = "/search"
+inline val searchArticlePath: String get() = "/article"
+inline val searchUserPath: String get() = "/user"

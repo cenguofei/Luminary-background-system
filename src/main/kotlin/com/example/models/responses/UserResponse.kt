@@ -5,16 +5,7 @@ import com.example.util.empty
 import kotlinx.serialization.Serializable
 
 @Serializable
-class UserResponse: BaseResponse<UserData>() {
-    fun copy(
-        msg: String = empty,
-        data: UserData? = null
-    ) : UserResponse {
-        this.msg = msg
-        this.data = data
-        return this
-    }
-}
+class UserResponse: BaseResponse<UserData>()
 
 @Serializable
 data class UserData(

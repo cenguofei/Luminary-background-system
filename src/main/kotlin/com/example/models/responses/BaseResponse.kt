@@ -7,4 +7,13 @@ open class BaseResponse<T> {
     open var msg: String = empty
 
     open var data: T? = null
+
+    fun copy(
+        msg: String = empty,
+        data: T? = null
+    ) : BaseResponse<T> {
+        this.msg = msg
+        this.data = data
+        return this
+    }
 }

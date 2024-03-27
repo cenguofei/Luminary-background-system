@@ -9,6 +9,7 @@ import com.example.routings.article.message.configureMessageRouting
 import com.example.routings.common.configureCommonRouting
 import com.example.routings.file.configureFileRouting
 import com.example.routings.friend.configureFriendRouting
+import com.example.routings.search.configureSearchRouting
 import com.example.routings.token.configureTokenRouting
 import com.example.routings.user.configureUserRouting
 import com.example.routings.user.status.configureReportOnlineStatusRouting
@@ -39,6 +40,7 @@ fun Application.configureRouting() {
     configureCommonRouting()
     configureWebSocketRouting()
     configureMessageRouting()
+    configureSearchRouting()
 
     routing {
         route("/test") {

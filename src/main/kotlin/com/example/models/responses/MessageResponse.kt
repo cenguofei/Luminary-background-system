@@ -7,16 +7,7 @@ import com.example.util.empty
  * @param data list of [CombinedCommentMessage], [CombinedLikeMessage], [CombinedFollowMessage]
  */
 @kotlinx.serialization.Serializable
-class MessageResponse<L>: BaseResponse<L>() {
-    fun copy(
-        msg: String = empty,
-        data: L? = null
-    ): MessageResponse<L> {
-        this.msg = msg
-        this.data = data
-        return this
-    }
-}
+class MessageResponse<L>: BaseResponse<L>()
 
 /**
  * @param messages type of [Like], [Comment], [Friend]

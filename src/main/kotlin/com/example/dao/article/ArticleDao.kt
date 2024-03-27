@@ -4,7 +4,9 @@ import com.example.dao.LuminaryDao
 import com.example.models.Article
 import com.example.models.tables.Articles
 import com.example.util.Default
+import com.example.util.dbTransaction
 import com.example.util.empty
+import org.jetbrains.exposed.sql.selectAll
 
 interface ArticleDao : LuminaryDao<Article, Articles> {
     /**

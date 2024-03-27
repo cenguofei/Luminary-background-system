@@ -19,6 +19,7 @@ fun Application.configureArticleRouting() {
             getAllArticlesOfUserCollected()
             getAllArticlesOfUserLiked()
             pageFriendsArticles()
+            whenBrowseArticle(articleDao)
         }
     }
 }
