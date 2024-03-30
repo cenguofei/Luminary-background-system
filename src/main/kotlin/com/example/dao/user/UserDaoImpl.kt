@@ -69,6 +69,10 @@ class UserDaoImpl : UserDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<User> =
         Users.getPageQuery(pageStart, perPageCount).mapToUser()
 
+    override suspend fun pageCount(): Long {
+        return count()
+    }
+
     override suspend fun existing(id: Long): Boolean {
         return dbTransaction {
             Users.selectAll().where {

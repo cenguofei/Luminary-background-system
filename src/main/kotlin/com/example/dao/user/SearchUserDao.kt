@@ -16,7 +16,7 @@ class SearchUserDao(
         }
     }
 
-    override suspend fun count(): Long {
+    override suspend fun pageCount(): Long {
         return dbTransaction {
             Users.selectAll().where { (Users.username like "%$searchContent%") }
                 .count()

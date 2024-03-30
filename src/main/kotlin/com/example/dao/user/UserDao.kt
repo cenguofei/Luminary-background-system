@@ -1,11 +1,11 @@
 package com.example.dao.user
 
-import com.example.dao.LuminaryDao
+import com.example.dao.LunimaryDao
 import com.example.models.User
 import com.example.models.tables.Users
 import com.example.util.Default
 
-interface UserDao : LuminaryDao<User, Users> {
+interface UserDao : LunimaryDao<User, Users> {
     override suspend fun create(data: User): Long
 
     override suspend fun read(id: Long): User?
@@ -23,6 +23,8 @@ interface UserDao : LuminaryDao<User, Users> {
     suspend fun batchUsers(ids: List<Long>): List<User>
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<User>
+
+    override suspend fun pageCount(): Long
 
     override suspend fun count(): Long = Users.count()
 
@@ -57,5 +59,9 @@ open class DefaultUserDao : UserDao {
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<User> {
         return emptyList()
+    }
+
+    override suspend fun pageCount(): Long {
+        return Long.Default
     }
 }

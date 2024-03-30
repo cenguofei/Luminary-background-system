@@ -79,6 +79,10 @@ class LikeDaoImpl : LikeDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Like> =
         Likes.getPageQuery(pageStart, perPageCount).mapToLike()
 
+    override suspend fun pageCount(): Long {
+        return count()
+    }
+
     override suspend fun likesNumOfUserArticles(userId: Long, articlesId: List<Long>): Long {
         return dbTransaction {
             Likes.selectAll().where {

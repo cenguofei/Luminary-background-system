@@ -3,8 +3,8 @@ package com.example.routings.article.comment
 import com.example.dao.article.CommentDao
 import com.example.dao.user.UserDao
 import com.example.models.Comment
-import com.example.models.responses.CombinedMessage
 import com.example.models.responses.DataResponse
+import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.util.*
 import io.ktor.http.*
@@ -27,8 +27,8 @@ fun Application.configureCommentRouting() {
 }
 
 private fun Route.pageComments(commentDao: CommentDao) {
-    pagesData(
-        createDao = { commentDao },
+    pagesData<Comment>(
+        pageOptions = PageOptions { commentDao },
         requestPath = pageCommentsPath
     )
 }
@@ -58,14 +58,14 @@ private fun Route.deleteComment(commentDao: CommentDao) {
  */
 private fun Route.getAllCommentsOfArticle(commentDao: CommentDao) {
     get(getAllCommentsOfArticlePath) {
-        if (call.invalidId<List<CombinedMessage<Comment>>>("articleId")) {
+        if (call.invalidId<List<CommentWithUser>>("articleId")) {
             return@get
         }
         val comments = commentDao.getAllCommentsOfArticle(call.id("articleId"))
         if (comments.isEmpty()) {
             call.respond(
                 status = HttpStatusCode.OK,
-                message = DataResponse<List<CombinedMessage<Comment>>>().copy(
+                message = DataResponse<List<CommentWithUser>>().copy(
                     msg = "No comments of this article."
                 )
             )
@@ -75,14 +75,14 @@ private fun Route.getAllCommentsOfArticle(commentDao: CommentDao) {
         val result = users.map { user ->
             val userComments = comments.filter { it.userId == user.id }
                 .sortedBy { it.timestamp }
-            CombinedMessage(
+            CommentWithUser(
                 user = user,
-                messages = userComments
+                comments = userComments
             )
         }
         call.respond(
             status = HttpStatusCode.OK,
-            message = DataResponse<List<CombinedMessage<Comment>>>().copy(data = result)
+            message = DataResponse<List<CommentWithUser>>().copy(data = result)
         )
     }
 }

@@ -1,18 +1,15 @@
 package com.example.routings.article
 
-import com.example.dao.article.ArticleDao
-import com.example.dao.article.CollectDao
-import com.example.dao.article.LikeDao
+import com.example.dao.article.ArticlesOfUserCollected
+import com.example.dao.article.ArticlesOfUserLiked
 import com.example.dao.user.UserDao
 import com.example.models.Article
-import com.example.models.responses.DataResponse
+import com.example.models.responses.PageOptions
+import com.example.models.responses.pagesData
 import com.example.util.getAllArticlesOfUserCollectedPath
 import com.example.util.getAllArticlesOfUserLikedPath
 import com.example.util.id
-import com.example.util.invalidId
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
+import com.example.util.invalidIdNoRespond
 import io.ktor.server.routing.*
 
 /**
@@ -20,13 +17,12 @@ import io.ktor.server.routing.*
  * 需要传递用户的id
  */
 fun Route.getAllArticlesOfUserLiked() {
-    val likeDao = LikeDao
-    allArticlesOfUserBy(
-        path = getAllArticlesOfUserLikedPath,
-        articleIds = { userId ->
-            likeDao.getAllLikesOfUser(userId).map { it.articleId }
-        },
-        type = ArticlesOfUserType.Liked
+    pagesData<Article>(
+        requestPath = getAllArticlesOfUserLikedPath,
+        pageOptions = PageOptions(
+            onIntercept = { it.invalidIdNoRespond("userId") || !UserDao.existing(it.id("userId")) },
+            onCreateDao = { ArticlesOfUserLiked(it.id("userId")) }
+        )
     )
 }
 
@@ -35,64 +31,15 @@ fun Route.getAllArticlesOfUserLiked() {
  * 需要传递用户的id
  */
 fun Route.getAllArticlesOfUserCollected() {
-    val collectDao = CollectDao
-    allArticlesOfUserBy(
-        path = getAllArticlesOfUserCollectedPath,
-        articleIds = { userId ->
-            collectDao.getAllCollectsOfUser(userId).map { it.articleId }
-        },
-        type = ArticlesOfUserType.Collected
-    )
-}
-
-private fun Route.allArticlesOfUserBy(
-    path: String,
-    articleIds: suspend (userId: Long) -> List<Long>,
-    type: ArticlesOfUserType
-) {
-    val articleDao = ArticleDao
-    val userDao = UserDao
-    get(path) {
-        if (call.invalidId<List<Article>>("userId")) {
-            return@get
-        }
-        if (!userDao.existing(call.id("userId"))) {
-            call.respond(
-                status = HttpStatusCode.InternalServerError,
-                message = DataResponse<List<Article>>().copy(
-                    msg = "User does not exist!"
-                )
-            )
-            return@get
-        }
-
-        val ids = articleIds(call.id("userId"))
-        if (ids.isEmpty()) {
-            val msg = when (type) {
-                ArticlesOfUserType.Collected -> {
-                    "You haven't collected any articles yet, go and collect them!"
-                }
-                ArticlesOfUserType.Liked -> {
-                    "You haven't liked the article yet, go like it now!"
-                }
+    pagesData<Article>(
+        requestPath = getAllArticlesOfUserCollectedPath,
+        pageOptions = PageOptions(
+            onIntercept = {
+                it.invalidIdNoRespond("userId") || !UserDao.existing(it.id("userId"))
+            },
+            onCreateDao = {
+                ArticlesOfUserCollected(it.id("userId"))
             }
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = DataResponse<List<Article>>().copy(
-                    msg = msg
-                )
-            )
-            return@get
-        }
-        val articles = articleDao.getArticlesByIds(ids)
-        call.respond(
-            status = HttpStatusCode.OK,
-            message = DataResponse<List<Article>>().copy(data = articles)
         )
-    }
-}
-
-enum class ArticlesOfUserType {
-    Collected,
-    Liked
+    )
 }

@@ -31,7 +31,7 @@ data class Friend(
      * 什么时候关注的
      */
     val timestamp: Long = Long.Default
-) {
+) : java.io.Serializable {
     /**
      * 成为朋友多少天
      */

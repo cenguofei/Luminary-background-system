@@ -8,7 +8,6 @@ import com.example.util.Default
 import com.example.util.dbTransaction
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.json.contains
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.format.DateTimeFormatter
@@ -19,8 +18,16 @@ class ArticleDaoImpl : ArticleDao {
         transaction(database) { SchemaUtils.create(Articles) }
     }
 
+    override suspend fun pageCount(): Long = count()
+
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Article> = dbTransaction {
-        Articles.getPageQuery(pageStart, perPageCount).mapToArticle()
+        Articles.getPageQuery(
+            pageStart = pageStart,
+            perPageCount = perPageCount,
+            where = {
+                Articles.visibleMode eq VisibleMode.PUBLIC.name
+            }
+        ).mapToArticle()
     }
 
     override suspend fun updateViaRead(id: Long, update: (old: Article) -> Article) {

@@ -1,11 +1,14 @@
 package com.example.dao
 
 import com.example.util.dbTransaction
-import org.jetbrains.exposed.sql.Query
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 
-interface LuminaryDao<T, P: Table> {
+interface LunimaryDao<T, P: Table> : LunimaryPage<T> {
+
+    override suspend fun pageCount(): Long
+
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<T>
+
     /**
      * 插入一条数据
      */
@@ -26,8 +29,6 @@ interface LuminaryDao<T, P: Table> {
      */
     suspend fun read(id: Long): T? = throw UnsupportedOperationException()
 
-    suspend fun pages(pageStart: Int, perPageCount: Int) : List<T> = throw UnsupportedOperationException()
-
     suspend fun updateViaRead(id: Long, update:(old: T) -> T) { throw UnsupportedOperationException() }
 
     suspend fun existing(id: Long) : Boolean = throw UnsupportedOperationException()
@@ -36,12 +37,23 @@ interface LuminaryDao<T, P: Table> {
 
     suspend fun count(): Long = throw UnsupportedOperationException()
 
-    fun pageOffset(pageStart: Int, perPageCount: Int) : Long = (pageStart * perPageCount).toLong()
-
     suspend fun P.getPageQuery(pageStart: Int, perPageCount: Int) : Query {
         val offset = pageOffset(pageStart, perPageCount)
         return dbTransaction {
             selectAll().limit(n = perPageCount, offset = offset)
+        }
+    }
+
+    suspend fun P.getPageQuery(
+        pageStart: Int,
+        perPageCount: Int,
+        where: SqlExpressionBuilder.() -> Op<Boolean>
+    ) : Query {
+        val offset = pageOffset(pageStart, perPageCount)
+        return dbTransaction {
+            selectAll()
+                .where(where)
+                .limit(n = perPageCount, offset = offset)
         }
     }
 }

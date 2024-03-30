@@ -1,10 +1,10 @@
 package com.example.dao.article
 
-import com.example.dao.LuminaryDao
+import com.example.dao.LunimaryDao
 import com.example.models.Collect
 import com.example.models.tables.Collects
 
-interface CollectDao : LuminaryDao<Collect, Collects> {
+interface CollectDao : LunimaryDao<Collect, Collects> {
     /**
      * 获取用户收藏的文章
      */
@@ -24,6 +24,8 @@ interface CollectDao : LuminaryDao<Collect, Collects> {
     override suspend fun read(id: Long): Collect?
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Collect>
+
+    override suspend fun pageCount(): Long
 
     override suspend fun count(): Long = Collects.count()
 

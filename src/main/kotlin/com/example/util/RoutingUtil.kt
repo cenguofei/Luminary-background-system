@@ -19,6 +19,14 @@ suspend inline fun <reified T> ApplicationCall.invalidId(idName: String = "id") 
     return false
 }
 
+fun ApplicationCall.invalidIdNoRespond(idName: String = "id") : Boolean {
+    val id = parameters[idName]?.toLong()
+    if (id == null || id < 0) {
+        return true
+    }
+    return false
+}
+
 suspend inline fun <reified T> ApplicationCall.noSessionAndInvalidId() : Boolean {
     if (noSession<T>()) {
         return true

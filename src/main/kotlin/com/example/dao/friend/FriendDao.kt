@@ -1,12 +1,14 @@
 package com.example.dao.friend
 
-import com.example.dao.LuminaryDao
+import com.example.dao.LunimaryDao
 import com.example.models.Friend
 import com.example.models.ext.UserFriend
 import com.example.models.tables.Friends
 
-interface FriendDao : LuminaryDao<Friend, Friends> {
+interface FriendDao : LunimaryDao<Friend, Friends> {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Friend>
+
+    override suspend fun pageCount(): Long
 
     override suspend fun create(data: Friend): Long
 

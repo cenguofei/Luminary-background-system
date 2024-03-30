@@ -1,7 +1,9 @@
 package com.example.routings.article.collect
 
 import com.example.dao.article.CollectDao
+import com.example.models.Collect
 import com.example.models.responses.DataResponse
+import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.util.*
 import io.ktor.http.*
@@ -25,8 +27,8 @@ fun Application.configureCollectRouting() {
 }
 
 private fun Route.pageCollects(collectDao: CollectDao) {
-    pagesData(
-        createDao = { collectDao },
+    pagesData<Collect>(
+        pageOptions = PageOptions { collectDao },
         requestPath = pageCollectsPath
     )
 }

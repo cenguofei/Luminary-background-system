@@ -78,6 +78,10 @@ class CollectDaoImpl : CollectDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Collect> =
         Collects.getPageQuery(pageStart, perPageCount).mapToCollect()
 
+    override suspend fun pageCount(): Long {
+        return count()
+    }
+
     override suspend fun exists(collect: Collect): Boolean {
         return dbTransaction {
             Collects.selectAll().where {

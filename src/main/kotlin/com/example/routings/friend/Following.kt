@@ -2,12 +2,14 @@ package com.example.routings.friend
 
 import com.example.dao.friend.FriendDao
 import com.example.dao.user.UserDao
-import com.example.models.User
 import com.example.models.ext.FollowInfo
 import com.example.models.ext.FollowersInfo
 import com.example.models.responses.RelationData
 import com.example.models.responses.RelationResponse
-import com.example.util.*
+import com.example.util.invalidId
+import com.example.util.myFollowersPath
+import com.example.util.myFollowingsPath
+import com.example.util.notNull
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*

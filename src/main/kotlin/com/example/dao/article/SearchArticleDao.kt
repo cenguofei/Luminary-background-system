@@ -3,8 +3,6 @@ package com.example.dao.article
 import com.example.models.Article
 import com.example.models.tables.Articles
 import com.example.util.dbTransaction
-import org.jetbrains.exposed.sql.Query
-import org.jetbrains.exposed.sql.json.contains
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 
@@ -21,7 +19,7 @@ class SearchArticleDao(
         }
     }
 
-    override suspend fun count(): Long = dbTransaction {
+    override suspend fun pageCount(): Long = dbTransaction {
         Articles.selectAll().where {
             (Articles.title like "%$searchContent%") or (Articles.body like "%$searchContent%")
         }.count()

@@ -1,13 +1,10 @@
 package com.example.routings.friend
 
 import com.example.dao.friend.FriendDao
-import com.example.dao.user.UserDao
 import com.example.models.User
 import com.example.models.ext.UserFriend
-import com.example.models.responses.DataResponse
 import com.example.models.responses.RelationData
 import com.example.models.responses.RelationResponse
-import com.example.models.tables.Users
 import com.example.util.invalidId
 import com.example.util.mutualFollowFriendsPath
 import com.example.util.notNull

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  * http://localhost:8080/article/all?curPage=0&pageCount=12
  */
 @Serializable
-open class PageResponse<T> : BaseResponse<Page<T>>()
+open class PageResponse<T> : java.io.Serializable, BaseResponse<Page<T>>()
 
 @Serializable
 data class Page<T>(
@@ -27,5 +27,5 @@ data class Page<T>(
      */
     val total: Long = 0,
 
-    val lists: List<T> = emptyList()
-)
+    val lists: List<T> = emptyList(),
+) : java.io.Serializable

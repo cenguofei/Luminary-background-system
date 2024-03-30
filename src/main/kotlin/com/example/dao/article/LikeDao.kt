@@ -1,10 +1,10 @@
 package com.example.dao.article
 
-import com.example.dao.LuminaryDao
+import com.example.dao.LunimaryDao
 import com.example.models.Like
 import com.example.models.tables.Likes
 
-interface LikeDao : LuminaryDao<Like, Likes> {
+interface LikeDao : LunimaryDao<Like, Likes> {
     suspend fun getAllLikesOfUser(userId: Long) : List<Like>
 
     suspend fun getAllLikesOfArticle(articleId: Long) : List<Like>
@@ -18,6 +18,8 @@ interface LikeDao : LuminaryDao<Like, Likes> {
     override suspend fun read(id: Long): Like?
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Like>
+
+    override suspend fun pageCount(): Long
 
     override suspend fun count(): Long = Likes.count()
 

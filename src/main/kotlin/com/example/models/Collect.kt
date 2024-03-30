@@ -19,4 +19,4 @@ data class Collect(
      * Collect time
      */
     val timestamp: Long = Long.Default
-)
+) : java.io.Serializable

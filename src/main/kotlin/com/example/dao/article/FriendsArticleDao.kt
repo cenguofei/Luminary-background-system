@@ -4,7 +4,6 @@ import com.example.dao.friend.FriendDao
 import com.example.models.Article
 import com.example.models.tables.Articles
 import com.example.models.tables.Friends
-import com.example.util.Default
 import com.example.util.dbTransaction
 import com.example.util.logd
 import org.jetbrains.exposed.sql.and
@@ -19,26 +18,13 @@ class FriendsArticleDao(private val loginUserId: Long) : DefaultArticleDao() {
         if (allArticles == null) {
             allArticles = getAllArticles()
         }
-        val offset = pageOffset(pageStart, perPageCount).toInt()
-        val fromIndex = offset + Int.Default
-        var toIndex = offset + perPageCount
-        val size = allArticles!!.size
-        if (fromIndex >= size) {
+        if (allArticles.isNullOrEmpty()) {
             return emptyList()
         }
-        if (toIndex > size) {
-            toIndex = size
-        }
-        return allArticles!!.subList(
-            fromIndex = fromIndex,
-            toIndex = toIndex
-        ).also { list ->
-            "pages:${list.map { it.id }}".logd("friends_test")
-            allArticles = null
-        }
+        return allArticles!!.page(pageStart, perPageCount)
     }
 
-    override suspend fun count(): Long {
+    override suspend fun pageCount(): Long {
         return if (allArticles == null) getAllArticles().also {
             allArticles = it
         }.size.toLong() else allArticles!!.size.toLong()

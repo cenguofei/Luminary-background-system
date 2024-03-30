@@ -20,4 +20,4 @@ data class Like(
      * Like time
      */
     val timestamp: Long = Long.Default
-)
+) : java.io.Serializable

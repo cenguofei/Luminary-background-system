@@ -126,6 +126,10 @@ class FriendDaoImpl : FriendDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Friend> =
         Friends.getPageQuery(pageStart, perPageCount).mapToFriend()
 
+    override suspend fun pageCount(): Long {
+        return count()
+    }
+
     private fun Iterable<ResultRow>.mapToFriend(): List<Friend> {
         return map {
             Friend(

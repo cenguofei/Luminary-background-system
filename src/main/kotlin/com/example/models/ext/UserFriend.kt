@@ -6,4 +6,4 @@ import com.example.models.User
 data class UserFriend(
     val user: User,
     val beFriendTime: Long
-)
+) : java.io.Serializable

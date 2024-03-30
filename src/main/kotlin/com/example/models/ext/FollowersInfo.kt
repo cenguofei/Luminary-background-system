@@ -7,4 +7,4 @@ import kotlinx.serialization.Serializable
 data class FollowersInfo(
     val follower: User,
     val alsoFollow: Boolean
-)
+) : java.io.Serializable

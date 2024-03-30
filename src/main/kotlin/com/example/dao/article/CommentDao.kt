@@ -1,10 +1,10 @@
 package com.example.dao.article
 
-import com.example.dao.LuminaryDao
+import com.example.dao.LunimaryDao
 import com.example.models.Comment
 import com.example.models.tables.Comments
 
-interface CommentDao : LuminaryDao<Comment, Comments> {
+interface CommentDao : LunimaryDao<Comment, Comments> {
     /**
      * 返回用户评论过的文章
      */
@@ -18,6 +18,8 @@ interface CommentDao : LuminaryDao<Comment, Comments> {
     suspend fun getCommentsByIdsOfArticle(articleIds: List<Long>): List<Comment>
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Comment>
+
+    override suspend fun pageCount(): Long
 
     override suspend fun create(data: Comment): Long
 

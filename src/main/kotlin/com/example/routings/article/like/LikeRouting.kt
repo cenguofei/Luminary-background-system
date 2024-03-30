@@ -3,6 +3,7 @@ package com.example.routings.article.like
 import com.example.dao.article.LikeDao
 import com.example.models.Like
 import com.example.models.responses.DataResponse
+import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.util.*
 import io.ktor.http.*
@@ -28,8 +29,8 @@ fun Application.configureLikeRouting() {
 }
 
 private fun Route.pageLikes(likeDao: LikeDao) {
-    pagesData(
-        createDao = { likeDao },
+    pagesData<Like>(
+        pageOptions = PageOptions { likeDao },
         requestPath = pageLikesPath
     )
 }

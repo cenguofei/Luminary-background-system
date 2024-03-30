@@ -65,7 +65,9 @@ class CommentDaoImpl : CommentDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Comment> =
         Comments.getPageQuery(pageStart, perPageCount).mapToComment()
 
-
+    override suspend fun pageCount(): Long {
+        return count()
+    }
 }
 
 fun Iterable<ResultRow>.mapToComment(): List<Comment> {

@@ -78,6 +78,10 @@ class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao
         return delegate.pages(pageStart, perPageCount)
     }
 
+    override suspend fun pageCount(): Long {
+        return delegate.pageCount()
+    }
+
     override suspend fun existing(id: Long): Boolean {
         return delegate.existing(id)
     }

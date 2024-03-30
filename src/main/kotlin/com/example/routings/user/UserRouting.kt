@@ -2,6 +2,8 @@ package com.example.routings.user
 
 import com.example.dao.user.UserDao
 import com.example.models.Role
+import com.example.models.User
+import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.plugins.security.jwtUser
 import com.example.plugins.security.noSession
@@ -27,12 +29,14 @@ fun Application.configureUserRouting() {
 
 private fun Route.pageUsers(userDao: UserDao) {
     authenticate {
-        pagesData(
-            createDao = { userDao },
+        pagesData<User>(
             requestPath = pageUsersPath,
-            onCall = {
-                it.noSession || it.jwtUser?.role != Role.Manager
-            }
+            pageOptions = PageOptions(
+                onCreateDao = { userDao },
+                onIntercept = {
+                    it.noSession || it.jwtUser?.role != Role.Manager
+                }
+            )
         )
     }
 }
