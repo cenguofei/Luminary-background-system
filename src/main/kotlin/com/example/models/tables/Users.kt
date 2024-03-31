@@ -15,6 +15,11 @@ object Users : Table() {
 
     val status = varchar("status", length = 8)
 
+    val birth = long("birth")
+    val signature = text("signature")
+    val location = text("location")
+    val blogAddress = text("blog_address")
+
     override val primaryKey = PrimaryKey(id)
 }
 

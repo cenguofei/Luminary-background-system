@@ -164,7 +164,11 @@ class FriendDaoImpl : FriendDao {
                     background = it[Users.background],
                     role = Role.valueOf(it[Users.role]),
                     status = UserStatus.valueOf(it[Users.status]),
-                    password = it[Users.password]
+                    password = it[Users.password],
+                    birth = it[Users.birth],
+                    signature = it[Users.signature],
+                    location = it[Users.location],
+                    blogAddress = it[Users.blogAddress]
                 ),
                 beFriendTime = it[Friends.timestamp]
             )

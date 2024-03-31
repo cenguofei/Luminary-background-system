@@ -29,6 +29,10 @@ class UserDaoImpl : UserDao {
             it[password] = encrypt(data.password)
             it[role] = data.role.toString()
             it[status] = data.status.toString()
+            it[birth] = data.birth
+            it[signature] = data.signature
+            it[location] = data.location
+            it[blogAddress] = data.blogAddress
         }[Users.id]
     }
 
@@ -96,6 +100,11 @@ class UserDaoImpl : UserDao {
                     }
                     it[role] = user.role.toString()
                     it[status] = user.status.toString()
+
+                    it[birth] = user.birth
+                    it[signature] = user.signature
+                    it[location] = user.location
+                    it[blogAddress] = user.blogAddress
                 }
             )
         }
@@ -123,7 +132,12 @@ fun Iterable<ResultRow>.mapToUser(pwdNeeded: Boolean = false): List<User> {
             background = it[Users.background],
             role = Role.valueOf(it[Users.role]),
             status = UserStatus.valueOf(it[Users.status]),
-            password = it[Users.password]
+            password = it[Users.password],
+
+            birth = it[Users.birth],
+            signature = it[Users.signature],
+            location = it[Users.location],
+            blogAddress = it[Users.blogAddress]
         )
     }
 }

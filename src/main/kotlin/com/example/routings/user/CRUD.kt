@@ -60,18 +60,19 @@ fun Route.crud(userDao: UserDao) {
                 if (user.username != call.sessionUser?.username) {
                     val existingUser = userDao.readByUsername(user.username)
                     if (existingUser != null) {
-                        call.respond(
-                            status = HttpStatusCode.Conflict,
-                            message = UserResponse().copy(msg = "This username is already in use.")
-                        )
-                        return@put
-                    } else {
                         //¸üÐÂsession
                         call.sessions.set(call.sessionUser?.copy(username = user.username))
+                    } else {
+                        call.respond(
+                            status = HttpStatusCode.Conflict,
+                            message = UserResponse().copy(msg = "No user found: ${user.username}.")
+                        )
+                        return@put
                     }
                 }
-
-                userDao.update(id!!, user)
+                userDao.updateViaRead(id!!) {
+                    user.copy(password = it.password)
+                }
                 "Hello, ${call.jwtUser}!".logi("credentials")
                 call.respond(
                     status = HttpStatusCode.OK,
