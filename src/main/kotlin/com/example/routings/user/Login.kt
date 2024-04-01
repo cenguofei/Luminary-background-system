@@ -20,6 +20,7 @@ import io.ktor.util.*
 /**
  * 登录
  * 登录成功则同时设置session和token
+ * TODO 登录成功设置用户已同意隐私政策
  * 注意：登录之前应该先使用[checkIsLogin]检查登录状态
  */
 fun Route.login(userDao: UserDao) {

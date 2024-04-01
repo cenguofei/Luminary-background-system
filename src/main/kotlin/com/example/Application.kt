@@ -13,6 +13,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+/**
+ * TODO
+ * 1. 加密密码
+ * 2. 推荐算法
+ * 3. 生成/抓取文章数据
+ */
 fun main() {
     embeddedServer(Tomcat, port = 8080, host = "10.0.2.2", module = Application::module)
         .start(wait = true)
@@ -28,7 +34,7 @@ fun Application.module() {
     configureRouting()
     configureDoubleReceive()
     periodicWork()
-    printTestArticle()
+//    printTestArticle()
 //    test()
 }
 
