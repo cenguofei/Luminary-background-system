@@ -2,6 +2,7 @@ package com.example.dao.article
 
 import com.example.dao.friend.FriendDao
 import com.example.models.Article
+import com.example.models.VisibleMode
 import com.example.models.tables.Articles
 import com.example.models.tables.Friends
 import com.example.util.dbTransaction
@@ -38,7 +39,7 @@ class FriendsArticleDao(private val loginUserId: Long) : DefaultArticleDao() {
                 onColumn = { this.userId },
                 otherColumn = { this.userId },
                 additionalConstraint = {
-                    (Friends.whoId eq loginUserId) and (Friends.userId inList myFollowing)
+                    (Friends.whoId eq loginUserId) and (Friends.userId inList myFollowing) and (Articles.visibleMode neq VisibleMode.OWN.name)
                 }
             ).selectAll().mapToArticle()
         }.also {  list ->

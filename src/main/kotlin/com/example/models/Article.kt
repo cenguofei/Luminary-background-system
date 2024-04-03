@@ -17,7 +17,7 @@ data class Article(
 
     val title: String = empty,
 
-    val link: String = empty, // content
+    val link: String = empty, //ндуба╢╫с
 
     val body: String = empty, // content
 

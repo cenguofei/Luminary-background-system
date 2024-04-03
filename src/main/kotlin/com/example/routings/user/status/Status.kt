@@ -1,12 +1,12 @@
 package com.example.routings.user.status
 
-import com.example.routings.user.logout
+import com.example.routings.user.routes.logoutRoute
 import com.example.util.logd
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set
 
 /**
- * 1. 用户登录[com.example.routings.user.login]同步修改前台状态，不需要再经过此上报接口
+ * 1. 用户登录[com.example.routings.user.loginRoute]同步修改前台状态，不需要再经过此上报接口
  *      isForeground = true
  *
  * 2. 用户处于前台&登录状态还在时上报
@@ -15,7 +15,7 @@ import kotlin.collections.set
  * 2. 用户处于后台&登录状态还在时上报
  *      isForeground = false
  *
- * 2. 用户退出登录时[logout]同步修改前台状态，不需要再经过此上报接口
+ * 2. 用户退出登录时[logoutRoute]同步修改前台状态，不需要再经过此上报接口
  *      isForeground = false
  */
 @kotlinx.serialization.Serializable

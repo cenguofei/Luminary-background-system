@@ -1,6 +1,5 @@
 package com.example
 
-import com.example.models.printTestArticle
 import com.example.plugins.*
 import com.example.plugins.security.configureJWT
 import com.example.plugins.security.configureSession

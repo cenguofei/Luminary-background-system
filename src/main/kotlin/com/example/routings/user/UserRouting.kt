@@ -7,6 +7,8 @@ import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.plugins.security.jwtUser
 import com.example.plugins.security.noSession
+import com.example.routings.user.interactiondata.interactionDataRoute
+import com.example.routings.user.routes.*
 import com.example.util.pageUsersPath
 import com.example.util.userRootPath
 import io.ktor.server.application.*
@@ -18,11 +20,12 @@ fun Application.configureUserRouting() {
         route(userRootPath) {
             val userDao = UserDao
             crud(userDao)
-            checkIsLogin()
-            login(userDao)
-            logout()
-            register(userDao)
+            checkIsLoginRoute()
+            loginRoute(userDao)
+            logoutRoute()
+            registerRoute(userDao)
             pageUsers(userDao)
+            interactionDataRoute()
         }
     }
 }

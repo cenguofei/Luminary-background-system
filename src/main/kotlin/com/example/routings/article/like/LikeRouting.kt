@@ -16,14 +16,13 @@ fun Application.configureLikeRouting() {
     val likeDao = LikeDao
     routing {
         route(likeRootPath) {
-            giveALike(likeDao)
-            cancelLike(likeDao)
+            giveALikeRoute(likeDao)
+            cancelLikeRoute(likeDao)
             deleteLike(likeDao)
             getAllLikesOfArticle(likeDao)
             getAllLikesOfUser(likeDao)
             pageLikes(likeDao)
-            likesNumOfUser(likeDao)
-            existsLike(likeDao)
+            existsLikeRoute(likeDao)
         }
     }
 }

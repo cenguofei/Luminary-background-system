@@ -3,6 +3,7 @@ package com.example.routings.article.comment
 import com.example.dao.article.CommentDao
 import com.example.dao.user.UserDao
 import com.example.models.Comment
+import com.example.models.ext.CommentWithUser
 import com.example.models.responses.DataResponse
 import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
@@ -17,7 +18,7 @@ fun Application.configureCommentRouting() {
     val commentDao = CommentDao
     routing {
         route(commentRootPath) {
-            createComment(commentDao)
+            createCommentRoute(commentDao)
             deleteComment(commentDao)
             getAllCommentsOfArticle(commentDao)
             getAllCommentsOfUser(commentDao)

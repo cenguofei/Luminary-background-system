@@ -41,6 +41,7 @@ inline val checkIsLoginPath: String get() = "/isLogin"
 inline val loginPath: String get() = "/login"
 inline val logoutPath: String get() = "/logout"
 inline val registerPath: String get() = "/register"
+inline val interactionDataPath: String get() = "/interaction_data/{loginUserId}"
 // Routing
 //Page
 inline val pageRootPath: String get() = "/pages"

@@ -8,10 +8,10 @@ import com.example.routings.article.like.configureLikeRouting
 import com.example.routings.article.message.configureMessageRouting
 import com.example.routings.common.configureCommonRouting
 import com.example.routings.file.configureFileRouting
-import com.example.routings.friend.configureFriendRouting
 import com.example.routings.search.configureSearchRouting
 import com.example.routings.token.configureTokenRouting
 import com.example.routings.user.configureUserRouting
+import com.example.routings.user.friend.configureFriendRouting
 import com.example.routings.user.status.configureReportOnlineStatusRouting
 import com.example.routings.ws.configureWebSocketRouting
 import io.ktor.http.*

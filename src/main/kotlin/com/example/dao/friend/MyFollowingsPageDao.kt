@@ -1,8 +1,8 @@
 package com.example.dao.friend
 
 import com.example.dao.LunimaryPage
-import com.example.dao.user.UserDao
 import com.example.models.ext.FollowInfo
+import com.example.routings.user.logic.MyFollowings
 
 class MyFollowingsPageDao(
     private val userId: Long
@@ -32,9 +32,8 @@ class MyFollowingsPageDao(
             _myFollowings = emptyList()
             return
         }
-        val myFollowings = FriendDao.myFollowings(userId)
-        val myFollowingsUsersId = myFollowings.map { it.whoId }
-        val myFollowingsUser = UserDao.batchUsers(myFollowingsUsersId)
+        val myFollowingsUser = MyFollowings.myFollowings(userId)
+        val myFollowingsUsersId = myFollowingsUser.map { it.id }
         val myFollowingFollowedUser = FriendDao.userFollow(myFollowingsUsersId)
         _myFollowings = myFollowingsUser.map {
             val alsoFollowMe = myFollowingFollowedUser.find { friend ->

@@ -16,12 +16,12 @@ fun Application.configureCollectRouting() {
     val collectDao = CollectDao
     routing {
         route(collectRootPath) {
-            createCollect(collectDao)
+            createCollectRoute(collectDao)
             deleteCollect(collectDao)
             getAllCollectsOfArticle(collectDao)
             pageCollects(collectDao)
-            existsCollect(collectDao)
-            cancelCollect(collectDao)
+            existsCollectRoute(collectDao)
+            cancelCollectRoute(collectDao)
         }
     }
 }
