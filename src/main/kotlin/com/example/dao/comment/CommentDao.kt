@@ -1,4 +1,4 @@
-package com.example.dao.article
+package com.example.dao.comment
 
 import com.example.dao.LunimaryDao
 import com.example.models.Comment
@@ -28,6 +28,8 @@ interface CommentDao : LunimaryDao<Comment, Comments> {
     override suspend fun read(id: Long): Comment?
 
     override suspend fun count(): Long = Comments.count()
+
+    suspend fun friendComments(friends: List<Long>): List<Comment>
 
     companion object : CommentDao by CommentDaoImpl()
 }

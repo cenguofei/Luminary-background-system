@@ -43,13 +43,6 @@ data class Article(
 
     val timestamp: Long = Long.Default
 )  : java.io.Serializable {
-    /**
-     * 文章发布了多少天
-     */
-    val daysFromToday: Int get() {
-        return Int.Default
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

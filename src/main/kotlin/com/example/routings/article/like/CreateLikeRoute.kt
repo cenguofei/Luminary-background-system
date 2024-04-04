@@ -1,6 +1,6 @@
 package com.example.routings.article.like
 
-import com.example.dao.article.LikeDao
+import com.example.dao.like.LikeDao
 import com.example.models.Like
 import com.example.models.responses.DataResponse
 import com.example.plugins.receive

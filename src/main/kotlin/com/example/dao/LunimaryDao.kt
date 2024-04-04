@@ -5,9 +5,9 @@ import org.jetbrains.exposed.sql.*
 
 interface LunimaryDao<T, P: Table> : LunimaryPage<T> {
 
-    override suspend fun pageCount(): Long
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<T> = throw UnsupportedOperationException()
 
-    override suspend fun pages(pageStart: Int, perPageCount: Int): List<T>
+    override suspend fun pageCount(): Long = throw UnsupportedOperationException()
 
     /**
      * 插入一条数据
@@ -36,6 +36,8 @@ interface LunimaryDao<T, P: Table> : LunimaryPage<T> {
     suspend fun P.count(): Long = dbTransaction { selectAll().count() }
 
     suspend fun count(): Long = throw UnsupportedOperationException()
+
+    suspend fun allData(): List<T> = throw UnsupportedOperationException()
 
     suspend fun P.getPageQuery(pageStart: Int, perPageCount: Int) : Query {
         val offset = pageOffset(pageStart, perPageCount)

@@ -10,7 +10,6 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.format.DateTimeFormatter
 
 class ArticleDaoImpl : ArticleDao {
 
@@ -89,6 +88,33 @@ class ArticleDaoImpl : ArticleDao {
         }
     }
 
+    override suspend fun allData(): List<Article> {
+        return dbTransaction {
+            Articles.selectAll().where {
+                Articles.visibleMode eq VisibleMode.PUBLIC.name
+            }.mapToArticle()
+        }
+    }
+
+    override suspend fun getArticles(n: Int, eliminate: List<Long>): List<Article> {
+        return dbTransaction {
+            Articles.selectAll().where {
+                Articles.visibleMode eq VisibleMode.PUBLIC.name
+            }.limit(n).mapToArticle()
+        }
+    }
+
+    override suspend fun matchAllByTags(tags: List<String>): List<Article> {
+        return dbTransaction {
+            Articles.selectAll().where {
+                Articles.visibleMode eq VisibleMode.PUBLIC.name
+            }.mapToArticle()
+                .filter { article ->
+                    tags.any { it in article.tags }
+                }
+        }
+    }
+
     private fun UpdateBuilder<Int>.setKeyValue(article: Article) {
         this[Articles.userId] = article.userId
         this[Articles.username] = article.username
@@ -129,5 +155,3 @@ fun Iterable<ResultRow>.mapToArticle(): List<Article> {
         )
     }
 }
-
-val formatterToSeconds: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss")

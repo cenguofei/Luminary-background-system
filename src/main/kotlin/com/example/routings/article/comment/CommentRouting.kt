@@ -1,6 +1,6 @@
 package com.example.routings.article.comment
 
-import com.example.dao.article.CommentDao
+import com.example.dao.comment.CommentDao
 import com.example.dao.user.UserDao
 import com.example.models.Comment
 import com.example.models.ext.CommentWithUser

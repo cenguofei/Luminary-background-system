@@ -2,7 +2,7 @@ package com.example.dao.message
 
 import com.example.dao.LunimaryPage
 import com.example.dao.article.ArticleDao
-import com.example.dao.article.CommentDao
+import com.example.dao.comment.CommentDao
 import com.example.dao.user.UserDao
 import com.example.models.Article
 import com.example.models.Comment

@@ -13,7 +13,6 @@ fun calculatePageSize(count: Long, perPageCount: Int): Long {
 }
 
 
-
 /**
  * 分页获取数据
  * curPage: 从0开始
@@ -38,8 +37,8 @@ inline fun <reified D> Route.pagesData(
         val wishPage = queryParameters["wishPage"]?.toInt() ?: defaultCurPage
         val perPageCount = queryParameters["perPageCount"]?.toInt() ?: defaultPageCount
         val dao = pageOptions.createDao<D>(call)
-        val count = dao.pageCount()
         val lists = dao.pages(pageStart = wishPage, perPageCount = perPageCount)
+        val count = dao.pageCount()
         call.respond(
             status = HttpStatusCode.OK,
             message = PageResponse<D>().copy(
@@ -58,3 +57,7 @@ inline fun <reified D> Route.pagesData(
         "page detail: $lists".logd("pages_d")
     }
 }
+
+val ApplicationCall.wishPage: Int get() = request.queryParameters["wishPage"]?.toInt() ?: 0
+
+val ApplicationCall.perPageCount: Int get() = request.queryParameters["perPageCount"]?.toInt() ?: 24

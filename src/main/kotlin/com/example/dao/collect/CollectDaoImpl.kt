@@ -1,5 +1,6 @@
-package com.example.dao.article
+package com.example.dao.collect
 
+import com.example.dao.article.ArticleDao
 import com.example.models.Collect
 import com.example.models.tables.Collects
 import com.example.models.tables.DELETED_ARTICLE_ID
@@ -87,6 +88,14 @@ class CollectDaoImpl : CollectDao {
             Collects.selectAll().where {
                 (Collects.collectUserId eq collect.collectUserId) and (Collects.articleId eq collect.articleId)
             }.limit(1).firstOrNull() != null
+        }
+    }
+
+    override suspend fun friendCollects(friends: List<Long>): List<Collect> {
+        return dbTransaction {
+            Collects.selectAll().where {
+                Collects.collectUserId inList friends
+            }.mapToCollect()
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.dao.article
+package com.example.dao.like
 
 import com.example.dao.LunimaryDao
 import com.example.models.Like
@@ -32,6 +32,11 @@ interface LikeDao : LunimaryDao<Like, Likes> {
     suspend fun exists(other: Like): Boolean
 
     suspend fun getLikesInArticleIds(articleIds: List<Long>): List<Like>
+
+    /**
+     * @param friends ≈Û”—id
+     */
+    suspend fun friendsLikeArticles(friends: List<Long>): List<Like>
 
     companion object : LikeDao by LikeDaoImpl()
 }

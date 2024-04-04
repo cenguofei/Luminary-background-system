@@ -1,4 +1,4 @@
-package com.example.dao.article
+package com.example.dao.collect
 
 import com.example.dao.LunimaryDao
 import com.example.models.Collect
@@ -30,6 +30,8 @@ interface CollectDao : LunimaryDao<Collect, Collects> {
     override suspend fun count(): Long = Collects.count()
 
     suspend fun exists(collect: Collect): Boolean
+
+    suspend fun friendCollects(friends: List<Long>): List<Collect>
 
     companion object : CollectDao by CollectDaoImpl()
 }

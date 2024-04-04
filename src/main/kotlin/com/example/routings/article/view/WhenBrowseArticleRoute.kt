@@ -1,7 +1,10 @@
-package com.example.routings.article
+package com.example.routings.article.view
 
 import com.example.dao.article.ArticleDao
+import com.example.dao.view.ViewArticleDao
+import com.example.models.ViewArticle
 import com.example.models.responses.DataResponse
+import com.example.plugins.security.jwtUser
 import com.example.util.whenBrowseArticlePath
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -13,6 +16,7 @@ import io.ktor.server.routing.*
 fun Route.whenBrowseArticleRoute(articleDao: ArticleDao) {
     authenticate {
         get(whenBrowseArticlePath) {
+            val timestamp = System.currentTimeMillis()
             var isSuccess = false
             val articleId = call.parameters["articleId"]?.toLongOrNull() ?: run {
                 call.respond(
@@ -27,6 +31,15 @@ fun Route.whenBrowseArticleRoute(articleDao: ArticleDao) {
             articleDao.updateViaRead(articleId) {
                 isSuccess = true
                 it.copy(viewsNum = it.viewsNum + 1)
+            }
+            call.jwtUser?.id?.let {
+                ViewArticleDao.create(
+                    ViewArticle(
+                        userId = it,
+                        articleId = articleId,
+                        timestamp = timestamp
+                    )
+                )
             }
             call.respond(
                 status = HttpStatusCode.OK,

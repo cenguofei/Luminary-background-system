@@ -1,5 +1,6 @@
-package com.example.dao.article
+package com.example.dao.comment
 
+import com.example.dao.article.ArticleDao
 import com.example.models.Comment
 import com.example.models.tables.Comments
 import com.example.models.tables.DELETED_ARTICLE_ID
@@ -67,6 +68,14 @@ class CommentDaoImpl : CommentDao {
 
     override suspend fun pageCount(): Long {
         return count()
+    }
+
+    override suspend fun friendComments(friends: List<Long>): List<Comment> {
+        return dbTransaction {
+            Comments.selectAll().where {
+                Comments.userId inList friends
+            }.mapToComment()
+        }
     }
 }
 

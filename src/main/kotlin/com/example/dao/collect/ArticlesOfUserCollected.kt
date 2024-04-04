@@ -1,15 +1,17 @@
-package com.example.dao.article
+package com.example.dao.collect
 
+import com.example.dao.article.DefaultArticleDao
+import com.example.dao.article.mapToArticle
 import com.example.models.Article
 import com.example.models.VisibleMode
 import com.example.models.tables.Articles
-import com.example.models.tables.Likes
+import com.example.models.tables.Collects
 import com.example.util.dbTransaction
 import org.jetbrains.exposed.sql.innerJoin
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 
-class ArticlesOfUserLiked(
+class ArticlesOfUserCollected(
     private val userId: Long
 ) : DefaultArticleDao() {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Article> {
@@ -26,7 +28,7 @@ class ArticlesOfUserLiked(
 
     private suspend fun all() = dbTransaction {
         Articles.innerJoin(
-            otherTable = Likes,
+            otherTable = Collects,
             onColumn = {
                 this.id
             },
@@ -34,7 +36,7 @@ class ArticlesOfUserLiked(
                 this.articleId
             },
             additionalConstraint = {
-                Likes.userId eq userId
+                Collects.collectUserId eq userId
             }
         ).selectAll().where {
             (Articles.visibleMode eq VisibleMode.PUBLIC.name) or (Articles.userId eq userId)

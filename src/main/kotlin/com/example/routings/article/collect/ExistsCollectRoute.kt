@@ -1,6 +1,6 @@
 package com.example.routings.article.collect
 
-import com.example.dao.article.CollectDao
+import com.example.dao.collect.CollectDao
 import com.example.models.Collect
 import com.example.models.responses.DataResponse
 import com.example.plugins.receive

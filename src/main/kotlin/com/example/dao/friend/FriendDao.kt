@@ -19,6 +19,7 @@ interface FriendDao : LunimaryDao<Friend, Friends> {
     override suspend fun read(id: Long): Friend?
 
     /**
+     * 返回ids关注的用户
      * @param ids 关注的用户的id
      */
     suspend fun userFollow(ids: List<Long>): List<Friend>

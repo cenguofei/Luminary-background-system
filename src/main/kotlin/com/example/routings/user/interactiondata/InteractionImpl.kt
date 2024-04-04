@@ -1,8 +1,8 @@
 package com.example.routings.user.interactiondata
 
 import com.example.dao.article.ArticleDao
-import com.example.dao.article.LikeDao
 import com.example.dao.friend.FriendDao
+import com.example.dao.like.LikeDao
 import com.example.models.ext.InteractionData
 import com.example.routings.user.logic.MyFollowers
 import com.example.routings.user.logic.MyFollowings

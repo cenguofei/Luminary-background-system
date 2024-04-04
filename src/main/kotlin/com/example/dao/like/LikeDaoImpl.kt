@@ -1,5 +1,6 @@
-package com.example.dao.article
+package com.example.dao.like
 
+import com.example.dao.article.ArticleDao
 import com.example.models.Like
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.models.tables.Likes
@@ -107,7 +108,13 @@ class LikeDaoImpl : LikeDao {
         }
     }
 
-
+    override suspend fun friendsLikeArticles(friends: List<Long>): List<Like> {
+        return dbTransaction {
+            Likes.selectAll()
+                .where { Likes.userId inList friends }
+                .mapToLike()
+        }
+    }
 }
 
 fun Iterable<ResultRow>.mapToLike(): List<Like> {

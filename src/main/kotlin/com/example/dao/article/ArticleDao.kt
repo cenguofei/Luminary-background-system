@@ -31,10 +31,26 @@ interface ArticleDao : LunimaryDao<Article, Articles> {
 
     suspend fun getArticlesByIds(ids: List<Long>): List<Article>
 
+    /**
+     * 获取数量为[n]的文章
+     * @return 返回文章的ID不在[eliminate]内
+     */
+    suspend fun getArticles(n: Int, eliminate: List<Long>): List<Article>
+
+    suspend fun matchAllByTags(tags: List<String>): List<Article>
+
     companion object : ArticleDao by ArticleDaoImpl()
 }
 
 open class DefaultArticleDao : ArticleDao {
+    override suspend fun matchAllByTags(tags: List<String>): List<Article> {
+        return emptyList()
+    }
+
+    override suspend fun getArticles(n: Int, eliminate: List<Long>): List<Article> {
+        return emptyList()
+    }
+
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Article> {
         return emptyList()
     }
