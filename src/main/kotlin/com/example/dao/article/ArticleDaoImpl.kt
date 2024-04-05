@@ -20,13 +20,12 @@ class ArticleDaoImpl : ArticleDao {
     override suspend fun pageCount(): Long = count()
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Article> = dbTransaction {
-        Articles.getPageQuery(
-            pageStart = pageStart,
-            perPageCount = perPageCount,
-            where = {
-                Articles.visibleMode eq VisibleMode.PUBLIC.name
-            }
-        ).mapToArticle()
+        val offset = pageOffset(pageStart, perPageCount)
+        Articles.selectAll()
+            .where { Articles.visibleMode eq VisibleMode.PUBLIC.name }
+            .orderBy(Articles.timestamp, SortOrder.DESC)
+            .limit(n = perPageCount, offset = offset)
+            .mapToArticle()
     }
 
     override suspend fun updateViaRead(id: Long, update: (old: Article) -> Article) {

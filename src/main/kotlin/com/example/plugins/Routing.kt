@@ -125,10 +125,6 @@ fun Application.configureRouting() {
 
                             除非获得您的明确同意或法律要求，否则我们不会向第三方披露您的个人信息。
 
-                            ## Cookie 和类似技术
-
-                            本应用程序可能会使用 cookie 和类似的跟踪技术来提供更好的用户体验、分析使用情况和进行广告投放。您可以根据自己的选择在浏览器设置中禁用 cookie。
-
                             ## 变更和修订
 
                             我们可能会不时更新本隐私政策。更新的隐私政策将在本应用程序上发布，并取代先前的隐私政策。请您定期查阅本隐私政策以了解最新变更。
@@ -137,7 +133,7 @@ fun Application.configureRouting() {
 
                             如果您对本隐私政策或关于您个人信息的问题有任何疑问，请通过以下联系方式与我们联系：
 
-                            - Email: privacy@lunimaryblog.com
+                            - Email: cenguofei@gmail.com
 
                             感谢您阅读我们的隐私政策。希望您继续享受Lunimary Blog应用程序的优质服务。
                         """.trimIndent()

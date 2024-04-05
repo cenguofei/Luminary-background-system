@@ -19,7 +19,7 @@ fun UserActions(
     friends: List<UserFriend>
 ): UserActions = UserActionsImpl(friends)
 
-class UserActionsImpl(
+internal class UserActionsImpl(
     private val friends: List<UserFriend>
 ) : UserActions {
 

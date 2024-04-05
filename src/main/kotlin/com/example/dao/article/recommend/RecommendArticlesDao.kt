@@ -27,7 +27,7 @@ class RecommendArticlesDao(
     private var _recommendList: List<Article>? = null
     private val recommendList: List<Article> get() = _recommendList!!
     private suspend fun getAllRecommend() {
-        "loginUserId=$loginUserId, create LunimaryPageDao".logi(RECOMMEND_TAG)
+        "loginUserId=$loginUserId, getAllRecommend".logi(RECOMMEND_TAG)
         if (_recommendList == null) {
             _recommendList = fetchNew()
         }
