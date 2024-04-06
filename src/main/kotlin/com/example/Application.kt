@@ -1,9 +1,11 @@
 package com.example
 
+import com.example.dao.article.ArticleDao
+import com.example.models.tables.Articles
 import com.example.plugins.*
 import com.example.plugins.security.configureJWT
 import com.example.plugins.security.configureSession
-import com.example.test.insertArticles
+import com.example.util.dbTransaction
 import com.example.util.periodicWork
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -11,6 +13,8 @@ import io.ktor.server.tomcat.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
+import org.jetbrains.exposed.sql.deleteWhere
 
 /**
  * TODO
@@ -33,12 +37,15 @@ fun Application.module() {
     configureRouting()
     configureDoubleReceive()
     periodicWork()
-//    printTestArticle()
-//    test()
+    test()
 }
 
 private fun test() {
-    CoroutineScope(Job()).launch {
-        insertArticles()
-    }
+//    CoroutineScope(Job()).launch {
+//        dbTransaction {
+//            Articles.deleteWhere {
+//                link like "%juejin.cn%"
+//            }
+//        }
+//    }
 }

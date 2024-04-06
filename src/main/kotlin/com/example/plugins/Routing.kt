@@ -13,6 +13,7 @@ import com.example.routings.token.configureTokenRouting
 import com.example.routings.user.configureUserRouting
 import com.example.routings.user.friend.configureFriendRouting
 import com.example.routings.user.status.configureReportOnlineStatusRouting
+import com.example.routings.wanandroid.configureWanandroidRouting
 import com.example.routings.ws.configureWebSocketRouting
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -48,7 +49,7 @@ fun Application.configureRouting() {
     configureWebSocketRouting()
     configureMessageRouting()
     configureSearchRouting()
-
+    configureWanandroidRouting()
     routing {
         route("/") {
             get {

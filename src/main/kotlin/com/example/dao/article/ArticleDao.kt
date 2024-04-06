@@ -2,8 +2,11 @@ package com.example.dao.article
 
 import com.example.dao.LunimaryDao
 import com.example.models.Article
+import com.example.models.VisibleMode
 import com.example.models.tables.Articles
 import com.example.util.Default
+import com.example.util.dbTransaction
+import org.jetbrains.exposed.sql.selectAll
 
 interface ArticleDao : LunimaryDao<Article, Articles> {
     /**
@@ -23,7 +26,9 @@ interface ArticleDao : LunimaryDao<Article, Articles> {
 
     override suspend fun updateViaRead(id: Long, update:(old: Article) -> Article)
 
-    override suspend fun count(): Long = Articles.count()
+    override suspend fun count(): Long = dbTransaction {
+        Articles.selectAll().where { Articles.visibleMode eq VisibleMode.PUBLIC.name }.count()
+    }
 
     suspend fun insertBatch(articles: List<Article>): List<Long>
 

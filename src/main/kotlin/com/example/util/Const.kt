@@ -126,3 +126,4 @@ inline val searchArticlePath: String get() = "/article"
 inline val searchUserPath: String get() = "/user"
 
 //Others
+inline val wanandroidSaveArticlesPath: String get() = "/wanandroid/save_articles"
