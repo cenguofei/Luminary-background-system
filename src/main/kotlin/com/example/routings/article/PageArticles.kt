@@ -8,10 +8,7 @@ import com.example.models.Article
 import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.models.tables.DEFAULT_ARTICLE_PAGE_COUNT
-import com.example.util.Default
-import com.example.util.pageArticlesPath
-import com.example.util.pageFriendsArticlesPath
-import com.example.util.pageRecommendedArticlesPath
+import com.example.util.*
 import io.ktor.server.routing.*
 
 fun Route.pageAllArticles(articleDao: ArticleDao) {
@@ -37,6 +34,12 @@ fun Route.pageRecommendedArticles() {
     pagesData<Article>(
         pageOptions = PageOptions {
             val loginUserId = it.request.queryParameters["loginUserId"]?.toLong() ?: Long.Default
+            val wishPage = it.request.queryParameters["wishPage"]?.toInt() ?: Int.Default
+            if (wishPage == 0) {
+                //当用户刷新或者重新进入app时更新缓存
+                RecommendArticlesManager.remove(loginUserId)
+                "RecommendArticlesManager.remove $loginUserId".logi("update_cache")
+            }
             RecommendArticlesManager.getOrPut(loginUserId) {
                 RecommendArticlesDao(loginUserId)
             }

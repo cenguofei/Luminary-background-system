@@ -30,6 +30,12 @@ object RecommendArticlesManager {
             create
         }
     }
+
+    fun remove(key: Long) {
+        if(cache.containsKey(key)) {
+            cache.remove(key)
+        }
+    }
 }
 
 suspend fun <K, V> LRUCache<K, V>.getOrPut(key: K, default: suspend () -> V): V {
