@@ -4,10 +4,7 @@ import com.example.models.Article
 import com.example.models.tables.Articles
 import com.example.models.tables.Users
 import com.example.util.dbTransaction
-import org.jetbrains.exposed.sql.Op
-import org.jetbrains.exposed.sql.Query
-import org.jetbrains.exposed.sql.innerJoin
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 
 class VisibilityArticlesOfUserDao(
     private val userId: Long,
@@ -40,7 +37,9 @@ class VisibilityArticlesOfUserDao(
                 additionalConstraint = {
                     Users.id eq userId
                 }
-            ).selectAll().where { predicate() }
+            ).selectAll()
+                .where { predicate() }
+                .orderBy(Articles.timestamp, SortOrder.DESC)
         }
     }
 }

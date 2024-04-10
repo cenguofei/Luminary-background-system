@@ -33,7 +33,9 @@ fun Route.deleteArticleByIdRoute(articleDao: ArticleDao) {
             articleDao.delete(id)
             call.respond(
                 status = HttpStatusCode.OK,
-                message = DataResponse<Unit>()
+                message = DataResponse<Unit>().copy(
+                    msg = "The Article has deleted."
+                )
             )
         }
     }

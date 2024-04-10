@@ -41,7 +41,9 @@ fun Route.publicArticlesOfUser() {
                 val userId = it.parameters["userId"]?.toLong()!!
                 VisibilityArticlesOfUserDao(
                     userId = userId,
-                    predicate = { Articles.visibleMode eq VisibleMode.PUBLIC.name }
+                    predicate = {
+                        Articles.visibleMode eq VisibleMode.PUBLIC.name
+                    }
                 )
             },
             onIntercept = {
