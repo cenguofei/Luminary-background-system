@@ -30,6 +30,7 @@ fun Application.configureArticleRouting() {
             pageRecommendedArticles()
             whenBrowseArticleRoute(articleDao)
             viewDurationRoute()
+            existingArticle()
         }
     }
 }

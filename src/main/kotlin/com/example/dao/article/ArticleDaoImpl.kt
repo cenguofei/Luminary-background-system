@@ -114,6 +114,14 @@ class ArticleDaoImpl : ArticleDao {
         }
     }
 
+    override suspend fun existing(id: Long): Boolean {
+        return dbTransaction {
+            Articles.selectAll().where {
+                Articles.id eq id
+            }.limit(1).mapToArticle().isNotEmpty()
+        }
+    }
+
     private fun UpdateBuilder<Int>.setKeyValue(article: Article) {
         this[Articles.userId] = article.userId
         this[Articles.username] = article.username
