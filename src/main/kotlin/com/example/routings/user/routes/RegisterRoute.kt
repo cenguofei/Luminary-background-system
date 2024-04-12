@@ -4,6 +4,7 @@ import com.example.dao.user.UserDao
 import com.example.models.User
 import com.example.models.responses.UserData
 import com.example.models.responses.UserResponse
+import com.example.routings.user.logic.verifyInput
 import com.example.util.encrypt
 import com.example.util.registerPath
 import com.example.util.withLogi
@@ -35,6 +36,18 @@ fun Route.registerRoute(userDao: UserDao) {
                 status = HttpStatusCode.Conflict,
                 message = UserResponse().copy(
                     msg =  "The username already exists. Please register a different username.".withLogi(),
+                )
+            )
+            return@post
+        }
+
+        //ะฃั้
+        val verify = verifyInput(username, password)
+        if (!verify.first) {
+            call.respond(
+                status = HttpStatusCode.Conflict,
+                message = UserResponse().copy(
+                    msg = verify.second
                 )
             )
             return@post
