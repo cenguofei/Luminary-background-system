@@ -2,7 +2,6 @@ package com.example.routings.article.message
 
 import com.example.dao.message.FollowPageDao
 import com.example.models.ext.ClientUserFriend
-import com.example.models.ext.RemoteUserFriend
 import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.plugins.security.jwtUser

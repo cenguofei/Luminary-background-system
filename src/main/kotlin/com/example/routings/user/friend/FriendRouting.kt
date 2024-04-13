@@ -4,9 +4,9 @@ import com.example.dao.friend.FriendDao
 import com.example.dao.friend.FriendPageDao
 import com.example.dao.friend.MyFollowersPageDao
 import com.example.dao.friend.MyFollowingsPageDao
+import com.example.models.ext.ClientUserFriend
 import com.example.models.ext.FollowInfo
 import com.example.models.ext.FollowersInfo
-import com.example.models.ext.RemoteUserFriend
 import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.util.*
@@ -33,7 +33,7 @@ fun Application.configureFriendRouting() {
 }
 
 fun Route.pageMutualFollowFriends() {
-    pagesData<RemoteUserFriend>(
+    pagesData<ClientUserFriend>(
         requestPath = pageMyFriendsPath,
         pageOptions = PageOptions(
             onIntercept = { it.invalidIdNoRespond("userId") },
