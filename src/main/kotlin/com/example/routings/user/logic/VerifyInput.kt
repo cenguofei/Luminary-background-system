@@ -24,7 +24,7 @@ fun verifyInput(
                 "Passwords can only be a combination of numbers, letters, and special symbols"
     }
 
-    if (password.length <= PASSWORD_LENGTH) {
+    if (password.length < PASSWORD_LENGTH) {
         return false to "The password length cannot be less than $PASSWORD_LENGTH."
     }
 

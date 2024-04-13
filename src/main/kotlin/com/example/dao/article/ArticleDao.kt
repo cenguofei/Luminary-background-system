@@ -34,6 +34,8 @@ interface ArticleDao : LunimaryDao<Article, Articles> {
 
     suspend fun getArticlesOfUser(userId: Long): List<Article>
 
+    suspend fun userArticlesOnlyId(userId: Long): List<Long>
+
     suspend fun getArticlesByIds(ids: List<Long>): List<Article>
 
     /**
@@ -49,6 +51,10 @@ interface ArticleDao : LunimaryDao<Article, Articles> {
 
 open class DefaultArticleDao : ArticleDao {
     override suspend fun matchAllByTags(tags: List<String>): List<Article> {
+        return emptyList()
+    }
+
+    override suspend fun userArticlesOnlyId(userId: Long): List<Long> {
         return emptyList()
     }
 

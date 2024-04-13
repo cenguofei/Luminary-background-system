@@ -79,6 +79,16 @@ class ArticleDaoImpl : ArticleDao {
         }
     }
 
+    override suspend fun userArticlesOnlyId(userId: Long): List<Long> {
+        return dbTransaction {
+            Articles.selectAll().where {
+                Articles.userId eq userId
+            }.map {
+                it[Articles.id]
+            }
+        }
+    }
+
     override suspend fun getArticlesByIds(ids: List<Long>): List<Article> {
         return dbTransaction {
             Articles.selectAll().where {

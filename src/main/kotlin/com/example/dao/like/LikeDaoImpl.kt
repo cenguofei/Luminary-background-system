@@ -1,7 +1,9 @@
 package com.example.dao.like
 
 import com.example.dao.article.ArticleDao
+import com.example.models.Article
 import com.example.models.Like
+import com.example.models.tables.Articles
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.models.tables.Likes
 import com.example.plugins.database.database
@@ -9,6 +11,7 @@ import com.example.util.Default
 import com.example.util.dbTransaction
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class LikeDaoImpl : LikeDao {
@@ -23,6 +26,7 @@ class LikeDaoImpl : LikeDao {
             state[articleId] = data.articleId
             val ts = if (data.timestamp == Long.Default) System.currentTimeMillis() else data.timestamp
             state[timestamp] = ts
+            state[visibleToOwner] = data.visibleToOwner
         }[Likes.id]
     }
 
@@ -45,8 +49,11 @@ class LikeDaoImpl : LikeDao {
 
     override suspend fun read(id: Long): Like? {
         return dbTransaction {
-            Likes.selectAll().where { Likes.id eq id }
-                .mapToLike().singleOrNull()
+            Likes.selectAll()
+                .where { Likes.id eq id }
+                .limit(1)
+                .mapToLike()
+                .singleOrNull()
         }
     }
 
@@ -58,7 +65,8 @@ class LikeDaoImpl : LikeDao {
                 id = it[Likes.id],
                 userId = it[Likes.userId],
                 articleId = it[Likes.articleId] ?: DELETED_ARTICLE_ID,
-                timestamp = it[Likes.timestamp]
+                timestamp = it[Likes.timestamp],
+                visibleToOwner = it[Likes.visibleToOwner]
             )
         }
     }
@@ -72,7 +80,8 @@ class LikeDaoImpl : LikeDao {
                 id = it[Likes.id],
                 userId = it[Likes.userId],
                 articleId = it[Likes.articleId] ?: DELETED_ARTICLE_ID,
-                timestamp = it[Likes.timestamp]
+                timestamp = it[Likes.timestamp],
+                visibleToOwner = it[Likes.visibleToOwner]
             )
         }
     }
@@ -115,6 +124,18 @@ class LikeDaoImpl : LikeDao {
                 .mapToLike()
         }
     }
+
+    override suspend fun update(id: Long, data: Like) {
+        dbTransaction {
+            Likes.update(where = { Likes.id eq id }) { state ->
+                state.setKeyValue(data)
+            }
+        }
+    }
+
+    private fun UpdateBuilder<Int>.setKeyValue(like: Like) {
+        this[Likes.visibleToOwner] = like.visibleToOwner
+    }
 }
 
 fun Iterable<ResultRow>.mapToLike(): List<Like> {
@@ -123,7 +144,8 @@ fun Iterable<ResultRow>.mapToLike(): List<Like> {
             id = it[Likes.id],
             userId = it[Likes.userId],
             articleId = it[Likes.articleId] ?: DELETED_ARTICLE_ID,
-            timestamp = it[Likes.timestamp]
+            timestamp = it[Likes.timestamp],
+            visibleToOwner = it[Likes.visibleToOwner]
         )
     }
 }

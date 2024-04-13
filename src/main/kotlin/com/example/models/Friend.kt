@@ -28,6 +28,11 @@ data class Friend(
     val whoId: Long = Long.Default,
 
     /**
+     * 该关注是否应该展示给[whoId]
+     */
+    val visibleToOwner: Boolean = true,
+
+    /**
      * 什么时候关注的
      */
     val timestamp: Long = Long.Default

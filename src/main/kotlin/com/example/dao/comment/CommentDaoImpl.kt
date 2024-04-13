@@ -38,8 +38,11 @@ class CommentDaoImpl : CommentDao {
 
     override suspend fun read(id: Long): Comment? {
         return dbTransaction {
-            Comments.selectAll().where { Comments.id eq id }
-                .mapToComment().singleOrNull()
+            Comments.selectAll()
+                .where { Comments.id eq id }
+                .limit(1)
+                .mapToComment()
+                .singleOrNull()
         }
     }
 

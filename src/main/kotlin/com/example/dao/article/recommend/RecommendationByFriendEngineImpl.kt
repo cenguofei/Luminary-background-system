@@ -2,7 +2,7 @@ package com.example.dao.article.recommend
 
 import com.example.dao.friend.FriendDao
 import com.example.models.Article
-import com.example.models.ext.UserFriend
+import com.example.models.ext.RemoteUserFriend
 import com.example.util.logi
 
 /**
@@ -48,7 +48,7 @@ class RecommendationByFriendEngineImpl(
     private val userActions get() = _userActions!!
 
     // 获取用户的行为列表
-    private suspend fun getUserActions(userId: Long, friends: List<UserFriend>): List<UserAction> {
+    private suspend fun getUserActions(userId: Long, friends: List<RemoteUserFriend>): List<UserAction> {
         if (_userActions == null) {
             _userActions = UserActions(friends).userActions(userId)
         }

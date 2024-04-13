@@ -46,7 +46,7 @@ class LikePageDao(
                     this.articleId
                 },
                 additionalConstraint = {
-                    Articles.userId eq loginUserId
+                    (Articles.userId eq loginUserId) and (Likes.visibleToOwner eq true)
                 }
             ).selectAll().mapToArticle()
         }
@@ -85,7 +85,8 @@ class LikePageDao(
                         id = it[Likes.id],
                         userId = it[Likes.userId],
                         articleId = it[Likes.articleId] ?: DELETED_ARTICLE_ID,
-                        timestamp = it[Likes.timestamp]
+                        timestamp = it[Likes.timestamp],
+                        visibleToOwner = it[Likes.visibleToOwner]
                     )
                 )
             }
@@ -98,7 +99,8 @@ class LikePageDao(
             LikeMessage(
                 likeUser = user,
                 article = find!!,
-                timestamp = like.timestamp
+                timestamp = like.timestamp,
+                likeId = like.id
             )
         }.sortedByDescending { it.timestamp }
     }
@@ -112,6 +114,7 @@ data class Temp(
 
 @kotlinx.serialization.Serializable
 data class LikeMessage(
+    val likeId: Long,
     val likeUser: User, //点赞人
     val article: Article, //点赞的文章
     val timestamp: Long

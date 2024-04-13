@@ -8,7 +8,6 @@ import com.example.models.responses.pagesData
 import com.example.util.*
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -18,7 +17,7 @@ fun Application.configureLikeRouting() {
         route(likeRootPath) {
             giveALikeRoute(likeDao)
             cancelLikeRoute(likeDao)
-            deleteLike(likeDao)
+            deleteLike()
             getAllLikesOfArticle(likeDao)
             getAllLikesOfUser(likeDao)
             pageLikes(likeDao)
@@ -67,22 +66,3 @@ private fun Route.getAllLikesOfUser(likeDao: LikeDao) {
         )
     }
 }
-
-/**
- * 传递需要删除的Like id
- */
-private fun Route.deleteLike(likeDao: LikeDao) {
-    authenticate {
-        delete(deleteLikePath) {
-            if (call.invalidId<Unit>()) {
-                return@delete
-            }
-            likeDao.delete(call.id)
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = DataResponse<Unit>().copy(msg = deleteSuccess)
-            )
-        }
-    }
-}
-

@@ -17,6 +17,8 @@ interface LikeDao : LunimaryDao<Like, Likes> {
 
     override suspend fun read(id: Long): Like?
 
+    override suspend fun update(id: Long, data: Like)
+
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Like>
 
     override suspend fun pageCount(): Long

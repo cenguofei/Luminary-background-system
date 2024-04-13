@@ -4,7 +4,7 @@ import com.example.dao.collect.CollectDao
 import com.example.dao.comment.CommentDao
 import com.example.dao.like.LikeDao
 import com.example.dao.view.ViewArticleDao
-import com.example.models.ext.UserFriend
+import com.example.models.ext.RemoteUserFriend
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.util.logi
 
@@ -16,11 +16,11 @@ interface UserActions {
 }
 
 fun UserActions(
-    friends: List<UserFriend>
+    friends: List<RemoteUserFriend>
 ): UserActions = UserActionsImpl(friends)
 
 internal class UserActionsImpl(
-    private val friends: List<UserFriend>
+    private val friends: List<RemoteUserFriend>
 ) : UserActions {
 
     override suspend fun userActions(loginUserId: Long): List<UserAction> {

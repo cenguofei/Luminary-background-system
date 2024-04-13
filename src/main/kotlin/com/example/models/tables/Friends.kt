@@ -32,6 +32,9 @@ object Friends : Table() {
             onUpdate = ReferenceOption.CASCADE
         ).nullable()
 
+    val visibleToOwner = bool("visible_to_owner")
+        .default(true)
+
     val timestamp = long("timestamp")
 
     override val primaryKey = PrimaryKey(id)

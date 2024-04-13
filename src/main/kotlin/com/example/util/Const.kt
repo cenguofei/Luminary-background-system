@@ -103,6 +103,7 @@ inline val myFollowingsPath: String get() = "/following/{userId}"
 inline val myFollowersPath: String get() = "/followers/{userId}"
 inline val existingFriendshipPath: String get() = "/existing_friendship"
 inline val mutualFollowFriendsPath: String get() = "/mutual/{userId}"
+inline val invisibleFollowPath: String get() = "/invisible_follow/{followerId}"
 //Token
 inline val refreshToken: String get() = "/token/refresh"
 //Online Status

@@ -1,7 +1,8 @@
 package com.example.dao.friend
 
 import com.example.models.*
-import com.example.models.ext.UserFriend
+import com.example.models.ext.RemoteUserFriend
+import com.example.models.tables.Articles
 import com.example.models.tables.DELETED_USER_ID
 import com.example.models.tables.Friends
 import com.example.models.tables.Users
@@ -26,6 +27,7 @@ class FriendDaoImpl : FriendDao {
             it[whoId] = data.whoId
             val ts = if (data.timestamp == Long.Default) System.currentTimeMillis() else data.timestamp
             it[timestamp] = ts
+            it[visibleToOwner] = data.visibleToOwner
         }[Friends.id]
     }
 
@@ -61,7 +63,7 @@ class FriendDaoImpl : FriendDao {
             .mapToFriend()
     }
 
-    override suspend fun allFollowMeToUsers(loginUserId: Long): List<UserFriend> {
+    override suspend fun allFollowMeToUsers(loginUserId: Long): List<RemoteUserFriend> {
         return dbTransaction {
             Users.innerJoin(
                 otherTable = Friends,
@@ -74,7 +76,7 @@ class FriendDaoImpl : FriendDao {
         }
     }
 
-    override suspend fun mutualFollowUsers(loginUserId: Long): List<UserFriend> {
+    override suspend fun mutualFollowUsers(loginUserId: Long): List<RemoteUserFriend> {
         return dbTransaction {
             val followMe = FriendDao.allFollowMeOnlyFriends(loginUserId).map { it.userId }
             "followMe=$followMe".logw("follow_me")
@@ -130,13 +132,26 @@ class FriendDaoImpl : FriendDao {
         return count()
     }
 
+    override suspend fun read(userId: Long, whoId: Long): Friend? {
+        return read { Friends.userId eq userId and Friends.whoId.eq(whoId) }
+    }
+
+    override suspend fun update(data: Friend) {
+        dbTransaction {
+            Friends.update(where = { Friends.id eq data.id }) { state ->
+                state[visibleToOwner] = data.visibleToOwner
+            }
+        }
+    }
+
     private fun Iterable<ResultRow>.mapToFriend(): List<Friend> {
         return map {
             Friend(
                 id = it[Friends.id],
                 userId = it[Friends.userId] ?: DELETED_USER_ID,
                 whoId = it[Friends.whoId] ?: DELETED_USER_ID,
-                timestamp = it[Friends.timestamp]
+                timestamp = it[Friends.timestamp],
+                visibleToOwner = it[Friends.visibleToOwner]
             )
         }
     }
@@ -147,14 +162,15 @@ class FriendDaoImpl : FriendDao {
                 id = it[Friends.id],
                 userId = it[Friends.userId] ?: DELETED_USER_ID,
                 whoId = it[Friends.whoId] ?: DELETED_USER_ID,
-                timestamp = it[Friends.timestamp]
+                timestamp = it[Friends.timestamp],
+                visibleToOwner = it[Friends.visibleToOwner]
             )
         }.singleOrNull()
     }
 
-    private fun Iterable<ResultRow>.mapToUserFriend(): List<UserFriend> {
+    private fun Iterable<ResultRow>.mapToUserFriend(): List<RemoteUserFriend> {
         return map {
-            UserFriend(
+            RemoteUserFriend(
                 user = User(
                     username = it[Users.username],
                     age = it[Users.age],
@@ -170,7 +186,8 @@ class FriendDaoImpl : FriendDao {
                     location = it[Users.location],
                     blogAddress = it[Users.blogAddress]
                 ),
-                beFriendTime = it[Friends.timestamp]
+                beFriendTime = it[Friends.timestamp],
+                visibleToOwner = it[Friends.visibleToOwner]
             )
         }
     }

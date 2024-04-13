@@ -24,6 +24,8 @@ interface LunimaryDao<T, P: Table> : LunimaryPage<T> {
      */
     suspend fun update(id: Long, data: T) { throw UnsupportedOperationException() }
 
+    suspend fun update(data: T) { throw UnsupportedOperationException() }
+
     /**
      * 获取一条数据
      */

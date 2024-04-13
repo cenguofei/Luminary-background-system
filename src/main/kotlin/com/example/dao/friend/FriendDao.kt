@@ -2,7 +2,7 @@ package com.example.dao.friend
 
 import com.example.dao.LunimaryDao
 import com.example.models.Friend
-import com.example.models.ext.UserFriend
+import com.example.models.ext.RemoteUserFriend
 import com.example.models.tables.Friends
 
 interface FriendDao : LunimaryDao<Friend, Friends> {
@@ -17,6 +17,8 @@ interface FriendDao : LunimaryDao<Friend, Friends> {
     suspend fun delete(userId: Long, whoId: Long)
 
     override suspend fun read(id: Long): Friend?
+
+    override suspend fun update(data: Friend)
 
     /**
      * 返回ids关注的用户
@@ -39,12 +41,12 @@ interface FriendDao : LunimaryDao<Friend, Friends> {
     /**
      * 关注我的用户
      */
-    suspend fun allFollowMeToUsers(loginUserId: Long) : List<UserFriend>
+    suspend fun allFollowMeToUsers(loginUserId: Long) : List<RemoteUserFriend>
 
     /**
      * 获取我的朋友，朋友是相互关注的
      */
-    suspend fun mutualFollowUsers(loginUserId: Long) : List<UserFriend>
+    suspend fun mutualFollowUsers(loginUserId: Long) : List<RemoteUserFriend>
 
     /**
      * 取关
@@ -59,6 +61,8 @@ interface FriendDao : LunimaryDao<Friend, Friends> {
     suspend fun deleteBothNull()
 
     suspend fun existing(userId: Long, whoId: Long): Boolean
+
+    suspend fun read(userId: Long, whoId: Long): Friend?
 
     suspend fun existingOfUserId(userId: Long): Boolean
 
