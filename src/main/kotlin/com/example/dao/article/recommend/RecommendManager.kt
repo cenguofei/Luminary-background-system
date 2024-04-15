@@ -13,7 +13,7 @@ import com.example.models.Article
  * 假设pageStart=3, perPageCount=5，那么如果用户之前请求数据失败，此时执行刷新操作，就会返回pageStart=3, perPageCount=5的数据，
  * 但是这个数据是之前返回过的，旧数据被5条优先级高的挤到后面去了，还有其他类似的情况都会导致用户获取到重复的数据，所以需要记录浏览过的文章ID
  */
-object RecommendArticlesManager {
+object RecommendManager {
     /**
      * key: loginUserId
      * value: articleIds

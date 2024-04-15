@@ -4,7 +4,7 @@ import com.example.models.Article
 
 const val RECOMMEND_TAG = "recommend_articles"
 
-interface RecommendArticlesFacade {
+interface RecommendFacade {
     /**
      * 根据推荐算法返回推荐文章
      */
@@ -12,6 +12,6 @@ interface RecommendArticlesFacade {
         loginUserId: Long
     ): List<Article>
 
-    companion object : RecommendArticlesFacade by RecommendArticlesFacadeImpl()
+    companion object : RecommendFacade by RecommendFacadeImpl()
 }
 

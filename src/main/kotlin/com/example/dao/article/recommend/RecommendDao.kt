@@ -6,7 +6,7 @@ import com.example.models.Article
 import com.example.util.dbTransaction
 import com.example.util.logi
 
-class RecommendArticlesDao(
+class RecommendDao(
     private val loginUserId: Long
 ) : DefaultArticleDao() {
     private var _pageParam: PageParam? = null
@@ -35,7 +35,7 @@ class RecommendArticlesDao(
     }
 
     private suspend fun fetchNew(): List<Article> {
-        return RecommendArticlesFacade.recommendArticles(loginUserId)
+        return RecommendFacade.recommendArticles(loginUserId)
     }
 
     private var hasAddOtherRecommendSource = false

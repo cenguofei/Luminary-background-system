@@ -2,8 +2,8 @@ package com.example.routings.article
 
 import com.example.dao.article.ArticleDao
 import com.example.dao.article.FriendsArticleDao
-import com.example.dao.article.recommend.RecommendArticlesDao
-import com.example.dao.article.recommend.RecommendArticlesManager
+import com.example.dao.article.recommend.RecommendDao
+import com.example.dao.article.recommend.RecommendManager
 import com.example.models.Article
 import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
@@ -37,11 +37,11 @@ fun Route.pageRecommendedArticles() {
             val wishPage = it.request.queryParameters["wishPage"]?.toInt() ?: Int.Default
             if (wishPage == 0) {
                 //当用户刷新或者重新进入app时更新缓存
-                RecommendArticlesManager.remove(loginUserId)
+                RecommendManager.remove(loginUserId)
                 "RecommendArticlesManager.remove $loginUserId".logi("update_cache")
             }
-            RecommendArticlesManager.getOrPut(loginUserId) {
-                RecommendArticlesDao(loginUserId)
+            RecommendManager.getOrPut(loginUserId) {
+                RecommendDao(loginUserId)
             }
         },
         requestPath = pageRecommendedArticlesPath,
