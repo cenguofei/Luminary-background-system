@@ -2,6 +2,7 @@ package com.example.dao.message
 
 import com.example.dao.LunimaryPage
 import com.example.dao.article.mapToArticle
+import com.example.dao.user.mapRowToUser
 import com.example.models.*
 import com.example.models.tables.Articles
 import com.example.models.tables.DELETED_ARTICLE_ID
@@ -67,21 +68,7 @@ class LikePageDao(
                 }
             ).selectAll().map {
                 Temp(
-                    user = User(
-                        username = it[Users.username],
-                        age = it[Users.age],
-                        sex = Sex.valueOf(it[Users.sex]),
-                        id = it[Users.id],
-                        headUrl = it[Users.headUrl],
-                        background = it[Users.background],
-                        role = Role.valueOf(it[Users.role]),
-                        status = UserStatus.valueOf(it[Users.status]),
-                        password = it[Users.password],
-                        birth = it[Users.birth],
-                        signature = it[Users.signature],
-                        location = it[Users.location],
-                        blogAddress = it[Users.blogAddress]
-                    ),
+                    user = it.mapRowToUser(),
                     like = Like(
                         id = it[Likes.id],
                         userId = it[Likes.userId],

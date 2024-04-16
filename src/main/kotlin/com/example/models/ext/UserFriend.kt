@@ -8,5 +8,5 @@ data class UserFriend(
     val beFriendTime: Long,
 
     @kotlinx.serialization.Transient
-    val visibleToOwner: Boolean
+    val visibleToOwner: Boolean = true
 ) : java.io.Serializable

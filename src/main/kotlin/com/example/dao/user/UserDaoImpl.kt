@@ -39,7 +39,7 @@ class UserDaoImpl : UserDao {
     override suspend fun read(id: Long): User? = read { Users.id eq id }
 
     override suspend fun readByUsername(username: String, pwdNeeded: Boolean): User? =
-        read(pwdNeeded = pwdNeeded) { Users.username eq username }
+        read { Users.username eq username }
 
     override suspend fun update(id: Long, data: User) =
         update(selector = { Users.id eq id }, data)
@@ -111,33 +111,34 @@ class UserDaoImpl : UserDao {
     }
 
     private suspend fun read(
-        pwdNeeded: Boolean = false,
         selector: () -> Op<Boolean>
     ): User? = dbTransaction {
         Users.selectAll().where { selector() }
             .limit(1)
-            .mapToUser(pwdNeeded)
+            .mapToUser()
             .singleOrNull()
     }
 }
 
-fun Iterable<ResultRow>.mapToUser(pwdNeeded: Boolean = false): List<User> {
-    return map {
-        User(
-            username = it[Users.username],
-            age = it[Users.age],
-            sex = Sex.valueOf(it[Users.sex]),
-            id = it[Users.id],
-            headUrl = it[Users.headUrl],
-            background = it[Users.background],
-            role = Role.valueOf(it[Users.role]),
-            status = UserStatus.valueOf(it[Users.status]),
-            password = it[Users.password],
+fun Iterable<ResultRow>.mapToUser(): List<User> {
+    return map { it.mapRowToUser() }
+}
 
-            birth = it[Users.birth],
-            signature = it[Users.signature],
-            location = it[Users.location],
-            blogAddress = it[Users.blogAddress]
-        )
-    }
+fun ResultRow.mapRowToUser(): User {
+    val row = this
+    return User(
+        username = row[Users.username],
+        age = row[Users.age],
+        sex = Sex.valueOf(row[Users.sex]),
+        id = row[Users.id],
+        headUrl = row[Users.headUrl],
+        background = row[Users.background],
+        role = Role.valueOf(row[Users.role]),
+        status = UserStatus.valueOf(row[Users.status]),
+        password = row[Users.password],
+        birth = row[Users.birth],
+        signature = row[Users.signature],
+        location = row[Users.location],
+        blogAddress = row[Users.blogAddress]
+    )
 }

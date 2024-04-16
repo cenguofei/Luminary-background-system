@@ -1,6 +1,7 @@
 package com.example.dao.friend
 
-import com.example.models.*
+import com.example.dao.user.mapRowToUser
+import com.example.models.Friend
 import com.example.models.ext.UserFriend
 import com.example.models.tables.DELETED_USER_ID
 import com.example.models.tables.Friends
@@ -170,21 +171,7 @@ class FriendDaoImpl : FriendDao {
     private fun Iterable<ResultRow>.mapToUserFriend(): List<UserFriend> {
         return map {
             UserFriend(
-                user = User(
-                    username = it[Users.username],
-                    age = it[Users.age],
-                    sex = Sex.valueOf(it[Users.sex]),
-                    id = it[Users.id],
-                    headUrl = it[Users.headUrl],
-                    background = it[Users.background],
-                    role = Role.valueOf(it[Users.role]),
-                    status = UserStatus.valueOf(it[Users.status]),
-                    password = it[Users.password],
-                    birth = it[Users.birth],
-                    signature = it[Users.signature],
-                    location = it[Users.location],
-                    blogAddress = it[Users.blogAddress]
-                ),
+                user = it.mapRowToUser(),
                 beFriendTime = it[Friends.timestamp],
                 visibleToOwner = it[Friends.visibleToOwner]
             )
