@@ -25,5 +25,8 @@ data class Comment(
     /**
      * Comment time
      */
-    val timestamp: Long = Long.Default
+    val timestamp: Long = Long.Default,
+
+    @kotlinx.serialization.Transient
+    val visibleToOwner: Boolean = true
 ) : java.io.Serializable

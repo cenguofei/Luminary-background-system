@@ -1,12 +1,12 @@
 package com.example.dao.friend
 
 import com.example.dao.LunimaryPage
-import com.example.models.ext.ClientUserFriend
+import com.example.models.ext.UserFriend
 
 class FriendPageDao(
     private val userId: Long
-) : LunimaryPage<ClientUserFriend> {
-    override suspend fun pages(pageStart: Int, perPageCount: Int): List<ClientUserFriend> {
+) : LunimaryPage<UserFriend> {
+    override suspend fun pages(pageStart: Int, perPageCount: Int): List<UserFriend> {
         check()
         return friends.page(pageStart, perPageCount)
     }
@@ -22,18 +22,12 @@ class FriendPageDao(
         }
     }
 
-    private var _friends: List<ClientUserFriend>? = null
+    private var _friends: List<UserFriend>? = null
     private val friends get() = _friends!!
 
     private suspend fun getData() {
         val mutualFollowUsers = FriendDao.mutualFollowUsers(userId)
             .distinctBy { it.user.id }
-            .map {
-                ClientUserFriend(
-                    user = it.user,
-                    beFriendTime = it.beFriendTime
-                )
-            }
         _friends = mutualFollowUsers
     }
 }

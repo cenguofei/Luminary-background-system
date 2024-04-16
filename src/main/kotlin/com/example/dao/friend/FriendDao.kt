@@ -2,7 +2,7 @@ package com.example.dao.friend
 
 import com.example.dao.LunimaryDao
 import com.example.models.Friend
-import com.example.models.ext.RemoteUserFriend
+import com.example.models.ext.UserFriend
 import com.example.models.tables.Friends
 
 interface FriendDao : LunimaryDao<Friend, Friends> {
@@ -41,12 +41,12 @@ interface FriendDao : LunimaryDao<Friend, Friends> {
     /**
      * 关注我的用户
      */
-    suspend fun allFollowMeToUsers(loginUserId: Long) : List<RemoteUserFriend>
+    suspend fun allFollowMeToUsers(loginUserId: Long) : List<UserFriend>
 
     /**
      * 获取我的朋友，朋友是相互关注的
      */
-    suspend fun mutualFollowUsers(loginUserId: Long) : List<RemoteUserFriend>
+    suspend fun mutualFollowUsers(loginUserId: Long) : List<UserFriend>
 
     /**
      * 取关

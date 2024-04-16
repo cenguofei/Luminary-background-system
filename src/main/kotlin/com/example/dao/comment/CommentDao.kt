@@ -27,6 +27,8 @@ interface CommentDao : LunimaryDao<Comment, Comments> {
 
     override suspend fun read(id: Long): Comment?
 
+    override suspend fun update(data: Comment)
+
     override suspend fun count(): Long = Comments.count()
 
     suspend fun friendComments(friends: List<Long>): List<Comment>

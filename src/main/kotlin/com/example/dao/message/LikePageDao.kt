@@ -62,7 +62,8 @@ class LikePageDao(
                     this.userId
                 },
                 additionalConstraint = {
-                    (Likes.articleId inList likedArticlesId) and (Users.id neq loginUserId)
+                    (Users.id neq loginUserId).and(Likes.articleId inList likedArticlesId)
+                        .and(Likes.visibleToOwner eq true)
                 }
             ).selectAll().map {
                 Temp(

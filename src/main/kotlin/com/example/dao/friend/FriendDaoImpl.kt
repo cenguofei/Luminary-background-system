@@ -1,8 +1,7 @@
 package com.example.dao.friend
 
 import com.example.models.*
-import com.example.models.ext.RemoteUserFriend
-import com.example.models.tables.Articles
+import com.example.models.ext.UserFriend
 import com.example.models.tables.DELETED_USER_ID
 import com.example.models.tables.Friends
 import com.example.models.tables.Users
@@ -63,7 +62,7 @@ class FriendDaoImpl : FriendDao {
             .mapToFriend()
     }
 
-    override suspend fun allFollowMeToUsers(loginUserId: Long): List<RemoteUserFriend> {
+    override suspend fun allFollowMeToUsers(loginUserId: Long): List<UserFriend> {
         return dbTransaction {
             Users.innerJoin(
                 otherTable = Friends,
@@ -76,7 +75,7 @@ class FriendDaoImpl : FriendDao {
         }
     }
 
-    override suspend fun mutualFollowUsers(loginUserId: Long): List<RemoteUserFriend> {
+    override suspend fun mutualFollowUsers(loginUserId: Long): List<UserFriend> {
         return dbTransaction {
             val followMe = FriendDao.allFollowMeOnlyFriends(loginUserId).map { it.userId }
             "followMe=$followMe".logw("follow_me")
@@ -168,9 +167,9 @@ class FriendDaoImpl : FriendDao {
         }.singleOrNull()
     }
 
-    private fun Iterable<ResultRow>.mapToUserFriend(): List<RemoteUserFriend> {
+    private fun Iterable<ResultRow>.mapToUserFriend(): List<UserFriend> {
         return map {
-            RemoteUserFriend(
+            UserFriend(
                 user = User(
                     username = it[Users.username],
                     age = it[Users.age],

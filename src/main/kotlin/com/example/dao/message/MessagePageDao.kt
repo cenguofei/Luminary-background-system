@@ -53,15 +53,16 @@ class MessageDao(private val loginUser: User) : LunimaryPage<CommentItem> {
             _messages = listOf()
             return
         }
-        val commentItems = result.map { tmp ->
-            tmp.comments.map { comment ->
-                CommentItem(
-                    user = tmp.user,
-                    article = tmp.article,
-                    comment = comment
-                )
-            }
-        }.flatten().sortedByDescending { it.comment.timestamp }
+        val commentItems = result
+            .map { tmp ->
+                tmp.comments.map { comment ->
+                    CommentItem(
+                        user = tmp.user,
+                        article = tmp.article,
+                        comment = comment
+                    )
+                }
+            }.flatten().sortedByDescending { it.comment.timestamp }
         this._messages = commentItems
         println("message_for_comments end")
     }

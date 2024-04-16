@@ -6,10 +6,7 @@ import com.example.dao.user.UserDao
 import com.example.models.Comment
 import com.example.models.ext.CommentWithUser
 import com.example.models.responses.DataResponse
-import com.example.models.responses.PageOptions
-import com.example.models.responses.pagesData
 import com.example.plugins.security.jwtUser
-import com.example.plugins.security.noSession
 import com.example.util.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -25,16 +22,8 @@ fun Application.configureCommentRouting() {
             deleteComment(commentDao)
             getAllCommentsOfArticle(commentDao)
             getAllCommentsOfUser(commentDao)
-            pageComments(commentDao)
         }
     }
-}
-
-private fun Route.pageComments(commentDao: CommentDao) {
-    pagesData<Comment>(
-        pageOptions = PageOptions { commentDao },
-        requestPath = pageCommentsPath
-    )
 }
 
 /**
@@ -60,24 +49,30 @@ private fun Route.deleteComment(commentDao: CommentDao) {
 
             val user = call.jwtUser!!
             var shouldDelete = false
-            if (readComment.id == user.id) {
+            var shouldInvisibleToTheUser = false
+            if (readComment.userId == user.id) {
                 shouldDelete = true
             } else {
                 val userArticlesOnlyId = ArticleDao.userArticlesOnlyId(user.id)
                 if (readComment.articleId in userArticlesOnlyId) {
-                    shouldDelete = true
+                    shouldInvisibleToTheUser = true
                 }
             }
-            if (!shouldDelete) {
+            if (shouldDelete) {
+                commentDao.delete(commentID)
+            }
+            if (shouldInvisibleToTheUser) {
+                commentDao.update(readComment.copy(visibleToOwner = false))
+            }
+
+            if (!shouldDelete && !shouldInvisibleToTheUser) {
                 call.respond(
                     status = HttpStatusCode.Conflict,
-                    message = DataResponse<Boolean>().copy(
-                        msg = "You cannot delete this comment."
-                    )
+                    message = "You cannot delete this comment."
                 )
                 return@delete
             }
-            commentDao.delete(commentID)
+
             call.respond(
                 status = HttpStatusCode.OK,
                 message = DataResponse<Boolean>().copy(

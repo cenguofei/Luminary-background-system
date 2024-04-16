@@ -12,7 +12,9 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class CommentDaoImpl : CommentDao {
-    init { transaction(database) { SchemaUtils.create(Comments) } }
+    init {
+        transaction(database) { SchemaUtils.create(Comments) }
+    }
 
     private val articleDao = ArticleDao
 
@@ -24,6 +26,7 @@ class CommentDaoImpl : CommentDao {
             val ts = if (data.timestamp == Long.Default) System.currentTimeMillis() else data.timestamp
             state[timestamp] = ts
             state[articleId] = data.articleId
+            state[visibleToOwner] = data.visibleToOwner
         }[Comments.id]
     }
 
@@ -61,16 +64,26 @@ class CommentDaoImpl : CommentDao {
     override suspend fun getCommentsByIdsOfArticle(articleIds: List<Long>): List<Comment> {
         return dbTransaction {
             Comments.selectAll().where {
-                Comments.articleId inList articleIds
+                (Comments.visibleToOwner eq true) and (Comments.articleId inList articleIds)
             }.mapToComment()
         }
     }
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Comment> =
-        Comments.getPageQuery(pageStart, perPageCount).mapToComment()
+        Comments.getPageQuery(
+            pageStart = pageStart,
+            perPageCount = perPageCount,
+            where = {
+                Comments.visibleToOwner eq true
+            }
+        ).mapToComment()
 
     override suspend fun pageCount(): Long {
-        return count()
+        return dbTransaction {
+            Comments.selectAll().where {
+                Comments.visibleToOwner eq true
+            }.count()
+        }
     }
 
     override suspend fun friendComments(friends: List<Long>): List<Comment> {
@@ -78,6 +91,17 @@ class CommentDaoImpl : CommentDao {
             Comments.selectAll().where {
                 Comments.userId inList friends
             }.mapToComment()
+        }
+    }
+
+    override suspend fun update(data: Comment) {
+        dbTransaction {
+            Comments.update(
+                where = { Comments.id eq data.id },
+                limit = 1
+            ) { state ->
+                state[visibleToOwner] = data.visibleToOwner
+            }
         }
     }
 }
@@ -89,7 +113,8 @@ fun Iterable<ResultRow>.mapToComment(): List<Comment> {
             articleId = it[Comments.articleId] ?: DELETED_ARTICLE_ID,
             userId = it[Comments.userId],
             content = it[Comments.content],
-            timestamp = it[Comments.timestamp]
+            timestamp = it[Comments.timestamp],
+            visibleToOwner = it[Comments.visibleToOwner]
         )
     }
 }

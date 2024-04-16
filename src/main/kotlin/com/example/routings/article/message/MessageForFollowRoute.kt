@@ -1,7 +1,7 @@
 package com.example.routings.article.message
 
 import com.example.dao.message.FollowPageDao
-import com.example.models.ext.ClientUserFriend
+import com.example.models.ext.UserFriend
 import com.example.models.responses.PageOptions
 import com.example.models.responses.pagesData
 import com.example.plugins.security.jwtUser
@@ -13,7 +13,7 @@ import io.ktor.server.routing.*
 
 fun Route.messageForFollowRoute() {
     authenticate {
-        pagesData<ClientUserFriend>(
+        pagesData<UserFriend>(
             requestPath = messageFollowPath,
             pageOptions = PageOptions(
                 onIntercept = {

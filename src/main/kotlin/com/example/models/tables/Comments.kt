@@ -1,5 +1,6 @@
 package com.example.models.tables
 
+import com.example.models.tables.Likes.default
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 
@@ -25,6 +26,9 @@ object Comments : Table() {
         onDelete = ReferenceOption.SET_NULL,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
+
+    val visibleToOwner = bool("visible_to_owner")
+        .default(true)
 
     val timestamp = long("timestamp")
 
