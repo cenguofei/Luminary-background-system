@@ -95,7 +95,7 @@ class UserDaoImpl : UserDao {
                     it[sex] = user.sex.toString()
                     it[headUrl] = user.headUrl
                     it[background] = user.background
-                    if (user.password.isNotEmpty()) {
+                    if (user.password.isNotBlank()) {
                         it[password] = encrypt(user.password)
                     }
                     it[role] = user.role.toString()

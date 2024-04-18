@@ -1,6 +1,7 @@
 package com.example.routings.user.routes
 
 import com.example.dao.user.UserDao
+import com.example.dao.user.UserDaoFacadeImpl
 import com.example.models.User
 import com.example.models.UserStatus
 import com.example.models.responses.UserData
@@ -28,7 +29,7 @@ fun Route.crud(userDao: UserDao) {
          */
         get(getUserPath) {
             val id = call.parameters["userId"]?.toLong()
-            if (call.checkSessionAndId(id, userDao)) {
+            if (call.check(id)) {
                 return@get
             }
             val user = userDao.read(id!!)
@@ -50,29 +51,31 @@ fun Route.crud(userDao: UserDao) {
         // Update user
         put(updateUserPath) {
             val id = call.parameters["id"]?.toLong()
-            if (call.checkSessionAndId(id, userDao)) {
+            if (call.check(id)) {
                 return@put
             }
-
+            val jwtUser = call.jwtUser!!
             call.receive<User>(
                 errorMessage = UserResponse().copy(msg = HttpStatusCode.BadRequest.description)
             ) { user ->
-                if (user.username != call.sessionUser?.username) {
+                if (user.username != jwtUser.username) {
+                    //用户名发生变化
                     val existingUser = userDao.readByUsername(user.username)
                     if (existingUser != null) {
-                        //更新session
-                        call.sessions.set(call.sessionUser?.copy(username = user.username))
-                    } else {
+                        //已经存在用户
                         call.respond(
                             status = HttpStatusCode.Conflict,
-                            message = UserResponse().copy(msg = "No user found: ${user.username}.")
+                            message = UserResponse().copy(msg = "Username ${user.username} has been occupied.")
                         )
                         return@put
+                    } else {
+                        call.sessions.set(call.sessionUser?.copy(username = user.username))
                     }
                 }
                 userDao.updateViaRead(id!!) {
                     user.copy(password = it.password)
                 }
+                UserDaoFacadeImpl.remove(jwtUser.username)
                 "Hello, ${call.jwtUser}!".logi("credentials")
                 call.respond(
                     status = HttpStatusCode.OK,
@@ -86,7 +89,7 @@ fun Route.crud(userDao: UserDao) {
         // Delete user
         delete(deleteUserPath) {
             val id = call.parameters["id"]?.toLong()
-            if (call.checkSessionAndId(id, userDao)) {
+            if (call.check(id)) {
                 return@delete
             }
             userDao.updateViaRead(id!!) { old ->
@@ -110,7 +113,7 @@ fun Route.crud(userDao: UserDao) {
         // Delete user
         delete("/direct_delete/{id}") {
             val id = call.parameters["id"]?.toLong()
-            if (call.checkSessionAndId(id, userDao)) {
+            if (call.check(id)) {
                 return@delete
             }
             userDao.delete(id!!)
@@ -123,10 +126,18 @@ fun Route.crud(userDao: UserDao) {
     }
 }
 
-private suspend fun ApplicationCall.checkSessionAndId(
-    id: Long?,
-    userDao: UserDao
+private suspend fun ApplicationCall.check(
+    id: Long?
 ) : Boolean {
+    val jwtUser = jwtUser
+    if (jwtUser == null) {
+        respond(
+            status = HttpStatusCode.InternalServerError,
+            message = UserResponse()
+        )
+        return false
+    }
+
     var flag = false
     //没有登录状态，应该先登录
     if (noSession) {

@@ -20,7 +20,7 @@ fun Route.registerRoute(userDao: UserDao) {
         val username = parameters["username"]
         val password = parameters["password"]
 
-        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+        if (username.isNullOrBlank() || password.isNullOrBlank()) {
             call.respond(
                 status = HttpStatusCode.Conflict,
                 message = UserResponse().copy(

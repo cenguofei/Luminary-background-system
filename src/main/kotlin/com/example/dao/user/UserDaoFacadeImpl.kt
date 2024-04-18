@@ -6,8 +6,6 @@ import com.example.plugins.database.userTypeOfUsernameCache
 import com.example.util.logd
 
 class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao {
-    private val idCache = userTypeOfIdCache
-    private val usernameCache = userTypeOfUsernameCache
 
     override suspend fun create(data: User): Long =
         delegate.create(data)
@@ -44,6 +42,8 @@ class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao
             idCache.put(id, data)
             usernameCache.put(data.username, data)
         }
+
+
 
     override suspend fun updateByUsername(username: String, user: User) =
         delegate.updateByUsername(username, user)
@@ -84,5 +84,16 @@ class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao
 
     override suspend fun existing(id: Long): Boolean {
         return delegate.existing(id)
+    }
+
+    companion object {
+        private val idCache = userTypeOfIdCache
+        private val usernameCache = userTypeOfUsernameCache
+
+        fun remove(username: String) {
+            if (usernameCache.containsKey(username)) {
+                usernameCache.remove(username)
+            }
+        }
     }
 }
