@@ -26,7 +26,7 @@ class UserDaoImpl : UserDao {
             it[sex] = data.sex.toString()
             it[headUrl] = data.headUrl
             it[background] = data.background
-            it[password] = encrypt(data.password)
+            it[password] = data.password
             it[role] = data.role.toString()
             it[status] = data.status.toString()
             it[birth] = data.birth
@@ -95,9 +95,9 @@ class UserDaoImpl : UserDao {
                     it[sex] = user.sex.toString()
                     it[headUrl] = user.headUrl
                     it[background] = user.background
-                    if (user.password.isNotBlank()) {
+/*                    if (user.password.isNotBlank()) {
                         it[password] = encrypt(user.password)
-                    }
+                    }*/
                     it[role] = user.role.toString()
                     it[status] = user.status.toString()
 

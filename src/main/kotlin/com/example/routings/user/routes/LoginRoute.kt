@@ -50,7 +50,7 @@ fun Route.loginRoute(userDao: UserDao) {
             )
             return@post
         }
-        if (encrypt(password) == queryUser.password) {
+        if (password == decrypt(queryUser.password)) {
             "Hello, ${call.jwtUser}!".logi("credentials")
             //µ«¬º≥…π¶,…Ë÷√session
             call.sessions.set(UserSession(username, generateNonce()))

@@ -23,6 +23,10 @@ fun Route.logoutRoute() {
             try {
                 val username = call.sessionUser?.username ?: run {
                     "sessionUser == null".logd()
+                    call.respond(
+                        status = HttpStatusCode.Conflict,
+                        message = DataResponse<Unit>().copy(msg = "No Session.")
+                    )
                     return@post
                 }
                 StatusManager.removeStatus(username)
