@@ -3,7 +3,9 @@ package com.example.dao.message
 import com.example.dao.LunimaryPage
 import com.example.dao.article.mapToArticle
 import com.example.dao.user.mapRowToUser
-import com.example.models.*
+import com.example.models.Article
+import com.example.models.Like
+import com.example.models.User
 import com.example.models.tables.Articles
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.models.tables.Likes

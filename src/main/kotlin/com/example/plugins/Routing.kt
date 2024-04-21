@@ -10,6 +10,8 @@ import com.example.routings.common.configureCommonRouting
 import com.example.routings.file.configureFileRouting
 import com.example.routings.search.configureSearchRouting
 import com.example.routings.token.configureTokenRouting
+import com.example.routings.topic.configureTopicRouting
+import com.example.routings.topic.updateTopicRank
 import com.example.routings.user.configureUserRouting
 import com.example.routings.user.friend.configureFriendRouting
 import com.example.routings.user.status.configureReportOnlineStatusRouting
@@ -30,11 +32,6 @@ import kotlinx.html.h1
 import kotlinx.html.head
 import kotlinx.html.title
 
-val messages = listOf(
-    "hello, english",
-    "你好，中国",
-)
-
 fun Application.configureRouting() {
     configureUserRouting()
     configureFileRouting()
@@ -50,6 +47,9 @@ fun Application.configureRouting() {
     configureMessageRouting()
     configureSearchRouting()
     configureWanandroidRouting()
+    configureTopicRouting()
+
+    updateTopicRank()
     routing {
         route("/") {
             get {

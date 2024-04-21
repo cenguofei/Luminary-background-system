@@ -127,5 +127,11 @@ inline val searchRootPath: String get() = "/search"
 inline val searchArticlePath: String get() = "/article"
 inline val searchUserPath: String get() = "/user"
 
+//Topic
+inline val topicRootPath: String get() = "/topic"
+inline val userSelectedTopicsPath: String get() = "/user_selected"
+inline val recommendTopicsPath: String get() = "/recommend"
+inline val createOrUpdateTopicsPath: String get() = "/create_or_update"
+
 //Others
 inline val wanandroidSaveArticlesPath: String get() = "/wanandroid/save_articles"

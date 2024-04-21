@@ -1,9 +1,7 @@
 package com.example.dao.like
 
 import com.example.dao.article.ArticleDao
-import com.example.models.Article
 import com.example.models.Like
-import com.example.models.tables.Articles
 import com.example.models.tables.DELETED_ARTICLE_ID
 import com.example.models.tables.Likes
 import com.example.plugins.database.database

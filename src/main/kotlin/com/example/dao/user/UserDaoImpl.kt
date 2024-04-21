@@ -7,7 +7,6 @@ import com.example.models.UserStatus
 import com.example.models.tables.Users
 import com.example.plugins.database.database
 import com.example.util.dbTransaction
-import com.example.util.encrypt
 import com.example.util.logd
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
