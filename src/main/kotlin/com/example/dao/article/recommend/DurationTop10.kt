@@ -3,6 +3,7 @@ package com.example.dao.article.recommend
 import com.example.dao.article.ArticleDao
 import com.example.dao.view.duration.ViewDurationDao
 import com.example.models.Article
+import com.example.util.logi
 
 /**
  * 用户浏览过的时长最长的10种类型的文章，根据[Article.tags]区分文章类型
@@ -14,6 +15,8 @@ class DurationTop10 : OtherRecommendSource {
         val types = userDurationsTop10.map { it.type }.distinctBy { it }
         return ArticleDao.matchAllByTags(types).filter {
             it.id !in oldArticleIds
+        }.also { articles ->
+            "DurationTop10 Articles:${articles.map { it.id }}".logi(RECOMMEND_TAG)
         }
     }
 }

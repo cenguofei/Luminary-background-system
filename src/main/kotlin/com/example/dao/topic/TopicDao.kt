@@ -19,3 +19,8 @@ interface TopicDao : LunimaryDao<Topic, Topics> {
 
     companion object : TopicDao by TopicDaoImpl()
 }
+
+suspend fun userTopics(userId: Long): List<Topic> {
+    val topicsId = UserTopicsDao.read(userId)?.topics
+    return TopicDao.read(topicsId?.toList() ?: emptyList())
+}

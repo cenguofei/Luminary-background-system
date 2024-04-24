@@ -12,7 +12,10 @@ class RecommendDao(
     private var _pageParam: PageParam? = null
     private val pageParam get() = _pageParam!!
 
-    private val otherRecommendSource: List<OtherRecommendSource> = listOf(DurationTop10())
+    private val otherRecommendSource: List<OtherRecommendSource> = listOf(
+        UserInterested(),
+        DurationTop10()
+    )
 
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Article> = dbTransaction {
         _pageParam = PageParam(pageStart, perPageCount)

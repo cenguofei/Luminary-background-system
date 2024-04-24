@@ -40,7 +40,7 @@ class RecommendationByFriendEngineImpl(
         return recommendedArticleIds.mapNotNull {
             articles.find { article -> article.id == it }
         }.also { list ->
-            "result recommendedArticles=${list.map { it.id }}".logi(RECOMMEND_TAG)
+            "fetchNew recommendedArticles=${list.map { it.id }}".logi(RECOMMEND_TAG)
         }
     }
 

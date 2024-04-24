@@ -44,6 +44,9 @@ interface ArticleDao : LunimaryDao<Article, Articles> {
      */
     suspend fun getArticles(n: Int, eliminate: List<Long>): List<Article>
 
+    /**
+     * 查询包含[tags]的文章
+     */
     suspend fun matchAllByTags(tags: List<String>): List<Article>
 
     companion object : ArticleDao by ArticleDaoImpl()
