@@ -86,6 +86,10 @@ class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao
         return delegate.existing(id)
     }
 
+    override suspend fun allData(): List<User> {
+        return delegate.allData()
+    }
+
     companion object {
         private val idCache = userTypeOfIdCache
         private val usernameCache = userTypeOfUsernameCache

@@ -28,6 +28,8 @@ interface UserDao : LunimaryDao<User, Users> {
 
     override suspend fun count(): Long = Users.count()
 
+    override suspend fun allData(): List<User>
+
     companion object : UserDao by UserDaoFacadeImpl()
 }
 
@@ -63,5 +65,9 @@ open class DefaultUserDao : UserDao {
 
     override suspend fun pageCount(): Long {
         return Long.Default
+    }
+
+    override suspend fun allData(): List<User> {
+        return listOf()
     }
 }

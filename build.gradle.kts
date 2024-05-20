@@ -44,6 +44,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
     implementation("io.ktor:ktor-serialization-gson-jvm")
+    implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
 
     // database
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")

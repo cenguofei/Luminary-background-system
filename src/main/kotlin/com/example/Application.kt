@@ -34,4 +34,19 @@ private fun test() {
 //            }
 //        }
 //    }
+//    CoroutineScope(Job()).launch {
+//        dbTransaction {
+//            UserDao.allData().forEach {
+//                Users.update(where = { Users.id eq it.id }) { state ->
+//                    state[password] = encrypt("123456")
+//                }
+//            }
+//        }
+//        delay(5000L)
+//        UserDao.allData().map {
+//            "username=${it.username} -> password=${decrypt(it.password)}, encrypt=${it.password}"
+//        }.forEach {
+//            println(it)
+//        }
+//    }
 }

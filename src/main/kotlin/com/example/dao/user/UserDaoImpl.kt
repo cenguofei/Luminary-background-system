@@ -84,6 +84,12 @@ class UserDaoImpl : UserDao {
         }
     }
 
+    override suspend fun allData(): List<User> {
+        return dbTransaction {
+            Users.selectAll().mapToUser()
+        }
+    }
+
     private suspend fun update(selector: () -> Op<Boolean>, user: User) {
         dbTransaction {
             Users.update(
