@@ -7,6 +7,17 @@ import com.example.util.logd
 
 class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao {
 
+    companion object {
+        private val idCache = userTypeOfIdCache
+        private val usernameCache = userTypeOfUsernameCache
+
+        fun remove(username: String) {
+            if (usernameCache.containsKey(username)) {
+                usernameCache.remove(username)
+            }
+        }
+    }
+
     override suspend fun create(data: User): Long =
         delegate.create(data)
             .also {
@@ -88,16 +99,5 @@ class UserDaoFacadeImpl(private val delegate: UserDao = UserDaoImpl()) : UserDao
 
     override suspend fun allData(): List<User> {
         return delegate.allData()
-    }
-
-    companion object {
-        private val idCache = userTypeOfIdCache
-        private val usernameCache = userTypeOfUsernameCache
-
-        fun remove(username: String) {
-            if (usernameCache.containsKey(username)) {
-                usernameCache.remove(username)
-            }
-        }
     }
 }
