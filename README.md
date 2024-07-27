@@ -15,16 +15,18 @@ Lunimary Blog Background System
 
 # Architecture
 
-The **Lunimary Blog** app follows the [official architecture guidance](https://developer.android.com/topic/architecture).
+## [Kotlin](https://kotlinlang.org/)
+> Kotlin编写后端项目的好处包括：优秀的Java互操作性、简洁的语法、类型安全、强大的工具支持（如Ktor、Spring）、协程支持、减少样板代码、提高开发效率。
 
-# UI
-The app was designed using [Material 3 guidelines](https://m3.material.io/).
-The Screens and UI elements are built entirely using [Jetpack Compose](https://developer.android.com/jetpack/compose).
+## [Ktor](https://ktor.io/docs/welcome.html)
+> Ktor是一个轻量级、灵活的Kotlin编写的Web框架，用于构建异步和协程基础的后端应用程序。它提供了简洁的API、内置的协程支持、易于扩展的特性以及现代化的路由功能，使得开发者能够快速构建高性能的Web应用程序。
 
-The app has two themes:
+## [Exposed](https://github.com/JetBrains/Exposed)
+> Exposed是一个轻量级、简单易用的Kotlin SQL库，用于在Kotlin应用程序中处理数据库操作。它提供了类型安全的查询构建器和DSL（领域特定语言），支持多种数据库后端，包括SQLite、MySQL和PostgreSQL。Exposed的设计目标是提供直观的API，使得开发者能够以更加优雅和类型安全的方式进行数据库操作，同时减少样板代码的编写。
 
-- Dark Theme -  uses predefined dark colors.
-- Light theme - uses predefined light colors.
+## Security
+- Session
+- JWT: JWT（JSON Web Token）是一种用于在网络上安全传输信息的开放标准（RFC 7519）。它通过使用JSON对象在用户和服务器之间传递被声明的信息，经过数字签名验证，以确保信息的完整性和可信度。JWT由三部分组成：头部（Header）、载荷（Payload）和签名（Signature）。JWT适用于身份验证和授权机制，可用于在不同系统之间安全地传递声明信息。
 
 # How to run this system?
 - clone the project use [Ultimate Intellij Idea](https://www.jetbrains.com/zh-cn/idea/download)
