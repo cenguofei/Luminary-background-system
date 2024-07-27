@@ -72,6 +72,7 @@ inline val getAllArticlesOfUserLikedPath: String get() = "/user_liked/{userId}"
 inline val whenBrowseArticlePath: String get() = "/when_browse_article/{articleId}"
 inline val viewArticleDurationPath: String get() = "/view/duration"
 inline val isArticleDeletedPath: String get() = "/is_deleted/{articleId}"
+inline val approveArticlePath: String get() = "/approve/{articleId}"
 
 //Like
 inline val likeRootPath: String get() = "/likes"

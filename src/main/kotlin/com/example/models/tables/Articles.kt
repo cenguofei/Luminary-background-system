@@ -26,6 +26,8 @@ object Articles : Table() {
 
     val visibleMode = varchar("visible_mode", 6)
 
+    val publishState = varchar("publish_state", 10)
+
     val tags = json<Array<String>>("tags", Json.Default)
 
     val likes = integer("likes")

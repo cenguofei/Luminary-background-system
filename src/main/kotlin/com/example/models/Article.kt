@@ -26,6 +26,8 @@ data class Article(
      */
     val visibleMode: VisibleMode = VisibleMode.PUBLIC,
 
+    val publishState: PublishState = PublishState.Auditing,
+
     val tags: Array<String> = emptyArray(),
 
     val likes: Int = Int.Default,
@@ -57,6 +59,7 @@ data class Article(
         if (link != other.link) return false
         if (body != other.body) return false
         if (visibleMode != other.visibleMode) return false
+        if (publishState != other.publishState) return false
         if (!tags.contentEquals(other.tags)) return false
         if (likes != other.likes) return false
         if (collections != other.collections) return false
@@ -77,6 +80,7 @@ data class Article(
         result = 31 * result + link.hashCode()
         result = 31 * result + body.hashCode()
         result = 31 * result + visibleMode.hashCode()
+        result = 31 * result + publishState.hashCode()
         result = 31 * result + tags.contentHashCode()
         result = 31 * result + likes
         result = 31 * result + collections
@@ -95,6 +99,14 @@ enum class VisibleMode {
     FRIEND
 }
 
+enum class PublishState(val message: String) {
+    Auditing("审核中"), // 审核中
+
+    Approved("审核通过"), // 审核通过
+
+    Reject("打回"), // 打回
+}
+
 val testArticle = Article(
     userId = 10007,
     username = "ttt",
@@ -108,8 +120,3 @@ val testArticle = Article(
     likes = 99,
     viewsNum = 99
 )
-
-fun printTestArticle() {
-    val json = Gson().toJson(testArticle)
-    "testArticle=$json".logd("article")
-}

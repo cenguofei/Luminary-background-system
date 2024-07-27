@@ -2,6 +2,7 @@ package com.example.routings.article
 
 import com.example.dao.article.ArticleDao
 import com.example.models.Article
+import com.example.models.PublishState
 import com.example.models.responses.DataResponse
 import com.example.plugins.receive
 import com.example.plugins.security.jwtUser
@@ -28,10 +29,12 @@ fun Route.createArticleRoute(articleDao: ArticleDao) {
                     return@post
                 }
 
-                val id = articleDao.create(it)
+                val id = articleDao.create(
+                    it.copy(publishState = PublishState.Auditing)
+                )
                 call.respond(
                     status = HttpStatusCode.OK,
-                    message = DataResponse<Unit>().copy(msg = "Successfully created article with id $id")
+                    message = DataResponse<Unit>().copy(msg = "The article $id has been published, please wait for administrator review.")
                 )
             }
         }

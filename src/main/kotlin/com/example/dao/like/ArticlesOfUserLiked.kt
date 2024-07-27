@@ -1,6 +1,7 @@
 package com.example.dao.like
 
 import com.example.dao.article.DefaultArticleDao
+import com.example.dao.article.articlePredicate
 import com.example.dao.article.mapToArticle
 import com.example.models.Article
 import com.example.models.VisibleMode
@@ -39,7 +40,7 @@ class ArticlesOfUserLiked(
                 Likes.userId eq userId
             }
         ).selectAll().where {
-            (Articles.visibleMode eq VisibleMode.PUBLIC.name) or (Articles.userId eq userId)
+            articlePredicate() or (Articles.userId eq userId)
         }
     }
 }

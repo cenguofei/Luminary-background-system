@@ -1,7 +1,7 @@
 package com.example.dao.article
 
-import com.example.models.Article
-import com.example.models.VisibleMode
+import com.example.dao.audit.AuditDao
+import com.example.models.*
 import com.example.models.tables.Articles
 import com.example.plugins.database.database
 import com.example.util.Default
@@ -22,7 +22,7 @@ class ArticleDaoImpl : ArticleDao {
     override suspend fun pages(pageStart: Int, perPageCount: Int): List<Article> = dbTransaction {
         val offset = pageOffset(pageStart, perPageCount)
         Articles.selectAll()
-            .where { Articles.visibleMode eq VisibleMode.PUBLIC.name }
+            .where(articlePredicate())
             .orderBy(Articles.timestamp, SortOrder.DESC)
             .limit(n = perPageCount, offset = offset)
             .mapToArticle()
@@ -99,25 +99,20 @@ class ArticleDaoImpl : ArticleDao {
 
     override suspend fun allData(): List<Article> {
         return dbTransaction {
-            Articles.selectAll().where {
-                Articles.visibleMode eq VisibleMode.PUBLIC.name
-            }.mapToArticle()
+            Articles.selectAll().where(articlePredicate()).mapToArticle()
         }
     }
 
     override suspend fun getArticles(n: Int, eliminate: List<Long>): List<Article> {
         return dbTransaction {
-            Articles.selectAll().where {
-                Articles.visibleMode eq VisibleMode.PUBLIC.name
-            }.limit(n).mapToArticle()
+            Articles.selectAll().where(articlePredicate())
+                .limit(n).mapToArticle()
         }
     }
 
     override suspend fun matchAllByTags(tags: List<String>): List<Article> {
         return dbTransaction {
-            Articles.selectAll().where {
-                Articles.visibleMode eq VisibleMode.PUBLIC.name
-            }.mapToArticle()
+            Articles.selectAll().where(articlePredicate()).mapToArticle()
                 .filter { article ->
                     tags.any { it in article.tags }
                 }
@@ -132,6 +127,24 @@ class ArticleDaoImpl : ArticleDao {
         }
     }
 
+    override suspend fun audit(
+        oldArticle: Article,
+        newArticle: Article,
+        auditor: User
+    ) {
+        dbTransaction {
+            update(newArticle.id, newArticle)
+            AuditDao.create(
+                Audit(
+                    auditorId = auditor.id,
+                    articleId = newArticle.id,
+                    prevState = oldArticle.publishState,
+                    toState = newArticle.publishState
+                )
+            )
+        }
+    }
+
     private fun UpdateBuilder<Int>.setKeyValue(article: Article) {
         this[Articles.userId] = article.userId
         this[Articles.username] = article.username
@@ -140,6 +153,7 @@ class ArticleDaoImpl : ArticleDao {
         this[Articles.link] = article.link
         this[Articles.body] = article.body
         this[Articles.visibleMode] = article.visibleMode.name
+        this[Articles.publishState] = article.publishState.name
         this[Articles.tags] = article.tags
         this[Articles.likes] = article.likes
         this[Articles.collections] = article.collections
@@ -163,6 +177,7 @@ fun Iterable<ResultRow>.mapToArticle(): List<Article> {
             body = it[Articles.body],
             tags = it[Articles.tags],
             visibleMode = VisibleMode.valueOf(it[Articles.visibleMode]),
+            publishState = PublishState.valueOf(it[Articles.publishState]),
             likes = it[Articles.likes],
             collections = it[Articles.collections],
             comments = it[Articles.comments],

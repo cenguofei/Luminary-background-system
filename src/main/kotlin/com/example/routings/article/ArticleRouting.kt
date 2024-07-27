@@ -31,6 +31,9 @@ fun Application.configureArticleRouting() {
             whenBrowseArticleRoute(articleDao)
             viewDurationRoute()
             existingArticle()
+
+            // approve
+            approveArticleRoute()
         }
     }
 }
