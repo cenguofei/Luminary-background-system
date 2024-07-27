@@ -48,15 +48,15 @@ private fun createHikariDataSource() = HikariDataSource(
 - Collect Database using idea.
   - open the view/Tool Windows/Database
   
-    [Open The Idea Database](docs/images/open_db.png)
+    ![Open The Idea Database](docs/images/open_db.png)
 
   - Select Mysql or other database product you want.
 
-    - [Select a database product](docs/images/select_mysql.png)
+    - ![Select a database product](docs/images/select_mysql.png)
   
   - Input database information.
   
-    - [Input database information](docs/images/configure_db.png)
+    - ![Input database information](docs/images/configure_db.png)
 
 - Build Project
 
