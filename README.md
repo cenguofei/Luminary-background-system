@@ -29,7 +29,7 @@ Lunimary Blog Background System
 - JWT: JWT（JSON Web Token）是一种用于在网络上安全传输信息的开放标准（RFC 7519）。它通过使用JSON对象在用户和服务器之间传递被声明的信息，经过数字签名验证，以确保信息的完整性和可信度。JWT由三部分组成：头部（Header）、载荷（Payload）和签名（Signature）。JWT适用于身份验证和授权机制，可用于在不同系统之间安全地传递声明信息。
 
 # How to run this system?
-- clone the project use [Ultimate Intellij Idea](https://www.jetbrains.com/zh-cn/idea/download)
+- clone the project use [Intellij Idea Ultimate](https://www.jetbrains.com/zh-cn/idea/download)
 - Configure Mysql Database, open file: com/example/plugins/database/Databases.kt
 ```kotlin
 private fun createHikariDataSource() = HikariDataSource(
